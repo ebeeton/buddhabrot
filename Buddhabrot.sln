@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buddhabrot.API", "Buddhabrot\Buddhabrot.API.csproj", "{1C3C5132-BF2D-488F-95E1-6979EBA92658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.API", "Buddhabrot\Buddhabrot.API.csproj", "{1C3C5132-BF2D-488F-95E1-6979EBA92658}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C9662A32-E4AF-4AFD-8CB8-14EF912BE152}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1C3C5132-BF2D-488F-95E1-6979EBA92658}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C3C5132-BF2D-488F-95E1-6979EBA92658}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C3C5132-BF2D-488F-95E1-6979EBA92658}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9662A32-E4AF-4AFD-8CB8-14EF912BE152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9662A32-E4AF-4AFD-8CB8-14EF912BE152}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9662A32-E4AF-4AFD-8CB8-14EF912BE152}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9662A32-E4AF-4AFD-8CB8-14EF912BE152}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

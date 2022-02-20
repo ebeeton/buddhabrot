@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  buddhabrot.api:
+    image: ${DOCKER_REGISTRY-}buddhabrotapi
+    build:
+      context: .
+      dockerfile: Buddhabrot/Dockerfile
+    depends_on:
+     - "seq"
+
+  seq:
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "8080:80"

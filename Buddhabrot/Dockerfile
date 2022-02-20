@@ -7,16 +7,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Buddhabrot/Buddhabrot.csproj", "Buddhabrot/"]
-RUN dotnet restore "Buddhabrot/Buddhabrot.csproj"
+COPY ["Buddhabrot/Buddhabrot.API.csproj", "Buddhabrot/"]
+RUN dotnet restore "Buddhabrot/Buddhabrot.API.csproj"
 COPY . .
 WORKDIR "/src/Buddhabrot"
-RUN dotnet build "Buddhabrot.csproj" -c Release -o /app/build
+RUN dotnet build "Buddhabrot.API.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Buddhabrot.csproj" -c Release -o /app/publish
+RUN dotnet publish "Buddhabrot.API.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Buddhabrot.dll"]
+ENTRYPOINT ["dotnet", "Buddhabrot.API.dll"]

@@ -42,6 +42,8 @@ try
 		app.UseSwaggerUI();
 	}
 
+	app.UseSerilogRequestLogging();
+
 	app.UseHttpsRedirection();
 
 	app.UseAuthorization();
