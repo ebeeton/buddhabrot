@@ -1,4 +1,5 @@
-﻿using Buddhabrot.Core;
+﻿using Buddhabrot.API.DTO;
+using Buddhabrot.Core;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -20,11 +21,11 @@ namespace Buddhabrot.Controllers
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> Get()
+		public async Task<IActionResult> Get([FromQuery]RenderParameters parameters)
 		{
 			try
 			{
-				var image = await Renderer.RenderPng();
+				var image = await Renderer.RenderPng(parameters.Width, parameters.Height);
 				return File(image, PngContentType);
 			}
 			catch (Exception ex)
