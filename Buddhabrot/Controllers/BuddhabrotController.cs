@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Buddhabrot.Core;
+using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
 namespace Buddhabrot.Controllers
@@ -8,8 +9,10 @@ namespace Buddhabrot.Controllers
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
-	public class Buddhabrot : ControllerBase
+	public class BuddhabrotController : ControllerBase
 	{
+		private const string PngContentType = "image/png";
+
 		/// <summary>
 		/// Gets a buddhabrot image.
 		/// </summary>
@@ -17,11 +20,12 @@ namespace Buddhabrot.Controllers
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public ActionResult Get()
+		public async Task<IActionResult> Get()
 		{
 			try
 			{
-				return Ok("Hello, world!");
+				var image = await Renderer.RenderPng();
+				return File(image, PngContentType);
 			}
 			catch (Exception ex)
 			{
