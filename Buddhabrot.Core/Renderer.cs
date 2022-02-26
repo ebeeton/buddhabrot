@@ -35,7 +35,7 @@ namespace Buddhabrot.Core
 
 			var data = new byte[height * bytesPerLine];
 
-			for (int y = 0; y < height; ++y)
+			Parallel.For(0, height, (y) =>
 			{
 				var imaginary = LinearScale.Scale(y, 0, height, MinY, MaxY);
 
@@ -56,7 +56,7 @@ namespace Buddhabrot.Core
 					data[y * bytesPerLine + x + 1] =
 					data[y * bytesPerLine + x + 2] = color;
 				}
-			}
+			});
 
 			using var image = Image.LoadPixelData<Rgb24>(data, width, height);
 			var output = new MemoryStream();

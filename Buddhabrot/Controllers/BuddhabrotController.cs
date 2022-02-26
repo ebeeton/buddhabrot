@@ -25,7 +25,9 @@ namespace Buddhabrot.Controllers
 		{
 			try
 			{
+				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 				var image = await Renderer.RenderPng(parameters.Width, parameters.Height);
+				Log.Information($"Rendered image in {stopwatch.ElapsedMilliseconds} ms.");
 				return File(image, PngContentType);
 			}
 			catch (Exception ex)
