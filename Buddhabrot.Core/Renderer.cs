@@ -20,28 +20,35 @@ namespace Buddhabrot.Core
 		private const int RGBBytesPerPixel = 3;
 		private const int MaxIterations = 128;
 
-		private const float MinX = -2;
-		private const float MaxX = 0.47f;
-		private const float MinY = -1.12f;
-		private const float MaxY = 1.12f;
+		// Initial dimensions of the Mandelbrot set, more or less nicely centered.
+		private const float InitialMinX = -2;
+		private const float InitialMaxX = 0.47f;
+		private const float InitialMinY = -1.12f;
+		private const float InitialMaxY = 1.12f;
 
 		/// <summary>
-		/// Test render method.
+		/// Renders the Mandelbrot set to a PNG image.
 		/// </summary>
 		/// <returns>A task representing the work to render the image.</returns>
 		public static async Task<MemoryStream> RenderPng(int width, int height)
 		{
+			// Scale the vertical range so that the image doesn't squash or strech when
+			// the image aspect ratio isn't 1:1.
+			var scaleY = (float)height / width;
+			var minY = scaleY * InitialMinY;
+			var maxY = scaleY * InitialMaxY;
+
 			var bytesPerLine = width * RGBBytesPerPixel;
 
 			var data = new byte[height * bytesPerLine];
 
 			Parallel.For(0, height, (y) =>
 			{
-				var imaginary = LinearScale.Scale(y, 0, height, MinY, MaxY);
+				var imaginary = LinearScale.Scale(y, 0, height, minY, maxY);
 
 				for (int x = 0; x < bytesPerLine; x += 3)
 				{
-					var real = LinearScale.Scale(x, 0, bytesPerLine, MinX, MaxX);
+					var real = LinearScale.Scale(x, 0, bytesPerLine, InitialMinX, InitialMaxX);
 
 					var iterations = GetPixel(new Complex(real, imaginary));
 					if (iterations == 0)
