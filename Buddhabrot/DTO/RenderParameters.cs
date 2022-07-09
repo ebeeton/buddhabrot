@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Buddhabrot.API.DTO
 {
 	/// <summary>
-	/// Parameters with which to render a Buddhabrot image.
+	/// Parameters with which to render a fractal image.
 	/// </summary>
 	public class RenderParameters
 	{
@@ -21,5 +21,12 @@ namespace Buddhabrot.API.DTO
 		[Range(128, 4096)]
 		[DefaultValue(768)]
 		public int Height { get; set; }
+
+		/// <summary>
+		/// Gets/sets the maximum number of iterations for each pixel.
+		/// </summary>
+		[Range(128, 2096)]
+		[DefaultValue(128)]
+		public int MaxIterations { get; set; }
 	}
 }

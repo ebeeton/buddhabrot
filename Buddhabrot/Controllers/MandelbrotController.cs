@@ -6,18 +6,19 @@ using Serilog;
 namespace Buddhabrot.Controllers
 {
 	/// <summary>
-	/// Buddhabrot API controller.
+	/// Mandelbrot API controller.
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
-	public class BuddhabrotController : ControllerBase
+	public class MandelbrotController : ControllerBase
 	{
 		private const string PngContentType = "image/png";
 
 		/// <summary>
-		/// Gets a buddhabrot image.
+		/// Gets a Mandelbrot image.
 		/// </summary>
-		/// <returns>A buddhabrot image.</returns>
+		/// <param name="parameters">Mandelbrot image generation parameters.</param>
+		/// <returns>A Mandelbrot image.</returns>
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -26,7 +27,8 @@ namespace Buddhabrot.Controllers
 			try
 			{
 				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-				var image = await Renderer.RenderPng(parameters.Width, parameters.Height);
+				var renderer = new MandelbrotRenderer(parameters.MaxIterations);
+				var image = await renderer.RenderPng(parameters.Width, parameters.Height);
 				Log.Information($"Rendered image in {stopwatch.ElapsedMilliseconds} ms.");
 				return File(image, PngContentType);
 			}
