@@ -53,7 +53,7 @@ namespace Buddhabrot.Core
 					var iterations = GetPixel(new Complex(real, imaginary));
 					if (iterations == 0)
 					{
-						// The point is presumably in the set.
+						// Leave points in the set black.
 						continue;
 					}
 
@@ -87,7 +87,7 @@ namespace Buddhabrot.Core
 				z = z * z + c;
 			}
 
-			// Probably in the set.
+			// "Probably" in the set.
 			return 0;
 		}
 	}
