@@ -56,18 +56,19 @@ namespace Buddhabrot.Core
 				{
 					var real = LinearScale.Scale(x, 0, bytesPerLine, InitialMinX, InitialMaxX);
 
-					var iterations = GetPixel(new Complex(real, imaginary));
-					if (iterations == 0)
+					int iterations = 0;
+					if (IsInMandelbrotSet(new Complex(real, imaginary), ref iterations))
 					{
 						// Leave points in the set black.
 						continue;
 					}
 
-					// Simple grayscale for now.
+					// Grayscale plot based on how quickly the point escapes.
 					var color = (byte)((double)iterations / MaxIterations * 255);
-					data[y * bytesPerLine + x] =
-					data[y * bytesPerLine + x + 1] =
-					data[y * bytesPerLine + x + 2] = color;
+					var line = y * bytesPerLine;
+					data[line + x] =
+					data[line + x + 1] =
+					data[line + x + 2] = color;
 				}
 			});
 
@@ -79,7 +80,7 @@ namespace Buddhabrot.Core
 			return output;
 		}
 
-		private int GetPixel(Complex c)
+		private bool IsInMandelbrotSet(Complex c, ref int iterations)
 		{
 			var z = new Complex(0, 0);
 			for (int i = 0; i < MaxIterations; ++i)
@@ -87,14 +88,15 @@ namespace Buddhabrot.Core
 				if (z.Magnitude > Bailout)
 				{
 					// Not in the set.
-					return i;
+					iterations = i;
+					return false;
 				}
 
 				z = z * z + c;
 			}
 
 			// "Probably" in the set.
-			return 0;
+			return true;
 		}
 	}
 }
