@@ -3,9 +3,9 @@
 namespace Buddhabrot.Core
 {
 	/// <summary>
-	/// A Mandelbrot image renderer.
+	/// A Buddhabrot image renderer.
 	/// </summary>
-	public class MandelbrotRenderer : Renderer
+	public class BuddhabrotRenderer : Renderer
 	{
 		/// <summary>
 		/// Instantiates a Mandelbrot image renderer.
@@ -13,9 +13,9 @@ namespace Buddhabrot.Core
 		/// <param name="width">Width of the image in pixels.</param>
 		/// <param name="height">Height of the image in pixels.</param>
 		/// <param name="maxIterations"></param>
-		public MandelbrotRenderer(int width, int height, int maxIterations) : base(width, height, maxIterations)
+		public BuddhabrotRenderer(int width, int height, int maxIterations) : base(width, height, maxIterations)
 		{
-			
+
 		}
 
 		/// <summary>
@@ -23,8 +23,9 @@ namespace Buddhabrot.Core
 		/// </summary>
 		/// <param name="c">A point represented as a complex number.</param>
 		/// <param name="iterations">The number of iterations for points not in the set to escape to infinity.</param>
+		/// <param name="orbits">The orbits of the point as it is iterated.</param>
 		/// <returns>True if a point is in the Mandelbrot set.</returns>
-		public bool IsInMandelbrotSet(Complex c, ref int iterations)
+		public bool IsInMandelbrotSet(Complex c, ref int iterations, ref Complex[] orbits)
 		{
 			var z = new Complex(0, 0);
 			for (int i = 0; i < MaxIterations; ++i)
@@ -35,6 +36,8 @@ namespace Buddhabrot.Core
 					iterations = i;
 					return false;
 				}
+
+				orbits[i] = z;
 				z = z * z + c;
 			}
 
@@ -51,7 +54,8 @@ namespace Buddhabrot.Core
 		protected override void RenderPixel(int x, int y, Complex c)
 		{
 			int iterations = 0;
-			if (IsInMandelbrotSet(c, ref iterations))
+			var orbits = new Complex[MaxIterations];
+			if (IsInMandelbrotSet(c, ref iterations, ref orbits))
 			{
 				// Leave points in the set black.
 				return;

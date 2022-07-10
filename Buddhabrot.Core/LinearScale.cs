@@ -14,7 +14,7 @@
 		/// <param name="minScaleTo">Minimum value of the range scaling to.</param>
 		/// <param name="maxScaleTo">Maximum value of the range scaling to.</param>
 		/// <returns>Linearly scaled value.</returns>
-		public static float Scale(float val, float minScaleFrom, float maxScaleFrom, float minScaleTo, float maxScaleTo)
+		public static double Scale(double val, double minScaleFrom, double maxScaleFrom, double minScaleTo, double maxScaleTo)
 		{
 			// https://stackoverflow.com/a/5295202
 			return (maxScaleTo - minScaleTo) * (val - minScaleFrom) / maxScaleFrom - minScaleFrom + minScaleTo;

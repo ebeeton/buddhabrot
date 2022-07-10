@@ -27,8 +27,8 @@ namespace Buddhabrot.Controllers
 			try
 			{
 				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-				var renderer = new MandelbrotRenderer(parameters.MaxIterations);
-				var image = await renderer.RenderPng(parameters.Width, parameters.Height);
+				var renderer = new MandelbrotRenderer(parameters.Width, parameters.Height, parameters.MaxIterations);
+				var image = await renderer.RenderPng();
 				Log.Information($"Rendered image in {stopwatch.ElapsedMilliseconds} ms.");
 				return File(image, PngContentType);
 			}
