@@ -46,27 +46,11 @@ namespace Buddhabrot.Core
 		}
 
 		/// <summary>
-		/// Render a single pixel in the image.
+		/// Render the image.
 		/// </summary>
-		/// <param name="x">Horizontal pixel coordinate, left to right.</param>
-		/// <param name="y">Vertical pixel coordinate, top to bottom.</param>
-		/// <param name="c">Pixel scaled to the range in the Mandelbrot set.</param>
-		protected override void RenderPixel(int x, int y, Complex c)
+		protected override void Render()
 		{
-			int iterations = 0;
-			var orbits = new Complex[MaxIterations];
-			if (IsInMandelbrotSet(c, ref iterations, ref orbits))
-			{
-				// Leave points in the set black.
-				return;
-			}
-
-			// Grayscale plot based on how quickly the point escapes.
-			var color = (byte)((double)iterations / MaxIterations * 255);
-			var line = y * BytesPerLine;
-			_imageData[line + x] =
-			_imageData[line + x + 1] =
-			_imageData[line + x + 2] = color;
+			throw new NotImplementedException();
 		}
 	}
 }

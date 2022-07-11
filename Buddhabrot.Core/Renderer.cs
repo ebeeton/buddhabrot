@@ -74,24 +74,7 @@ namespace Buddhabrot.Core
 		/// <returns>A task representing the work to render the image.</returns>
 		public async Task<MemoryStream> RenderPng()
 		{
-			// Scale the vertical range so that the image doesn't squash or strech when
-			// the image aspect ratio isn't 1:1.
-			var scaleY = (double)Height / Width;
-			var minY = scaleY * InitialMinY;
-			var maxY = scaleY * InitialMaxY;
-
-			// Render each line in parallel.
-			Parallel.For(0, Height, (y) =>
-			{
-				var imaginary = LinearScale.Scale(y, 0, Height, minY, maxY);
-
-				for (int x = 0; x < BytesPerLine; x += RGBBytesPerPixel)
-				{
-					var real = LinearScale.Scale(x, 0, BytesPerLine, InitialMinX, InitialMaxX);
-
-					RenderPixel(x, y, new Complex(real, imaginary));
-				}
-			});
+			Render();
 
 			using var image = Image.LoadPixelData<Rgb24>(_imageData, Width, Height);
 			var output = new MemoryStream();
@@ -102,12 +85,9 @@ namespace Buddhabrot.Core
 		}
 
 		/// <summary>
-		/// Render a single pixel in the image.
+		/// Render the image.
 		/// </summary>
-		/// <param name="x">Horizontal pixel coordinate, left to right.</param>
-		/// <param name="y">Vertical pixel coordinate, top to bottom.</param>
-		/// <param name="c">Pixel scaled to the range in the Mandelbrot set.</param>
-		protected abstract void RenderPixel(int x, int y, Complex c);
+		protected abstract void Render();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.
