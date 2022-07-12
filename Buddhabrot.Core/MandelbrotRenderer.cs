@@ -19,30 +19,6 @@ namespace Buddhabrot.Core
 		}
 
 		/// <summary>
-		/// Determines if a point is in the Mandelbrot set.
-		/// </summary>
-		/// <param name="c">A point represented as a complex number.</param>
-		/// <param name="iterations">The number of iterations for points not in the set to escape to infinity.</param>
-		/// <returns>True if a point is in the Mandelbrot set.</returns>
-		public bool IsInMandelbrotSet(Complex c, ref int iterations)
-		{
-			var z = new Complex(0, 0);
-			for (int i = 0; i < MaxIterations; ++i)
-			{
-				if (z.Magnitude > Bailout)
-				{
-					// Not in the set.
-					iterations = i;
-					return false;
-				}
-				z = z * z + c;
-			}
-
-			// "Probably" in the set.
-			return true;
-		}
-
-		/// <summary>
 		/// Render the image.
 		/// </summary>
 		protected override void Render()

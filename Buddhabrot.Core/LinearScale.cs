@@ -16,8 +16,7 @@
 		/// <returns>Linearly scaled value.</returns>
 		public static double Scale(double val, double minScaleFrom, double maxScaleFrom, double minScaleTo, double maxScaleTo)
 		{
-			// https://stackoverflow.com/a/5295202
-			return (maxScaleTo - minScaleTo) * (val - minScaleFrom) / maxScaleFrom - minScaleFrom + minScaleTo;
+			return (val - minScaleFrom) / (maxScaleFrom - minScaleFrom) * (maxScaleTo - minScaleTo) + minScaleTo;
 		}
 	}
 }

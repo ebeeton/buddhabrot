@@ -64,9 +64,9 @@ namespace Buddhabrot.Core
 
 		// Initial dimensions of the Mandelbrot set, more or less nicely centered.
 		protected const double InitialMinX = -2;
-		protected const double InitialMaxX = 0.47f;
-		protected const double InitialMinY = -1.12f;
-		protected const double InitialMaxY = 1.12f;
+		protected const double InitialMaxX = 0.47;
+		protected const double InitialMinY = -1.12;
+		protected const double InitialMaxY = 1.12;
 
 		/// <summary>
 		/// Renders the Mandelbrot set to a PNG image.
@@ -95,6 +95,41 @@ namespace Buddhabrot.Core
 		public void ClearImageBuffer()
 		{
 			_imageData = new byte[Height * BytesPerLine];
+		}
+
+		/// <summary>
+		/// Determines if a point is in the Mandelbrot set.
+		/// </summary>
+		/// <param name="c">A point on the complex plane.</param>
+		/// <param name="iterations">The number of iterations for points not in the set to escape to infinity.</param>
+		/// <returns>True if a point is in the Mandelbrot set.</returns>
+		public bool IsInMandelbrotSet(Complex c, ref int iterations)
+		{
+			var z = new Complex(0, 0);
+			for (int i = 0; i < MaxIterations; ++i)
+			{
+				if (z.Magnitude > Bailout)
+				{
+					// Not in the set.
+					iterations = i;
+					return false;
+				}
+				z = z * z + c;
+			}
+
+			// "Probably" in the set.
+			return true;
+		}
+
+		/// <summary>
+		/// Is a given pixel coordinate within the image bounds?
+		/// </summary>
+		/// <param name="pixelX">Horizontal coordinate.</param>
+		/// <param name="pixelY">Vertical coordinate.</param>
+		/// <returns></returns>
+		public bool PixelInBounds(int pixelX, int pixelY)
+		{
+			return pixelX >= 0 && pixelX < Width && pixelY >= 0 && pixelY < Height;
 		}
 	}
 }
