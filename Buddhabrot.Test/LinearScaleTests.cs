@@ -1,4 +1,4 @@
-using Buddhabrot.Core;
+using Buddhabrot.Core.Math;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Buddhabrot.Test
@@ -18,7 +18,7 @@ namespace Buddhabrot.Test
 		[DataTestMethod]
 		public void LinearScale_WithRanges_ScalesCorrectly(double val, double minScaleFrom, double maxScaleFrom, double minScaleTo, double maxScaleTo, double expected)
 		{
-			var actual = LinearScale.Scale(val, minScaleFrom, maxScaleFrom, minScaleTo, maxScaleTo);
+			var actual = Linear.Scale(val, minScaleFrom, maxScaleFrom, minScaleTo, maxScaleTo);
 
 			Assert.AreEqual(expected, actual, Delta);
 		}

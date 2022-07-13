@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Buddhabrot.Core.Math;
+using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
 {
@@ -32,11 +33,11 @@ namespace Buddhabrot.Core.Plotting
 			// Plot each line in parallel.
 			Parallel.For(0, Height, (y) =>
 			{
-				var imaginary = LinearScale.Scale(y, 0, Height, minY, maxY);
+				var imaginary = Linear.Scale(y, 0, Height, minY, maxY);
 
 				for (int x = 0; x < BytesPerLine; x += RGBBytesPerPixel)
 				{
-					var real = LinearScale.Scale(x, 0, BytesPerLine, InitialMinX, InitialMaxX);
+					var real = Linear.Scale(x, 0, BytesPerLine, InitialMinX, InitialMaxX);
 
 					int iterations = 0;
 					if (IsInMandelbrotSet(new Complex(real, imaginary), ref iterations))

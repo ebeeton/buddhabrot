@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Buddhabrot.Core.Math;
+using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;
 
@@ -62,8 +63,8 @@ namespace Buddhabrot.Core.Plotting
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)LinearScale.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, Width);
-					var pixelY = (int)LinearScale.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, Height);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, Width);
+					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, Height);
 
 					// TODO:: Test this before conversion from complex plane to pixels, save some time?
 					if (!PixelInBounds(pixelX, pixelY))

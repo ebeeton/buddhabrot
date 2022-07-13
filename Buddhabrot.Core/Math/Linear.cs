@@ -1,9 +1,9 @@
-﻿namespace Buddhabrot.Core
+﻿namespace Buddhabrot.Core.Math
 {
 	/// <summary>
 	/// Performs linear scales.
 	/// </summary>
-	public static class LinearScale
+	public static class Linear
 	{
 		/// <summary>
 		/// Linearly scales a value in one range to another.
