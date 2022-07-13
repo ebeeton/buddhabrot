@@ -2,20 +2,20 @@
 using SixLabors.ImageSharp.PixelFormats;
 using System.Numerics;
 
-namespace Buddhabrot.Core
+namespace Buddhabrot.Core.Plotting
 {
 	/// <summary>
-	/// Common functionality for Mandelbrot and BuddhaBrot image rendering.
+	/// Common functionality for Mandelbrot and BuddhaBrot image plotting.
 	/// </summary>
-	public abstract class Renderer
+	public abstract class Plotter
 	{
 		/// <summary>
-		/// Instantiates a renderer.
+		/// Instantiates a plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
 		/// <param name="height">Height of the image in pixels.</param>
 		/// <param name="maxIterations">Maximum number of iterations for each pixel.</param>
-		public Renderer(int width, int height, int maxIterations)
+		public Plotter(int width, int height, int maxIterations)
 		{
 			Width = width;
 			Height = height;
@@ -69,12 +69,12 @@ namespace Buddhabrot.Core
 		protected const double InitialMaxY = 1.12;
 
 		/// <summary>
-		/// Renders the Mandelbrot set to a PNG image.
+		/// Plot the Mandelbrot set to a PNG image.
 		/// </summary>
 		/// <returns>A task representing the work to render the image.</returns>
-		public async Task<MemoryStream> RenderPng()
+		public async Task<MemoryStream> PlotPng()
 		{
-			Render();
+			Plot();
 
 			using var image = Image.LoadPixelData<Rgb24>(_imageData, Width, Height);
 			var output = new MemoryStream();
@@ -85,9 +85,9 @@ namespace Buddhabrot.Core
 		}
 
 		/// <summary>
-		/// Render the image.
+		/// Plot the image.
 		/// </summary>
-		protected abstract void Render();
+		protected abstract void Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

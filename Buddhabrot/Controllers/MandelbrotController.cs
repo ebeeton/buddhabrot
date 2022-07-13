@@ -1,5 +1,5 @@
 ﻿using Buddhabrot.API.DTO;
-using Buddhabrot.Core;
+using Buddhabrot.Core.Plotting;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 
@@ -22,19 +22,19 @@ namespace Buddhabrot.Controllers
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> Get([FromQuery]RenderParameters parameters)
+		public async Task<IActionResult> Get([FromQuery]PlotParameters parameters)
 		{
 			try
 			{
 				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-				var renderer = new MandelbrotRenderer(parameters.Width, parameters.Height, parameters.MaxIterations);
-				var image = await renderer.RenderPng();
-				Log.Information($"Rendered image in {stopwatch.ElapsedMilliseconds} ms.");
+				var plotter = new MandelbrotPlotter(parameters.Width, parameters.Height, parameters.MaxIterations);
+				var image = await plotter.PlotPng();
+				Log.Information($"Plotted image in {stopwatch.ElapsedMilliseconds} ms.");
 				return File(image, PngContentType);
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex, "Rendering failed.");
+				Log.Error(ex, "Mandelbrot plot failed.");
 				return new StatusCodeResult(StatusCodes.Status500InternalServerError);
 			}
 		}

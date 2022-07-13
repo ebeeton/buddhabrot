@@ -22,7 +22,7 @@ try
 		{
 			Version = "v1",
 			Title = "Buddhabrot API",
-			Description = "A demo project to render Buddhabrot images.",
+			Description = "A demo project to plot Buddhabrot images.",
 			Contact = new OpenApiContact
 			{
 				Name = "Evan Beeton",

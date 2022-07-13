@@ -1,27 +1,27 @@
 ﻿using System.Numerics;
 
-namespace Buddhabrot.Core
+namespace Buddhabrot.Core.Plotting
 {
 	/// <summary>
-	/// A Mandelbrot image renderer.
+	/// A Mandelbrot image plotter.
 	/// </summary>
-	public class MandelbrotRenderer : Renderer
+	public class MandelbrotPlotter : Plotter
 	{
 		/// <summary>
-		/// Instantiates a Mandelbrot image renderer.
+		/// Instantiates a Mandelbrot image plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
 		/// <param name="height">Height of the image in pixels.</param>
 		/// <param name="maxIterations"></param>
-		public MandelbrotRenderer(int width, int height, int maxIterations) : base(width, height, maxIterations)
+		public MandelbrotPlotter(int width, int height, int maxIterations) : base(width, height, maxIterations)
 		{
-			
+
 		}
 
 		/// <summary>
-		/// Render the image.
+		/// Plot the image.
 		/// </summary>
-		protected override void Render()
+		protected override void Plot()
 		{
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
@@ -29,7 +29,7 @@ namespace Buddhabrot.Core
 			var minY = scaleY * InitialMinY;
 			var maxY = scaleY * InitialMaxY;
 
-			// Render each line in parallel.
+			// Plot each line in parallel.
 			Parallel.For(0, Height, (y) =>
 			{
 				var imaginary = LinearScale.Scale(y, 0, Height, minY, maxY);

@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 namespace Buddhabrot.API.DTO
 {
 	/// <summary>
-	/// Parameters with which to render a fractal image.
+	/// Parameters with which to plot a fractal image.
 	/// </summary>
-	public class RenderParameters
+	public class PlotParameters
 	{
 		/// <summary>
 		/// Gets/sets the image width.

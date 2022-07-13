@@ -2,12 +2,12 @@
 using System.Collections.Concurrent;
 using System.Numerics;
 
-namespace Buddhabrot.Core
+namespace Buddhabrot.Core.Plotting
 {
 	/// <summary>
-	/// A Buddhabrot image renderer.
+	/// A Buddhabrot image plotter.
 	/// </summary>
-	public class BuddhabrotRenderer : Renderer
+	public class BuddhabrotPlotter : Plotter
 	{
 		/// <summary>
 		/// How many random points on the complex plane are chosen to build the image.
@@ -22,20 +22,20 @@ namespace Buddhabrot.Core
 		private static readonly Random _rand = new();
 
 		/// <summary>
-		/// Instantiates a Buddhabrot image renderer.
+		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
 		/// <param name="height">Height of the image in pixels.</param>
 		/// <param name="maxIterations"></param>
-		public BuddhabrotRenderer(int width, int height, int maxIterations) : base(width, height, maxIterations)
+		public BuddhabrotPlotter(int width, int height, int maxIterations) : base(width, height, maxIterations)
 		{
 			_samplePoints = new ConcurrentBag<Complex>();
 		}
 
 		/// <summary>
-		/// Render the image.
+		/// Plot the image.
 		/// </summary>
-		protected override void Render()
+		protected override void Plot()
 		{
 			// Generate a set of random points not in the Mandelbrot set.
 			// We don't care about orbits yet.
@@ -50,7 +50,9 @@ namespace Buddhabrot.Core
 				_samplePoints.Add(point);
 			});
 
-			// Iterate the sample set and render their orbits.
+			Log.Information($"Using sample size {SampleSize}. Sample points outside the Mandelbrot set: {_samplePoints.Count}.");
+
+			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(_samplePoints, p =>
 			{
 				int iterations = 0;
@@ -63,6 +65,7 @@ namespace Buddhabrot.Core
 					var pixelX = (int)LinearScale.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, Width);
 					var pixelY = (int)LinearScale.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, Height);
 
+					// TODO:: Test this before conversion from complex plane to pixels, save some time?
 					if (!PixelInBounds(pixelX, pixelY))
 					{
 #if DEBUG
@@ -72,7 +75,7 @@ namespace Buddhabrot.Core
 					}
 
 #if DEBUG
-					Log.Information($"Pixel in bounds. X {pixelX} Y {pixelY}");
+					Log.Debug($"Pixel in bounds. X {pixelX} Y {pixelY}");
 #endif
 					var index = pixelY * BytesPerLine + pixelX * RGBBytesPerPixel;
 					lock (_imageData)
