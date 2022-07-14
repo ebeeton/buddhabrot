@@ -8,7 +8,7 @@ namespace Buddhabrot.Test
 	{
 		class TestPlotter : Plotter
 		{
-			public TestPlotter(int width, int height, int maxIterations) : base(width, height, maxIterations)
+			public TestPlotter(int width, int height) : base(width, height)
 			{
 
 			}
@@ -19,7 +19,7 @@ namespace Buddhabrot.Test
 			}
 		}
 
-		private readonly TestPlotter _plotter = new(1024, 768, 256);
+		private readonly TestPlotter _plotter = new(1024, 768);
 
 		[TestMethod]
 		public void PixelInBounds_WithNegativeX_ReturnsFalse()

@@ -32,8 +32,11 @@ try
 	});
 	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
 													   .ReadFrom.Configuration(context.Configuration));
+	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.ParameterProfile));
 
 	var app = builder.Build();
+	var mapper = app.Services.GetService<AutoMapper.IMapper>();
+	mapper!.ConfigurationProvider.AssertConfigurationIsValid();
 
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())

@@ -1,4 +1,6 @@
 ﻿using Buddhabrot.Core.Math;
+using Buddhabrot.Core.Parameters;
+using Serilog;
 using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
@@ -11,13 +13,17 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Instantiates a Mandelbrot image plotter.
 		/// </summary>
-		/// <param name="width">Width of the image in pixels.</param>
-		/// <param name="height">Height of the image in pixels.</param>
-		/// <param name="maxIterations"></param>
-		public MandelbrotPlotter(int width, int height, int maxIterations) : base(width, height, maxIterations)
+		/// <param name="parameters">Parameters used to plot the image.</param>
+		public MandelbrotPlotter(MandelbrotParameters parameters) : base(parameters.Width, parameters.Height)
 		{
-
+			MaxIterations = parameters.MaxIterations;
+			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
+
+		/// <summary>
+		/// Gets the maximum number of iterations to perform on each pixel.
+		/// </summary>
+		public int MaxIterations { get; protected set; }
 
 		/// <summary>
 		/// Plot the image.
@@ -40,7 +46,7 @@ namespace Buddhabrot.Core.Plotting
 					var real = Linear.Scale(x, 0, BytesPerLine, InitialMinX, InitialMaxX);
 
 					int iterations = 0;
-					if (IsInMandelbrotSet(new Complex(real, imaginary), ref iterations))
+					if (IsInMandelbrotSet(new Complex(real, imaginary), MaxIterations, ref iterations))
 					{
 						// Leave points in the set black.
 						continue;
@@ -49,9 +55,9 @@ namespace Buddhabrot.Core.Plotting
 					// Grayscale plot based on how quickly the point escapes.
 					var color = (byte)((double)iterations / MaxIterations * 255);
 					var line = y * BytesPerLine;
-					_imageData[line + x] =
-					_imageData[line + x + 1] =
-					_imageData[line + x + 2] = color;
+					_imageBuffer[line + x] =
+					_imageBuffer[line + x + 1] =
+					_imageBuffer[line + x + 2] = color;
 				}
 			});
 		}

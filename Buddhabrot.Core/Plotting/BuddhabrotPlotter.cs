@@ -1,4 +1,5 @@
 ﻿using Buddhabrot.Core.Math;
+using Buddhabrot.Core.Parameters;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;
@@ -11,27 +12,31 @@ namespace Buddhabrot.Core.Plotting
 	public class BuddhabrotPlotter : Plotter
 	{
 		/// <summary>
-		/// How many random points on the complex plane are chosen to build the image.
-		/// </summary>
-		private const int SampleSize = 8192;
-
-		/// <summary>
-		/// Random points on the complex plane near - but not in - the Mandelbrot set.
-		/// </summary>
-		private readonly ConcurrentBag<Complex> _samplePoints;
-
-		private static readonly Random _rand = new();
-
-		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
-		/// <param name="width">Width of the image in pixels.</param>
-		/// <param name="height">Height of the image in pixels.</param>
-		/// <param name="maxIterations"></param>
-		public BuddhabrotPlotter(int width, int height, int maxIterations) : base(width, height, maxIterations)
+		/// <param name="parameters">Parameters used to plot the image.</param>
+		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
 		{
-			_samplePoints = new ConcurrentBag<Complex>();
+			MaxIterations = parameters.MaxIterations;
+			MaxSampleIterations = parameters.MaxSampleIterations;
+			SampleSize = parameters.SampleSize;
+			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
+
+		/// <summary>
+		/// Gets the maximum number of iterations to perform on each pixel.
+		/// </summary>
+		public int MaxIterations { get; protected set; }
+
+		/// <summary>
+		/// Gets/sets the maximum number of iterations for the intial sample set.
+		/// </summary>
+		public int MaxSampleIterations { get; protected set; }
+
+		/// <summary>
+		/// Gets how many random points on the complex plane are chosen to build the image.
+		/// </summary>
+		public int SampleSize { get; protected set; }
 
 		/// <summary>
 		/// Plot the image.
@@ -40,21 +45,22 @@ namespace Buddhabrot.Core.Plotting
 		{
 			// Generate a set of random points not in the Mandelbrot set.
 			// We don't care about orbits yet.
+			var samplePoints = new ConcurrentBag<Complex>();
 			Parallel.For(0, SampleSize, _ =>
 			{
 				var point = RandomPointOnComplexPlane();
-				if (IsInMandelbrotSet(point, ref _))
+				if (IsInMandelbrotSet(point, MaxSampleIterations, ref _))
 				{
 					return;
 				}
 
-				_samplePoints.Add(point);
+				samplePoints.Add(point);
 			});
 
-			Log.Information($"Using sample size {SampleSize}. Sample points outside the Mandelbrot set: {_samplePoints.Count}.");
+			Log.Information($"Using sample size {SampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
 
 			// Iterate the sample set and plot their orbits.
-			Parallel.ForEach(_samplePoints, p =>
+			Parallel.ForEach(samplePoints, p =>
 			{
 				int iterations = 0;
 				var orbits = new Complex[MaxIterations];
@@ -66,7 +72,7 @@ namespace Buddhabrot.Core.Plotting
 					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, Width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, Height);
 
-					// TODO:: Test this before conversion from complex plane to pixels, save some time?
+					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
 					if (!PixelInBounds(pixelX, pixelY))
 					{
 #if DEBUG
@@ -75,15 +81,12 @@ namespace Buddhabrot.Core.Plotting
 						continue;
 					}
 
-#if DEBUG
-					Log.Debug($"Pixel in bounds. X {pixelX} Y {pixelY}");
-#endif
 					var index = pixelY * BytesPerLine + pixelX * RGBBytesPerPixel;
-					lock (_imageData)
+					lock (_imageBuffer)
 					{
-						++_imageData[index];
-						++_imageData[index + 1];
-						++_imageData[index + 2];
+						++_imageBuffer[index];
+						++_imageBuffer[index + 1];
+						++_imageBuffer[index + 2];
 					}
 				}
 			});
@@ -95,8 +98,9 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>A random point on the complex plane near the Mandelbrot set.</returns>
 		protected static Complex RandomPointOnComplexPlane()
 		{
-			var real = _rand.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
-			var imaginary = _rand.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
+			var random = new Random();
+			var real = random.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
+			var imaginary = random.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
 			return new Complex(real, imaginary);
 		}
 

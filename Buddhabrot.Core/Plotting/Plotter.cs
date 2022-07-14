@@ -1,4 +1,5 @@
-﻿using SixLabors.ImageSharp;
+﻿using Serilog;
+using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Numerics;
 
@@ -10,47 +11,12 @@ namespace Buddhabrot.Core.Plotting
 	public abstract class Plotter
 	{
 		/// <summary>
-		/// Instantiates a plotter.
+		/// 24 bits per pixel image buffer.
 		/// </summary>
-		/// <param name="width">Width of the image in pixels.</param>
-		/// <param name="height">Height of the image in pixels.</param>
-		/// <param name="maxIterations">Maximum number of iterations for each pixel.</param>
-		public Plotter(int width, int height, int maxIterations)
-		{
-			Width = width;
-			Height = height;
-			MaxIterations = maxIterations;
-			BytesPerLine = width * RGBBytesPerPixel;
-			_imageData = new byte[Height * BytesPerLine];
-		}
+		protected byte[] _imageBuffer;
 
 		/// <summary>
-		/// The width of the image in pixels.
-		/// </summary>
-		protected readonly int Width;
-
-		/// <summary>
-		/// The height of the image in pixels.
-		/// </summary>
-		protected readonly int Height;
-
-		/// <summary>
-		/// The number of bytes in each line in the image.
-		/// </summary>
-		protected readonly int BytesPerLine;
-
-		/// <summary>
-		/// RGB 24 bits per-pixel image data.
-		/// </summary>
-		protected byte[] _imageData;
-
-		/// <summary>
-		/// The maximum number of iterations to process each point.
-		/// </summary>
-		protected readonly int MaxIterations;
-
-		/// <summary>
-		/// The number of bytes in a 24-bit RGB pixel.
+		/// The number of bytes in a 24 bit RGB pixel.
 		/// </summary>
 		protected const int RGBBytesPerPixel = 3;
 
@@ -69,6 +35,35 @@ namespace Buddhabrot.Core.Plotting
 		protected const double InitialMaxY = 1.12;
 
 		/// <summary>
+		/// Instantiates a plotter.
+		/// </summary>
+		/// <param name="width">Width of the image in pixels.</param>
+		/// <param name="height">Height of the image in pixels.</param>
+		public Plotter(int width, int height)
+		{
+			Width = width;
+			Height = height;
+			BytesPerLine = width * RGBBytesPerPixel;
+			_imageBuffer = new byte[Height * BytesPerLine];
+			Log.Information($"Plotter instantiated: {Width}x{Height} pixels.");
+		}
+
+		/// <summary>
+		/// Gets the width of the image in pixels.
+		/// </summary>
+		public int Width { get; private set; }
+
+		/// <summary>
+		/// Gets the height of the image in pixels.
+		/// </summary>
+		public int Height { get; private set; }
+
+		/// <summary>
+		/// Gets the number of bytes in each line in the image.
+		/// </summary>
+		public int BytesPerLine { get; private set; }
+
+		/// <summary>
 		/// Plot the Mandelbrot set to a PNG image.
 		/// </summary>
 		/// <returns>A task representing the work to render the image.</returns>
@@ -76,7 +71,7 @@ namespace Buddhabrot.Core.Plotting
 		{
 			Plot();
 
-			using var image = Image.LoadPixelData<Rgb24>(_imageData, Width, Height);
+			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, Width, Height);
 			var output = new MemoryStream();
 			await image.SaveAsPngAsync(output);
 			output.Seek(0, SeekOrigin.Begin);
@@ -94,19 +89,20 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public void ClearImageBuffer()
 		{
-			_imageData = new byte[Height * BytesPerLine];
+			_imageBuffer = new byte[Height * BytesPerLine];
 		}
 
 		/// <summary>
 		/// Determines if a point is in the Mandelbrot set.
 		/// </summary>
 		/// <param name="c">A point on the complex plane.</param>
+		/// <param name="maxIterations">The number of iterations for points not in the set to escape to infinity.</param>
 		/// <param name="iterations">The number of iterations for points not in the set to escape to infinity.</param>
 		/// <returns>True if a point is in the Mandelbrot set.</returns>
-		public bool IsInMandelbrotSet(Complex c, ref int iterations)
+		public bool IsInMandelbrotSet(Complex c, int maxIterations, ref int iterations)
 		{
 			var z = new Complex(0, 0);
-			for (int i = 0; i < MaxIterations; ++i)
+			for (int i = 0; i < maxIterations; ++i)
 			{
 				if (z.Magnitude > Bailout)
 				{
