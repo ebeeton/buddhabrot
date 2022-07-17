@@ -26,8 +26,9 @@
 		public int MaxSampleIterations { get; set; }
 
 		/// <summary>
-		/// Gets/sets the size of the random sample set.
+		/// Gets/sets the size of the random sample set as a percentage of the total
+		/// number of pixels in the image to be generated.
 		/// </summary>
-		public int SampleSize { get; set; }
+		public double SampleSize { get; set; }
 	}
 }

@@ -12,44 +12,83 @@ namespace Buddhabrot.Core.Plotting
 	public class BuddhabrotPlotter : Plotter
 	{
 		/// <summary>
+		/// Symbolic constants for RGB channel colors.
+		/// </summary>
+		protected enum Channels
+		{
+			Red = 0,
+			Green,
+			Blue,
+		};
+
+		/// <summary>
+		/// RGB channels of width * height.
+		/// </summary>
+		protected int[,] _channels;
+
+		/// <summary>
+		/// The maximum number of iterations to perform on each pixel.
+		/// </summary>
+		protected readonly int _maxIterations;
+
+		/// <summary>
+		/// The maximum number of iterations for the intial sample set.
+		/// </summary>
+		protected readonly int _maxSampleIterations;
+
+		/// <summary>
+		/// How many random points on the complex plane are chosen to build the image.
+		/// </summary>
+		protected readonly int _sampleSize;
+
+		/// <summary>
+		/// The total number of pixels per channel.
+		/// </summary>
+		protected readonly int _pixelsPerChannel;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
 		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
 		{
-			MaxIterations = parameters.MaxIterations;
-			MaxSampleIterations = parameters.MaxSampleIterations;
-			SampleSize = parameters.SampleSize;
+			_maxIterations = parameters.MaxIterations;
+			_maxSampleIterations = parameters.MaxSampleIterations;
+			_pixelsPerChannel = parameters.Width * parameters.Height;
+			_sampleSize = (int)(parameters.SampleSize * _pixelsPerChannel);
+			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
-
-		/// <summary>
-		/// Gets the maximum number of iterations to perform on each pixel.
-		/// </summary>
-		public int MaxIterations { get; protected set; }
-
-		/// <summary>
-		/// Gets/sets the maximum number of iterations for the intial sample set.
-		/// </summary>
-		public int MaxSampleIterations { get; protected set; }
-
-		/// <summary>
-		/// Gets how many random points on the complex plane are chosen to build the image.
-		/// </summary>
-		public int SampleSize { get; protected set; }
 
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
 		protected override void Plot()
 		{
+			// Plot  each channel.
+			for (int i = 0; i < RGBBytesPerPixel; ++i)
+			{
+				PlotChannel(i);
+			}
+#if false
+			// Separate RGB channel plotting method isn't working yet.
+			MergeFinalImage();
+#endif
+		}
+
+		/// <summary>
+		/// Plot a Buddhabrot image to one of the RGB image channels.
+		/// </summary>
+		/// <param name="channel">Index of channel to plot to.</param>
+		protected void PlotChannel(int channel)
+		{
 			// Generate a set of random points not in the Mandelbrot set.
 			// We don't care about orbits yet.
 			var samplePoints = new ConcurrentBag<Complex>();
-			Parallel.For(0, SampleSize, _ =>
+			Parallel.For(0, _sampleSize, _ =>
 			{
 				var point = RandomPointOnComplexPlane();
-				if (IsInMandelbrotSet(point, MaxSampleIterations, ref _))
+				if (IsInMandelbrotSet(point, _maxSampleIterations, ref _))
 				{
 					return;
 				}
@@ -57,20 +96,20 @@ namespace Buddhabrot.Core.Plotting
 				samplePoints.Add(point);
 			});
 
-			Log.Information($"Using sample size {SampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
+			Log.Information($"Using sample size {_sampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
 
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
 				int iterations = 0;
-				var orbits = new Complex[MaxIterations];
+				var orbits = new Complex[_maxIterations];
 
 				PlotOrbits(p, ref iterations, ref orbits);
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, Width);
-					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, Height);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, _width);
+					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, _height);
 
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
 					if (!PixelInBounds(pixelX, pixelY))
@@ -78,13 +117,21 @@ namespace Buddhabrot.Core.Plotting
 						continue;
 					}
 
-					var index = pixelY * BytesPerLine + pixelX * RGBBytesPerPixel;
+#if true
+					// Separate RGB channel plotting method isn't working yet.
+					var index = pixelY * _bytesPerLine + pixelX * RGBBytesPerPixel;
 					lock (_imageBuffer)
 					{
 						++_imageBuffer[index];
 						++_imageBuffer[index + 1];
 						++_imageBuffer[index + 2];
 					}
+#else
+					// Two or more threads could be incrementing the same pixel,
+					// so a synchronization method is necessary here.
+					var index = pixelY * pixelX;
+					Interlocked.Increment(ref _channels[channel, index]);
+#endif
 				}
 			});
 		}
@@ -110,7 +157,7 @@ namespace Buddhabrot.Core.Plotting
 		protected void PlotOrbits(Complex c, ref int iterations, ref Complex[] orbits)
 		{
 			var z = new Complex(0, 0);
-			for (int i = 0; i < MaxIterations; ++i)
+			for (int i = 0; i < _maxIterations; ++i)
 			{
 				if (z.Magnitude > Bailout)
 				{
@@ -121,6 +168,20 @@ namespace Buddhabrot.Core.Plotting
 
 				orbits[i] = z;
 				z = z * z + c;
+			}
+		}
+
+		/// <summary>
+		/// Combine the separate RGB channels into the final image output data.
+		/// </summary>
+		protected void MergeFinalImage()
+		{			
+			for (int i = 0; i < _pixelsPerChannel; ++i)
+			{
+				var index = i * RGBBytesPerPixel;
+				_imageBuffer[index] = (byte)_channels[(int)Channels.Red, i];
+				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green, i];
+				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue, i];
 			}
 		}
 	}

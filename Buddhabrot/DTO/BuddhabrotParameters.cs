@@ -25,8 +25,8 @@ namespace Buddhabrot.API.DTO
 		/// <summary>
 		/// Gets/sets the maximum number of iterations for each pixel.
 		/// </summary>
-		[Range(2048, 131072)]
-		[DefaultValue(2048)]
+		[Range(16384, 131072)]
+		[DefaultValue(16384)]
 		public int MaxIterations { get; set; }
 
 		/// <summary>
@@ -37,10 +37,11 @@ namespace Buddhabrot.API.DTO
 		public int MaxSampleIterations { get; set; }
 
 		/// <summary>
-		/// Gets/sets the size of the random sample set.
+		/// Gets/sets the size of the random sample set as a percentage of the total
+		/// number of pixels in the image to be generated.
 		/// </summary>
-		[Range(8192, 524288)]
-		[DefaultValue(8192)]
-		public int SampleSize { get; set; }
+		[Range(0.1, 0.5)]
+		[DefaultValue(0.1)]
+		public double SampleSize { get; set; }
 	}
 }

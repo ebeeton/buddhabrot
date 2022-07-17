@@ -21,6 +21,21 @@ namespace Buddhabrot.Core.Plotting
 		protected const int RGBBytesPerPixel = 3;
 
 		/// <summary>
+		/// The width of the image in pixels.
+		/// </summary>
+		protected readonly int _width;
+
+		/// <summary>
+		/// The height of the image in pixels.
+		/// </summary>
+		protected readonly int _height;
+
+		/// <summary>
+		/// The number of bytes in each line in the image.
+		/// </summary>
+		protected readonly int _bytesPerLine;
+
+		/// <summary>
 		/// <see cref="https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set">
 		/// "Because no complex number with a real or imaginary part greater
 		/// than 2 can be part of the set, a common bailout is to escape when
@@ -41,27 +56,12 @@ namespace Buddhabrot.Core.Plotting
 		/// <param name="height">Height of the image in pixels.</param>
 		public Plotter(int width, int height)
 		{
-			Width = width;
-			Height = height;
-			BytesPerLine = width * RGBBytesPerPixel;
-			_imageBuffer = new byte[Height * BytesPerLine];
-			Log.Information($"Plotter instantiated: {Width}x{Height} pixels.");
+			_width = width;
+			_height = height;
+			_bytesPerLine = width * RGBBytesPerPixel;
+			_imageBuffer = new byte[_height * _bytesPerLine];
+			Log.Information($"Plotter instantiated: {_width}x{_height} pixels.");
 		}
-
-		/// <summary>
-		/// Gets the width of the image in pixels.
-		/// </summary>
-		public int Width { get; private set; }
-
-		/// <summary>
-		/// Gets the height of the image in pixels.
-		/// </summary>
-		public int Height { get; private set; }
-
-		/// <summary>
-		/// Gets the number of bytes in each line in the image.
-		/// </summary>
-		public int BytesPerLine { get; private set; }
 
 		/// <summary>
 		/// Plot the Mandelbrot set to a PNG image.
@@ -71,7 +71,7 @@ namespace Buddhabrot.Core.Plotting
 		{
 			Plot();
 
-			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, Width, Height);
+			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, _width, _height);
 			var output = new MemoryStream();
 			await image.SaveAsPngAsync(output);
 			output.Seek(0, SeekOrigin.Begin);
@@ -89,7 +89,7 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public void ClearImageBuffer()
 		{
-			_imageBuffer = new byte[Height * BytesPerLine];
+			_imageBuffer = new byte[_height * _bytesPerLine];
 		}
 
 		/// <summary>
@@ -125,7 +125,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns></returns>
 		public bool PixelInBounds(int pixelX, int pixelY)
 		{
-			return pixelX >= 0 && pixelX < Width && pixelY >= 0 && pixelY < Height;
+			return pixelX >= 0 && pixelX < _width && pixelY >= 0 && pixelY < _height;
 		}
 	}
 }
