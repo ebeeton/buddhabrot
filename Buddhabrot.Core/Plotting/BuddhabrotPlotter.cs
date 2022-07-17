@@ -75,9 +75,6 @@ namespace Buddhabrot.Core.Plotting
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
 					if (!PixelInBounds(pixelX, pixelY))
 					{
-#if DEBUG
-						Log.Warning($"Pixel out of bounds. X {pixelX} Y {pixelY} Width {Width} Height {Height}");
-#endif
 						continue;
 					}
 
