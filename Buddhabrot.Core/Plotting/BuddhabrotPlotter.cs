@@ -70,8 +70,7 @@ namespace Buddhabrot.Core.Plotting
 			{
 				PlotChannel(i);
 			}
-#if false
-			// Separate RGB channel plotting method isn't working yet.
+#if !GREYSCALE_PLOT
 			MergeFinalImage();
 #endif
 		}
@@ -117,8 +116,7 @@ namespace Buddhabrot.Core.Plotting
 						continue;
 					}
 
-#if true
-					// Separate RGB channel plotting method isn't working yet.
+#if GREYSCALE_PLOT
 					var index = pixelY * _bytesPerLine + pixelX * RGBBytesPerPixel;
 					lock (_imageBuffer)
 					{
@@ -129,7 +127,7 @@ namespace Buddhabrot.Core.Plotting
 #else
 					// Two or more threads could be incrementing the same pixel,
 					// so a synchronization method is necessary here.
-					var index = pixelY * pixelX;
+					var index = pixelY * _width + pixelX;
 					Interlocked.Increment(ref _channels[channel, index]);
 #endif
 				}
