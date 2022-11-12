@@ -28,7 +28,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected override void Plot()
+		protected override async Task Plot()
 		{
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
@@ -37,29 +37,34 @@ namespace Buddhabrot.Core.Plotting
 			var maxY = scaleY * InitialMaxY;
 
 			// Plot each line in parallel.
-			Parallel.For(0, _height, (y) =>
+			var task = Task.Run(() =>
 			{
-				var imaginary = Linear.Scale(y, 0, _height, minY, maxY);
-
-				for (int x = 0; x < _bytesPerLine; x += RGBBytesPerPixel)
+				Parallel.For(0, _height, (y) =>
 				{
-					var real = Linear.Scale(x, 0, _bytesPerLine, InitialMinX, InitialMaxX);
+					var imaginary = Linear.Scale(y, 0, _height, minY, maxY);
 
-					int iterations = 0;
-					if (IsInMandelbrotSet(new Complex(real, imaginary), _maxIterations, ref iterations))
+					for (int x = 0; x < _bytesPerLine; x += RGBBytesPerPixel)
 					{
-						// Leave points in the set black.
-						continue;
-					}
+						var real = Linear.Scale(x, 0, _bytesPerLine, InitialMinX, InitialMaxX);
 
-					// Grayscale plot based on how quickly the point escapes.
-					var color = (byte)((double)iterations / _maxIterations * 255);
-					var line = y * _bytesPerLine;
-					_imageBuffer[line + x] =
-					_imageBuffer[line + x + 1] =
-					_imageBuffer[line + x + 2] = color;
-				}
+						int iterations = 0;
+						if (IsInMandelbrotSet(new Complex(real, imaginary), _maxIterations, ref iterations))
+						{
+							// Leave points in the set black.
+							continue;
+						}
+
+						// Grayscale plot based on how quickly the point escapes.
+						var color = (byte)((double)iterations / _maxIterations * 255);
+						var line = y * _bytesPerLine;
+						_imageBuffer[line + x] =
+						_imageBuffer[line + x + 1] =
+						_imageBuffer[line + x + 2] = color;
+					}
+				});
 			});
+
+			await task.WaitAsync(_plotTimeOut);
 		}
 	}
 }

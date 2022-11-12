@@ -50,6 +50,11 @@ namespace Buddhabrot.Core.Plotting
 		protected const double InitialMaxY = 1.12;
 
 		/// <summary>
+		/// The duration which, when exceeded, will cause the plot to time out.
+		/// </summary>
+		protected static readonly TimeSpan _plotTimeOut = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+
+		/// <summary>
 		/// Instantiates a plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
@@ -69,7 +74,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>A task representing the work to render the image.</returns>
 		public async Task<MemoryStream> PlotPng()
 		{
-			Plot();
+			await Plot();
 
 			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, _width, _height);
 			var output = new MemoryStream();
@@ -82,7 +87,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected abstract void Plot();
+		protected abstract Task Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

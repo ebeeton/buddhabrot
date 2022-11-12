@@ -1,5 +1,6 @@
 ﻿using Buddhabrot.Core.Plotting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading.Tasks;
 
 namespace Buddhabrot.Test
 {
@@ -13,7 +14,7 @@ namespace Buddhabrot.Test
 
 			}
 
-			protected override void Plot()
+			protected override Task Plot()
 			{
 				throw new System.NotImplementedException();
 			}

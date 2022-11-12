@@ -63,12 +63,12 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected override void Plot()
+		protected override async Task Plot()
 		{
 			// Plot  each channel.
 			for (int i = 0; i < RGBBytesPerPixel; ++i)
 			{
-				PlotChannel(i);
+				await PlotChannel(i);
 			}
 #if !GREYSCALE_PLOT
 			MergeFinalImage();
@@ -79,21 +79,25 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot a Buddhabrot image to one of the RGB image channels.
 		/// </summary>
 		/// <param name="channel">Index of channel to plot to.</param>
-		protected void PlotChannel(int channel)
+		protected async Task PlotChannel(int channel)
 		{
 			// Generate a set of random points not in the Mandelbrot set.
 			// We don't care about orbits yet.
 			var samplePoints = new ConcurrentBag<Complex>();
-			Parallel.For(0, _sampleSize, _ =>
+			var task = Task.Run(() =>
 			{
-				var point = RandomPointOnComplexPlane();
-				if (IsInMandelbrotSet(point, _maxSampleIterations, ref _))
+				Parallel.For(0, _sampleSize, _ =>
 				{
-					return;
-				}
+					var point = RandomPointOnComplexPlane();
+					if (IsInMandelbrotSet(point, _maxSampleIterations, ref _))
+					{
+						return;
+					}
 
-				samplePoints.Add(point);
+					samplePoints.Add(point);
+				});
 			});
+			await task.WaitAsync(_plotTimeOut);
 
 			Log.Information($"Using sample size {_sampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
 
