@@ -6,27 +6,27 @@
 	public class BuddhabrotParameters
 	{
 		/// <summary>
-		/// Gets/sets the image width.
+		/// Image width.
 		/// </summary>
 		public int Width { get; set; }
 
 		/// <summary>
-		/// Gets/sets the image height.
+		/// Image height.
 		/// </summary>
 		public int Height { get; set; }
 
 		/// <summary>
-		/// Gets/sets the maximum number of iterations for each pixel.
+		/// Maximum number of iterations for each pixel.
 		/// </summary>
 		public int MaxIterations { get; set; }
 
 		/// <summary>
-		/// Gets/sets the maximum number of iterations for the intial sample set.
+		/// Maximum number of iterations for the intial sample set.
 		/// </summary>
 		public int MaxSampleIterations { get; set; }
 
 		/// <summary>
-		/// Gets/sets the size of the random sample set as a percentage of the total
+		/// Size of the random sample set as a percentage of the total
 		/// number of pixels in the image to be generated.
 		/// </summary>
 		public double SampleSize { get; set; }

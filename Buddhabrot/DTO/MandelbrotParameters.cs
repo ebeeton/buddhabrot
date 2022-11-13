@@ -9,21 +9,21 @@ namespace Buddhabrot.API.DTO
 	public class MandelbrotParameters
 	{
 		/// <summary>
-		/// Gets/sets the image width.
+		/// Image width.
 		/// </summary>
 		[Range(128, 4096)]
 		[DefaultValue(1024)]
 		public int Width { get; set; }
 
 		/// <summary>
-		/// Gets/sets the image height.
+		/// Image height.
 		/// </summary>
 		[Range(128, 4096)]
 		[DefaultValue(768)]
 		public int Height { get; set; }
 
 		/// <summary>
-		/// Gets/sets the maximum number of iterations for each pixel.
+		/// Maximum number of iterations for each pixel.
 		/// </summary>
 		[Range(128, 2048)]
 		[DefaultValue(128)]
