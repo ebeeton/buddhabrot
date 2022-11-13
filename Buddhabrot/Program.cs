@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 
 Log.Logger = new LoggerConfiguration()
 	.WriteTo.Console()
@@ -16,9 +17,9 @@ try
 	builder.Services.AddControllers();
 	// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 	builder.Services.AddEndpointsApiExplorer();
-	builder.Services.AddSwaggerGen(c =>
+	builder.Services.AddSwaggerGen(options =>
 	{
-		c.SwaggerDoc("v1", new OpenApiInfo
+		options.SwaggerDoc("v1", new OpenApiInfo
 		{
 			Version = "v1",
 			Title = "Buddhabrot API",
@@ -29,6 +30,9 @@ try
 				Url = new Uri("https://github.com/ebeeton")
 			}
 		});
+
+		var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+		options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 	});
 	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
 													   .ReadFrom.Configuration(context.Configuration));

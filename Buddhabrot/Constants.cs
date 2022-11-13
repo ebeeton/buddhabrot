@@ -1,5 +1,8 @@
 ﻿namespace Buddhabrot.API
 {
+	/// <summary>
+	/// API constants.
+	/// </summary>
 	public static class Constants
 	{
 		/// <summary>

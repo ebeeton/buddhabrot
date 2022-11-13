@@ -13,8 +13,15 @@ namespace Buddhabrot.API.Controllers
 	[ApiController]
 	public class BuddhabrotController : ControllerBase
 	{
+		/// <summary>
+		/// AutoMapper.
+		/// </summary>
 		protected IMapper _mapper;
 
+		/// <summary>
+		/// Instantiates a <see cref="BuddhabrotController"/>.
+		/// </summary>
+		/// <param name="mapper">AutoMapper.</param>
 		public BuddhabrotController(IMapper mapper) => _mapper = mapper;
 
 		/// <summary>
