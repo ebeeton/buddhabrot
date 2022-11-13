@@ -18,14 +18,14 @@ namespace Buddhabrot.API.Controllers
 		public MandelbrotController(IMapper mapper) => _mapper = mapper;
 
 		/// <summary>
-		/// Gets a Mandelbrot image.
+		/// Plots a Mandelbrot image.
 		/// </summary>
 		/// <param name="parameters">Image generation parameters.</param>
 		/// <returns>A Mandelbrot image.</returns>
-		[HttpGet]
+		[HttpPost("Plot")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public async Task<IActionResult> Get([FromQuery]MandelbrotParameters parameters)
+		public async Task<IActionResult> Plot(MandelbrotParameters parameters)
 		{
 			try
 			{
