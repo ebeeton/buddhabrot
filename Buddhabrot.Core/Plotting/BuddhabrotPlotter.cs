@@ -49,7 +49,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Pseudo-random number generator.
 		/// </summary>
-		protected readonly ThreadSafeRandom _random = new ThreadSafeRandom();
+		protected readonly ThreadSafeRandom _random = new();
 
 		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.

@@ -52,7 +52,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// The duration which, when exceeded, will cause the plot to time out.
 		/// </summary>
-		protected static readonly TimeSpan _plotTimeOut = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		protected static readonly TimeSpan _plotTimeOut = new(hours: 1, minutes: 0, seconds: 0);
 
 		/// <summary>
 		/// Instantiates a plotter.
