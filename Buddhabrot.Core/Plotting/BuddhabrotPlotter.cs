@@ -47,11 +47,6 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _pixelsPerChannel;
 
 		/// <summary>
-		/// Pseudo-random number generator.
-		/// </summary>
-		protected readonly ThreadSafeRandom _random = new();
-
-		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
@@ -149,8 +144,8 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>A random point on the complex plane near the Mandelbrot set.</returns>
 		protected Complex RandomPointOnComplexPlane()
 		{
-			var real = _random.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
-			var imaginary = _random.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
+			var real = ThreadSafeRandom.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
+			var imaginary = ThreadSafeRandom.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
 			return new Complex(real, imaginary);
 		}
 
