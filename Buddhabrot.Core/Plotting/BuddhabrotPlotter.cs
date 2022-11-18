@@ -142,7 +142,7 @@ namespace Buddhabrot.Core.Plotting
 		/// Generate a random point on the complex plane near the Mandelbrot set.
 		/// </summary>
 		/// <returns>A random point on the complex plane near the Mandelbrot set.</returns>
-		protected Complex RandomPointOnComplexPlane()
+		protected static Complex RandomPointOnComplexPlane()
 		{
 			var real = ThreadSafeRandom.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
 			var imaginary = ThreadSafeRandom.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
