@@ -47,6 +47,11 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _pixelsPerChannel;
 
 		/// <summary>
+		/// Number of passes to build the image.
+		/// </summary>
+		protected readonly int _passes;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
@@ -57,6 +62,7 @@ namespace Buddhabrot.Core.Plotting
 			_pixelsPerChannel = parameters.Width * parameters.Height;
 			_sampleSize = (int)(parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
+			_passes = parameters.Passes;
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
 
@@ -65,10 +71,15 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		protected override async Task Plot()
 		{
-			// Plot  each channel.
-			for (int i = 0; i < RGBBytesPerPixel; ++i)
+			// Plot each channel.
+			for (int i = 0; i < _passes; i++)
 			{
-				await PlotChannel(i);
+				Log.Debug($"Pass {i + 1} started.");
+				for (int j = 0; j < RGBBytesPerPixel; ++j)
+				{
+					await PlotChannel(j);
+				}
+				Log.Debug($"Pass {i + 1} complete.");
 			}
 #if !GREYSCALE_PLOT
 			MergeFinalImage();
@@ -129,8 +140,8 @@ namespace Buddhabrot.Core.Plotting
 						++_imageBuffer[index + 2];
 					}
 #else
-					// Two or more threads could be incrementing the same pixel,
-					// so a synchronization method is necessary here.
+					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+					// Note that overflow is possible.
 					var index = pixelY * _width + pixelX;
 					Interlocked.Increment(ref _channels[channel, index]);
 #endif
@@ -176,7 +187,8 @@ namespace Buddhabrot.Core.Plotting
 		/// Combine the separate RGB channels into the final image output data.
 		/// </summary>
 		protected void MergeFinalImage()
-		{			
+		{
+			Log.Debug("Final image merge started.");
 			for (int i = 0; i < _pixelsPerChannel; ++i)
 			{
 				var index = i * RGBBytesPerPixel;
@@ -184,6 +196,7 @@ namespace Buddhabrot.Core.Plotting
 				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green, i];
 				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue, i];
 			}
+			Log.Debug("Final image merge complete.");
 		}
 	}
 }

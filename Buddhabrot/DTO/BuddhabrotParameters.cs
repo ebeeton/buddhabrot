@@ -43,5 +43,12 @@ namespace Buddhabrot.API.DTO
 		[Range(0.1, 0.5)]
 		[DefaultValue(0.1)]
 		public double SampleSize { get; set; }
+
+		/// <summary>
+		/// Number of passes to build the image.
+		/// </summary>
+		[Range(1, 256)]
+		[DefaultValue(1)]
+		public int Passes { get; set; }
 	}
 }

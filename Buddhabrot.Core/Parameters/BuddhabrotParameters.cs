@@ -30,5 +30,10 @@
 		/// number of pixels in the image to be generated.
 		/// </summary>
 		public double SampleSize { get; set; }
+
+		/// <summary>
+		/// Number of passes to build the image.
+		/// </summary>
+		public int Passes { get; set; }
 	}
 }
