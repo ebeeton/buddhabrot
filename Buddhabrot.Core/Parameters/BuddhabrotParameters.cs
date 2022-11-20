@@ -35,5 +35,10 @@
 		/// Number of passes to build the image.
 		/// </summary>
 		public int Passes { get; set; }
+
+		/// <summary>
+		/// Whether to render the same pixel value to each channel.
+		/// </summary>
+		public bool Grayscale { get; set; }
 	}
 }

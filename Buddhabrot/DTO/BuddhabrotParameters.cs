@@ -50,5 +50,11 @@ namespace Buddhabrot.API.DTO
 		[Range(1, 256)]
 		[DefaultValue(1)]
 		public int Passes { get; set; }
+
+		/// <summary>
+		/// Whether to render the same pixel value to each channel.
+		/// </summary>
+		[DefaultValue(false)]
+		public bool Grayscale { get; set; }
 	}
 }

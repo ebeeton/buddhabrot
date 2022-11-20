@@ -57,10 +57,19 @@ namespace Buddhabrot.Core.Plotting
 		protected const float RotateDegrees = 90;
 
 		/// <summary>
+		/// Whether to render the same pixel value to each channel.
+		/// </summary>
+		protected readonly bool _greyscale;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
-		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height, RotateDegrees)
+		/// <remarks>
+		/// Note that width and height are intentionally swapped here because
+		/// the final image will be rotated 90 clockwise.
+		/// </remarks>
+		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Height, parameters.Width, RotateDegrees)
 		{
 			_maxIterations = parameters.MaxIterations;
 			_maxSampleIterations = parameters.MaxSampleIterations;
@@ -68,6 +77,7 @@ namespace Buddhabrot.Core.Plotting
 			_sampleSize = (int)(parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
 			_passes = parameters.Passes;
+			_greyscale = parameters.Grayscale;
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
 
@@ -86,9 +96,11 @@ namespace Buddhabrot.Core.Plotting
 				}
 				Log.Debug($"Pass {i + 1} complete.");
 			}
-#if !GREYSCALE_PLOT
-			MergeFinalImage();
-#endif
+
+			if (!_greyscale)
+			{
+				MergeFinalImage();
+			}
 		}
 
 		/// <summary>
@@ -117,6 +129,12 @@ namespace Buddhabrot.Core.Plotting
 
 			Log.Information($"Using sample size {_sampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
 
+			// Scale the vertical range so that the image doesn't squash or strech when
+			// the image aspect ratio isn't 1:1.
+			var scaleX = (double)_width / _height;
+			var minX = scaleX * InitialMinX;
+			var maxX = scaleX * InitialMaxX;
+
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
@@ -127,7 +145,7 @@ namespace Buddhabrot.Core.Plotting
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, _width);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, minX, maxX, 0, _width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, _height);
 
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
@@ -135,21 +153,23 @@ namespace Buddhabrot.Core.Plotting
 					{
 						continue;
 					}
-
-#if GREYSCALE_PLOT
-					var index = pixelY * _bytesPerLine + pixelX * RGBBytesPerPixel;
-					lock (_imageBuffer)
+					else if (!_greyscale)
 					{
-						++_imageBuffer[index];
-						++_imageBuffer[index + 1];
-						++_imageBuffer[index + 2];
+						// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+						// Note that overflow is possible.
+						var index = pixelY * _width + pixelX;
+						Interlocked.Increment(ref _channels[channel, index]);
 					}
-#else
-					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-					// Note that overflow is possible.
-					var index = pixelY * _width + pixelX;
-					Interlocked.Increment(ref _channels[channel, index]);
-#endif
+					else
+					{
+						var index = pixelY * _bytesPerLine + pixelX * RGBBytesPerPixel;
+						lock (_imageBuffer)
+						{
+							++_imageBuffer[index];
+							++_imageBuffer[index + 1];
+							++_imageBuffer[index + 2];
+						}
+					}
 				}
 			});
 		}
