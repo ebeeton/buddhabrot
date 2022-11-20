@@ -8,6 +8,7 @@ services:
       dockerfile: Buddhabrot/Dockerfile
     depends_on:
      - "seq"
+     - "mssql"
 
   seq:
     image: datalust/seq:latest
@@ -15,3 +16,11 @@ services:
       - ACCEPT_EULA=Y
     ports:
       - "8080:80"
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - SA_PASSWORD=$MSSQL_SA_PWD
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
