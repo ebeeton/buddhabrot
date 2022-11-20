@@ -52,10 +52,15 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _passes;
 
 		/// <summary>
+		/// Degrees to rotate the final image to produce the familiar Buddhabrot shape.
+		/// </summary>
+		protected const float RotateDegrees = 90;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
-		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
+		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height, RotateDegrees)
 		{
 			_maxIterations = parameters.MaxIterations;
 			_maxSampleIterations = parameters.MaxSampleIterations;

@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
@@ -54,17 +55,21 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		protected static readonly TimeSpan _plotTimeOut = new(hours: 1, minutes: 0, seconds: 0);
 
+		protected readonly float _rotateDegrees;
+
 		/// <summary>
 		/// Instantiates a plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
 		/// <param name="height">Height of the image in pixels.</param>
-		public Plotter(int width, int height)
+		/// <param name="rotateDegrees">Degrees to rotate the final image.</param>
+		public Plotter(int width, int height, float rotateDegrees = 0.0f)
 		{
 			_width = width;
 			_height = height;
 			_bytesPerLine = width * RGBBytesPerPixel;
 			_imageBuffer = new byte[_height * _bytesPerLine];
+			_rotateDegrees = rotateDegrees;
 			Log.Information($"Plotter instantiated: {_width}x{_height} pixels.");
 		}
 
@@ -77,6 +82,10 @@ namespace Buddhabrot.Core.Plotting
 			await Plot();
 
 			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, _width, _height);
+			if (_rotateDegrees != 0.0f)
+			{
+				image.Mutate(i => i.Rotate(_rotateDegrees));
+			}
 			var output = new MemoryStream();
 			await image.SaveAsPngAsync(output);
 			output.Seek(0, SeekOrigin.Begin);
