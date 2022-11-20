@@ -87,6 +87,7 @@ namespace Buddhabrot.Core.Plotting
 		protected override async Task Plot()
 		{
 			// Plot each channel.
+			Log.Information($"Beginning plot with {_sampleSize} sample points.");
 			for (int i = 0; i < _passes; i++)
 			{
 				Log.Debug($"Pass {i + 1} started.");
@@ -111,6 +112,7 @@ namespace Buddhabrot.Core.Plotting
 		{
 			// Generate a set of random points not in the Mandelbrot set.
 			// We don't care about orbits yet.
+			Log.Information($"Channel {channel} plot started.");
 			var samplePoints = new ConcurrentBag<Complex>();
 			var task = Task.Run(() =>
 			{
@@ -127,7 +129,7 @@ namespace Buddhabrot.Core.Plotting
 			});
 			await task.WaitAsync(_plotTimeOut);
 
-			Log.Information($"Using sample size {_sampleSize}. Sample points outside the Mandelbrot set: {samplePoints.Count}.");
+			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _sampleSize * 100):0.#}%).");
 
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
@@ -172,6 +174,8 @@ namespace Buddhabrot.Core.Plotting
 					}
 				}
 			});
+
+			Log.Information($"Channel {channel} plot complete.");
 		}
 
 		/// <summary>
