@@ -40,15 +40,15 @@ namespace Buddhabrot.API.DTO
 		/// Size of the random sample set as a percentage of the total
 		/// number of pixels in the image to be generated.
 		/// </summary>
-		[Range(0.1, 0.5)]
-		[DefaultValue(0.1)]
+		[Range(0.01, 0.1)]
+		[DefaultValue(0.01)]
 		public double SampleSize { get; set; }
 
 		/// <summary>
 		/// Number of passes to build the image.
 		/// </summary>
 		[Range(1, 256)]
-		[DefaultValue(1)]
+		[DefaultValue(32)]
 		public int Passes { get; set; }
 
 		/// <summary>
