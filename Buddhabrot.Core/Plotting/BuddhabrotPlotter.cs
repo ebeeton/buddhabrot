@@ -52,11 +52,6 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _passes;
 
 		/// <summary>
-		/// Degrees to rotate the final image to produce the familiar Buddhabrot shape.
-		/// </summary>
-		protected const float RotateDegrees = 90;
-
-		/// <summary>
 		/// Whether to render the same pixel value to each channel.
 		/// </summary>
 		protected readonly bool _greyscale;
@@ -65,11 +60,7 @@ namespace Buddhabrot.Core.Plotting
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
-		/// <remarks>
-		/// Note that width and height are intentionally swapped here because
-		/// the final image will be rotated 90 clockwise.
-		/// </remarks>
-		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Height, parameters.Width, RotateDegrees)
+		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
 		{
 			_maxIterations = parameters.MaxIterations;
 			_maxSampleIterations = parameters.MaxSampleIterations;
@@ -131,12 +122,6 @@ namespace Buddhabrot.Core.Plotting
 
 			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _sampleSize * 100):0.#}%).");
 
-			// Scale the vertical range so that the image doesn't squash or strech when
-			// the image aspect ratio isn't 1:1.
-			var scaleX = (double)_width / _height;
-			var minX = scaleX * InitialMinX;
-			var maxX = scaleX * InitialMaxX;
-
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
@@ -147,7 +132,7 @@ namespace Buddhabrot.Core.Plotting
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, minX, maxX, 0, _width);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, _width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, _height);
 
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
