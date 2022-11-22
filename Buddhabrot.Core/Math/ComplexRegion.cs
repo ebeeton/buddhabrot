@@ -53,5 +53,20 @@ namespace Buddhabrot.Core.Math
 		/// <param name="complex"><see cref="Complex"/>.</param>
 		/// <returns></returns>
 		public bool PointInRegion(Complex complex) => complex.Real >= MinReal && complex.Real <= MaxReal && complex.Imaginary >= MinImaginary && complex.Imaginary <= MaxImaginary;
+
+		/// <summary>
+		/// Adjust the minimum and maximum imaginary values to match an aspect ratio.
+		/// </summary>
+		/// <param name="height">Height.</param>
+		/// <param name="width">Width.</param>
+		public void MatchAspectRatio(int width, int height)
+		{
+			var complexWidth = MaxReal - MinReal;
+			var aspectRatio = (double)height / width;
+			var newComplexHeight = complexWidth * aspectRatio;
+			var halfComplexHeightDelta = (newComplexHeight - (MaxImaginary - MinImaginary)) / 2.0;
+			MinImaginary -= halfComplexHeightDelta;
+			MaxImaginary += halfComplexHeightDelta;
+		}
 	}
 }

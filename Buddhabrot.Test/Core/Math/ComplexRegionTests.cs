@@ -7,6 +7,8 @@ namespace Buddhabrot.Test.Core.Math
 	[TestClass]
 	public class ComplexRegionTests
 	{
+		private const double Delta = 0.01d;
+
 		[TestMethod]
 		public void PointInRegion_WithPointInsideRegion_ReturnsTrue()
 		{
@@ -27,6 +29,17 @@ namespace Buddhabrot.Test.Core.Math
 			var result = region.PointInRegion(point);
 
 			Assert.IsFalse(result);
+		}
+
+		[TestMethod]
+		public void ApplyAspectRatio_ComputesMinAndMaxImaginaryCorrectly()
+		{
+			var region = new ComplexRegion(-2.0d, 0.47d, -1.12d, 1.12d);
+
+			region.MatchAspectRatio(1024, 768);
+
+			Assert.AreEqual(-0.92625, region.MinImaginary, Delta);
+			Assert.AreEqual(0.92625, region.MaxImaginary, Delta);
 		}
 	}
 }

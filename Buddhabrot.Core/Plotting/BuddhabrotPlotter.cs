@@ -57,6 +57,11 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly bool _greyscale;
 
 		/// <summary>
+		/// Region on the complex plane containing the Mandelbrot set.
+		/// </summary>
+		protected readonly ComplexRegion _mandelbrotSetRegion;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="parameters">Parameters used to plot the image.</param>
@@ -69,6 +74,8 @@ namespace Buddhabrot.Core.Plotting
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
 			_passes = parameters.Passes;
 			_greyscale = parameters.Grayscale;
+			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
+			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
 		}
 
@@ -122,15 +129,6 @@ namespace Buddhabrot.Core.Plotting
 
 			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _sampleSize * 100):0.#}%).");
 
-			// Adjust the initial complex height range to match the image aspect ratio.
-			// TODO:: Figure out why this doesn't work. Reject any complex points outside it. Do this only once per image.
-			var complexWidth = InitialMaxReal - InitialMinReal;
-			var aspectRatio = (double)_height / _width;
-			var newComplexHeight = complexWidth * aspectRatio;
-			var halfComplexHeightDelta = (newComplexHeight - (InitialMaxImaginary - InitialMinImaginary)) / 2.0;
-			var minY = InitialMinImaginary - halfComplexHeightDelta;
-			var maxY = InitialMaxImaginary + halfComplexHeightDelta;
-
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
@@ -141,8 +139,8 @@ namespace Buddhabrot.Core.Plotting
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinReal, InitialMaxReal, 0, _width);
-					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, minY, maxY, 0, _height);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
+					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
 					if (!PixelInBounds(pixelX, pixelY))
