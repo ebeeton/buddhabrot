@@ -122,6 +122,15 @@ namespace Buddhabrot.Core.Plotting
 
 			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _sampleSize * 100):0.#}%).");
 
+			// Adjust the initial complex height range to match the image aspect ratio.
+			// TODO:: Figure out why this doesn't work. Reject any complex points outside it. Do this only once per image.
+			var complexWidth = InitialMaxReal - InitialMinReal;
+			var aspectRatio = (double)_height / _width;
+			var newComplexHeight = complexWidth * aspectRatio;
+			var halfComplexHeightDelta = (newComplexHeight - (InitialMaxImaginary - InitialMinImaginary)) / 2.0;
+			var minY = InitialMinImaginary - halfComplexHeightDelta;
+			var maxY = InitialMaxImaginary + halfComplexHeightDelta;
+
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
@@ -132,8 +141,8 @@ namespace Buddhabrot.Core.Plotting
 
 				for (int i = 0; i < iterations; ++i)
 				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinX, InitialMaxX, 0, _width);
-					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, InitialMinY, InitialMaxY, 0, _height);
+					var pixelX = (int)Linear.Scale(orbits[i].Real, InitialMinReal, InitialMaxReal, 0, _width);
+					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, minY, maxY, 0, _height);
 
 					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
 					if (!PixelInBounds(pixelX, pixelY))
@@ -169,8 +178,8 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>A random point on the complex plane near the Mandelbrot set.</returns>
 		protected static Complex RandomPointOnComplexPlane()
 		{
-			var real = ThreadSafeRandom.NextDouble() * (InitialMaxX - InitialMinX) + InitialMinX;
-			var imaginary = ThreadSafeRandom.NextDouble() * (InitialMaxY - InitialMinY) + InitialMinY;
+			var real = ThreadSafeRandom.NextDouble() * (InitialMaxReal - InitialMinReal) + InitialMinReal;
+			var imaginary = ThreadSafeRandom.NextDouble() * (InitialMaxImaginary - InitialMinImaginary) + InitialMinImaginary;
 			return new Complex(real, imaginary);
 		}
 

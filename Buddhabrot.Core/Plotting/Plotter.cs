@@ -44,10 +44,10 @@ namespace Buddhabrot.Core.Plotting
 		protected const double Bailout = 2.0;
 
 		// Initial dimensions of the Mandelbrot set, more or less nicely centered.
-		protected const double InitialMinX = -2;
-		protected const double InitialMaxX = 0.47;
-		protected const double InitialMinY = -1.12;
-		protected const double InitialMaxY = 1.12;
+		protected const double InitialMinReal = -2;
+		protected const double InitialMaxReal = 0.47;
+		protected const double InitialMinImaginary = -1.12;
+		protected const double InitialMaxImaginary = 1.12;
 
 		/// <summary>
 		/// The duration which, when exceeded, will cause the plot to time out.

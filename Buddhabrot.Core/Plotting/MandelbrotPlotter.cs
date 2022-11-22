@@ -32,20 +32,20 @@ namespace Buddhabrot.Core.Plotting
 		{
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
-			var scaleY = (double)_height / _width;
-			var minY = scaleY * InitialMinY;
-			var maxY = scaleY * InitialMaxY;
+			var aspectRatio = (double)_height / _width;
+			var minImaginary = aspectRatio * InitialMinImaginary;
+			var maxImaginary = aspectRatio * InitialMaxImaginary;
 
 			// Plot each line in parallel.
 			var task = Task.Run(() =>
 			{
 				Parallel.For(0, _height, (y) =>
 				{
-					var imaginary = Linear.Scale(y, 0, _height, minY, maxY);
+					var imaginary = Linear.Scale(y, 0, _height, minImaginary, maxImaginary);
 
 					for (int x = 0; x < _bytesPerLine; x += RGBBytesPerPixel)
 					{
-						var real = Linear.Scale(x, 0, _bytesPerLine, InitialMinX, InitialMaxX);
+						var real = Linear.Scale(x, 0, _bytesPerLine, InitialMinReal, InitialMaxReal);
 
 						int iterations = 0;
 						if (IsInMandelbrotSet(new Complex(real, imaginary), _maxIterations, ref iterations))
