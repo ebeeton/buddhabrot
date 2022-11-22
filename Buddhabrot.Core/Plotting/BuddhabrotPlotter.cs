@@ -142,15 +142,10 @@ namespace Buddhabrot.Core.Plotting
 					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
-					// TODO:: Reject these before conversion from complex plane to pixels, save some cycles?
-					if (!PixelInBounds(pixelX, pixelY))
+					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+					// Note that overflow is possible.
+					if (!_greyscale)
 					{
-						continue;
-					}
-					else if (!_greyscale)
-					{
-						// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-						// Note that overflow is possible.
 						var index = pixelY * _width + pixelX;
 						Interlocked.Increment(ref _channels[channel, index]);
 					}
@@ -198,8 +193,11 @@ namespace Buddhabrot.Core.Plotting
 					iterations = i;
 					return;
 				}
-
-				orbits[i] = z;
+				else if (_mandelbrotSetRegion.PointInRegion(z))
+				{
+					// Only save orbits if we know they're in the renderable region.
+					orbits[i] = z;
+				}
 				z = z * z + c;
 			}
 		}
