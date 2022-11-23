@@ -12,8 +12,8 @@ namespace Buddhabrot.API.DTO
 		/// </summary>
 		public ParameterProfile()
 		{
-			CreateMap<MandelbrotParameters, Core.Parameters.MandelbrotParameters>();
-			CreateMap<BuddhabrotParameters, Core.Parameters.BuddhabrotParameters>();
+			CreateMap<MandelbrotParameters, Core.Models.MandelbrotParameters>();
+			CreateMap<BuddhabrotParameters, Core.Models.BuddhabrotParameters>();
 		}
 	}
 }

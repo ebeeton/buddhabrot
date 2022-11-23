@@ -1,4 +1,4 @@
-﻿using Buddhabrot.Core.Parameters;
+﻿using Buddhabrot.Core.Models;
 using Buddhabrot.Core.Plotting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SixLabors.ImageSharp;

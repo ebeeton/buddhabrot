@@ -1,4 +1,4 @@
-﻿namespace Buddhabrot.Core.Parameters
+﻿namespace Buddhabrot.Core.Models
 {
 	/// <summary>
 	/// Parameters with which to plot a Buddhabrot image.

@@ -9,7 +9,9 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.Core", "Buddhabrot.Core\Buddhabrot.Core.csproj", "{E3DA79B8-EB09-4C9C-9842-BB22AC292A41}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buddhabrot.Test", "Buddhabrot.Test\Buddhabrot.Test.csproj", "{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.Test", "Buddhabrot.Test\Buddhabrot.Test.csproj", "{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buddhabrot.Persistence", "Buddhabrot.Persistence\Buddhabrot.Persistence.csproj", "{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -37,7 +37,7 @@ namespace Buddhabrot.API.Controllers
 			try
 			{
 				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-				var plotter = new MandelbrotPlotter(_mapper.Map<Core.Parameters.MandelbrotParameters>(parameters));
+				var plotter = new MandelbrotPlotter(_mapper.Map<Core.Models.MandelbrotParameters>(parameters));
 				var image = await plotter.PlotPng();
 				Log.Information($"Plotted image in {stopwatch.ElapsedMilliseconds} ms.");
 				return File(image, Constants.PngContentType);
