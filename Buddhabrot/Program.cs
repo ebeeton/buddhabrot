@@ -1,5 +1,6 @@
 using Buddhabrot.Persistence.Contexts;
 using Buddhabrot.Persistence.Interfaces;
+using Buddhabrot.Persistence.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -52,11 +53,17 @@ try
 		};
 		options.UseSqlServer(connStrBuilder.ConnectionString);
 	}).AddDatabaseDeveloperPageExceptionFilter()
-	.AddScoped<IBuddhabrotContext, BuddhabrotContext>();
+	.AddScoped<IPlotRepository, PlotRepository>();
 
 	var app = builder.Build();
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();
-	mapper!.ConfigurationProvider.AssertConfigurationIsValid();
+	mapper?.ConfigurationProvider.AssertConfigurationIsValid();
+
+	using var scope = app.Services.CreateScope();
+	{
+		var context = scope.ServiceProvider.GetRequiredService<BuddhabrotContext>();
+		context.Database.EnsureCreated();
+	}	
 
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())

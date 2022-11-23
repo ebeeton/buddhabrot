@@ -1,5 +1,5 @@
-﻿using Buddhabrot.Models;
-using Buddhabrot.Persistence.Interfaces;
+﻿using Buddhabrot.Core.Models;
+using Buddhabrot.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Buddhabrot.Persistence.Contexts
@@ -7,7 +7,7 @@ namespace Buddhabrot.Persistence.Contexts
     /// <summary>
     /// Buddhabrot database context.
     /// </summary>
-    public class BuddhabrotContext : DbContext, IBuddhabrotContext
+    public class BuddhabrotContext : DbContext
     {
         /// <summary>
         /// Instantiates a <see cref="BuddhabrotContext"/>.
@@ -22,6 +22,11 @@ namespace Buddhabrot.Persistence.Contexts
         /// Buddhabrot plots.
         /// </summary>
         public DbSet<BuddhabrotPlot> BuddhabrotPlots { get; set; }
+
+        /// <summary>
+        /// Mandelbrot plots.
+        /// </summary>
+        public DbSet<MandelbrotPlot> MandelbrotPlots { get; set; }
 
 		/// <summary>
 		/// Saves all changes made in this context to the database.
@@ -39,6 +44,9 @@ namespace Buddhabrot.Persistence.Contexts
 		{
 			modelBuilder.Entity<BuddhabrotPlot>().OwnsOne(
 				plot => plot.Parameters, builder => builder.ToJson());
+
+			modelBuilder.Entity<MandelbrotPlot>().OwnsOne(
+	            plot => plot.Parameters, builder => builder.ToJson());
 
 			base.OnModelCreating(modelBuilder);
 		}

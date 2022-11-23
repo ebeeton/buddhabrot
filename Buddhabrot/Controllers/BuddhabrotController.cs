@@ -23,18 +23,18 @@ namespace Buddhabrot.API.Controllers
 		protected IMapper _mapper;
 
 		/// <summary>
-		/// Persistence context.
+		/// Plot repository.
 		/// </summary>
-		protected IBuddhabrotContext _context;
+		protected IPlotRepository _repository;
 
 		/// <summary>
 		/// Instantiates a <see cref="BuddhabrotController"/>.
 		/// </summary>
 		/// <param name="mapper">AutoMapper.</param>
-		/// <param name="context">Persistence context.</param>
-		public BuddhabrotController(IBuddhabrotContext context, IMapper mapper)
+		/// <param name="repository">Plot repository.</param>
+		public BuddhabrotController(IPlotRepository repository, IMapper mapper)
 		{
-			_context = context;
+			_repository = repository;
 			_mapper = mapper;
 		}
 
@@ -52,6 +52,8 @@ namespace Buddhabrot.API.Controllers
 			{
 				var plotter = new BuddhabrotPlotter(_mapper.Map<Core.Models.BuddhabrotParameters>(parameters));
 				var plot = await plotter.Plot();
+				_repository.Add(plot);
+				await _repository.SaveChangesAsync();
 
 				// TODO:: Move this into an image conversion service.
 				using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);

@@ -28,16 +28,6 @@ namespace Buddhabrot.Core.Plotting
 		protected int[,] _channels;
 
 		/// <summary>
-		/// The maximum number of iterations to perform on each pixel.
-		/// </summary>
-		protected readonly int _maxIterations;
-
-		/// <summary>
-		/// The maximum number of iterations for the intial sample set.
-		/// </summary>
-		protected readonly int _maxSampleIterations;
-
-		/// <summary>
 		/// How many random points on the complex plane are chosen to build the image.
 		/// </summary>
 		protected readonly int _sampleSize;
@@ -48,19 +38,14 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _pixelsPerChannel;
 
 		/// <summary>
-		/// Number of passes to build the image.
-		/// </summary>
-		protected readonly int _passes;
-
-		/// <summary>
-		/// Whether to render the same pixel value to each channel.
-		/// </summary>
-		protected readonly bool _greyscale;
-
-		/// <summary>
 		/// Region on the complex plane containing the Mandelbrot set.
 		/// </summary>
 		protected readonly ComplexRegion _mandelbrotSetRegion;
+
+		/// <summary>
+		/// <see cref="BuddhabrotParameters"/>.
+		/// </summary>
+		protected readonly BuddhabrotParameters _parameters;
 
 		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
@@ -68,13 +53,10 @@ namespace Buddhabrot.Core.Plotting
 		/// <param name="parameters">Parameters used to plot the image.</param>
 		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
 		{
-			_maxIterations = parameters.MaxIterations;
-			_maxSampleIterations = parameters.MaxSampleIterations;
+			_parameters = parameters;
 			_pixelsPerChannel = parameters.Width * parameters.Height;
 			_sampleSize = (int)(parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
-			_passes = parameters.Passes;
-			_greyscale = parameters.Grayscale;
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
@@ -92,11 +74,12 @@ namespace Buddhabrot.Core.Plotting
 				ImageData = _imageBuffer,
 				Width = _width,
 				Height = _height,
+				Parameters = _parameters,
 			};
 
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_sampleSize} sample points.");
-			for (int i = 0; i < _passes; i++)
+			for (int i = 0; i < _parameters.Passes; i++)
 			{
 				Log.Debug($"Pass {i + 1} started.");
 				for (int j = 0; j < RGBBytesPerPixel; ++j)
@@ -106,7 +89,7 @@ namespace Buddhabrot.Core.Plotting
 				Log.Debug($"Pass {i + 1} complete.");
 			}
 
-			if (!_greyscale)
+			if (!_parameters.Grayscale)
 			{
 				MergeFinalImage();
 			}
@@ -130,7 +113,7 @@ namespace Buddhabrot.Core.Plotting
 				Parallel.For(0, _sampleSize, _ =>
 				{
 					var point = RandomPointOnComplexPlane();
-					if (IsInMandelbrotSet(point, _maxSampleIterations, ref _))
+					if (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _))
 					{
 						return;
 					}
@@ -146,7 +129,7 @@ namespace Buddhabrot.Core.Plotting
 			Parallel.ForEach(samplePoints, p =>
 			{
 				int iterations = 0;
-				var orbits = new Complex[_maxIterations];
+				var orbits = new Complex[_parameters.MaxIterations];
 
 				PlotOrbits(p, ref iterations, ref orbits);
 
@@ -157,7 +140,7 @@ namespace Buddhabrot.Core.Plotting
 
 					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
 					// Note that overflow is possible.
-					if (!_greyscale)
+					if (!_parameters.Grayscale)
 					{
 						var index = pixelY * _width + pixelX;
 						Interlocked.Increment(ref _channels[channel, index]);
@@ -198,7 +181,7 @@ namespace Buddhabrot.Core.Plotting
 		protected void PlotOrbits(Complex c, ref int iterations, ref Complex[] orbits)
 		{
 			var z = new Complex(0, 0);
-			for (int i = 0; i < _maxIterations; ++i)
+			for (int i = 0; i < _parameters.MaxIterations; ++i)
 			{
 				if (z.Magnitude > Bailout)
 				{
