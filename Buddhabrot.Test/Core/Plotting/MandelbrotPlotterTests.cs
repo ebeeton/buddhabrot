@@ -2,6 +2,7 @@
 using Buddhabrot.Core.Plotting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Threading.Tasks;
 
 namespace Buddhabrot.Test.Core.Plotting
@@ -21,7 +22,8 @@ namespace Buddhabrot.Test.Core.Plotting
 			};
 			var plotter = new MandelbrotPlotter(parameters);
 
-			var image = Image.Load(await plotter.PlotPng());
+			var plot = await plotter.Plot();
+			using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
 
 			Assert.AreEqual(Height, image.Height);
 			Assert.AreEqual(Width, image.Width);

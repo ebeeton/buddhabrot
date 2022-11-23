@@ -3,6 +3,8 @@ using Buddhabrot.API.DTO;
 using Buddhabrot.Core.Plotting;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Buddhabrot.API.Controllers
 {
@@ -38,9 +40,14 @@ namespace Buddhabrot.API.Controllers
 			{
 				var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 				var plotter = new MandelbrotPlotter(_mapper.Map<Core.Models.MandelbrotParameters>(parameters));
-				var image = await plotter.PlotPng();
+				var plot = await plotter.Plot();
+				using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
+				var output = new MemoryStream();
+				await image.SaveAsPngAsync(output);
+				output.Seek(0, SeekOrigin.Begin);
+
 				Log.Information($"Plotted image in {stopwatch.ElapsedMilliseconds} ms.");
-				return File(image, Constants.PngContentType);
+				return File(output, Constants.PngContentType);
 			}
 			catch (Exception ex)
 			{

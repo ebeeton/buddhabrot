@@ -14,7 +14,7 @@ namespace Buddhabrot.Test.Core.Plotting
 
             }
 
-            protected override Task Plot()
+            public override Task Plot()
             {
                 throw new System.NotImplementedException();
             }

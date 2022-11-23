@@ -1,12 +1,11 @@
-﻿using Buddhabrot.Core.Models;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Buddhabrot.Models
+namespace Buddhabrot.Core.Models
 {
 	/// <summary>
-	/// A Buddhabrot plot.
+	/// A Mandelbrot plot.
 	/// </summary>
-	public class BuddhabrotPlot
+	public class MandelbrotPlot
 	{
 		/// <summary>
 		/// Primary key.
@@ -17,7 +16,7 @@ namespace Buddhabrot.Models
 		/// <summary>
 		/// The parameters used to generate the plot.
 		/// </summary>
-		public BuddhabrotParameters? Parameters { get; set; }
+		public MandelbrotParameters? Parameters { get; set; }
 
 		/// <summary>
 		/// Image width.

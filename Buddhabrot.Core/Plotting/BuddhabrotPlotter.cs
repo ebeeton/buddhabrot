@@ -1,5 +1,6 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
+using Buddhabrot.Models;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;
@@ -82,8 +83,17 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected override async Task Plot()
+		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
+		public override async Task<BuddhabrotPlot> Plot()
 		{
+			var plot = new BuddhabrotPlot
+			{
+				PlotBeginUTC = DateTime.UtcNow,
+				ImageData = _imageBuffer,
+				Width = _width,
+				Height = _height,
+			};
+
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_sampleSize} sample points.");
 			for (int i = 0; i < _passes; i++)
@@ -100,6 +110,9 @@ namespace Buddhabrot.Core.Plotting
 			{
 				MergeFinalImage();
 			}
+
+			plot.PlotEndUTC = DateTime.UtcNow;
+			return plot;
 		}
 
 		/// <summary>

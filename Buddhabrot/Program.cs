@@ -1,4 +1,5 @@
 using Buddhabrot.Persistence.Contexts;
+using Buddhabrot.Persistence.Interfaces;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -44,11 +45,14 @@ try
 	{
 		// Get the SQL credentials from user secrets. See:
 		// https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows
-		var connStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
-		connStrBuilder.UserID = builder.Configuration["DbUser"];
-		connStrBuilder.Password = builder.Configuration["DbPassword"];
+		var connStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"))
+		{
+			UserID = builder.Configuration["DbUser"],
+			Password = builder.Configuration["DbPassword"]
+		};
 		options.UseSqlServer(connStrBuilder.ConnectionString);
-	}).AddDatabaseDeveloperPageExceptionFilter();
+	}).AddDatabaseDeveloperPageExceptionFilter()
+	.AddScoped<IBuddhabrotContext, BuddhabrotContext>();
 
 	var app = builder.Build();
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();

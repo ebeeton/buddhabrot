@@ -69,25 +69,10 @@ namespace Buddhabrot.Core.Plotting
 		}
 
 		/// <summary>
-		/// Plot the Mandelbrot set to a PNG image.
-		/// </summary>
-		/// <returns>A task representing the work to render the image.</returns>
-		public async Task<MemoryStream> PlotPng()
-		{
-			await Plot();
-
-			using var image = Image.LoadPixelData<Rgb24>(_imageBuffer, _width, _height);
-			var output = new MemoryStream();
-			await image.SaveAsPngAsync(output);
-			output.Seek(0, SeekOrigin.Begin);
-
-			return output;
-		}
-
-		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected abstract Task Plot();
+		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
+		public abstract Task Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

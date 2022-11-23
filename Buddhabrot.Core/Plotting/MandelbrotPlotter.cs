@@ -28,8 +28,17 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		protected override async Task Plot()
+		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
+		public override async Task<MandelbrotPlot> Plot()
 		{
+			var plot = new MandelbrotPlot
+			{
+				PlotBeginUTC = DateTime.UtcNow,
+				ImageData = _imageBuffer,
+				Width = _width,
+				Height = _height,
+			};
+
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
 			var aspectRatio = (double)_height / _width;
@@ -65,6 +74,8 @@ namespace Buddhabrot.Core.Plotting
 			});
 
 			await task.WaitAsync(_plotTimeOut);
+			plot.PlotEndUTC = DateTime.UtcNow;
+			return plot;
 		}
 	}
 }
