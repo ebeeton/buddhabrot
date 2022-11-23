@@ -1,3 +1,6 @@
+using Buddhabrot.Persistence.Contexts;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
@@ -37,6 +40,15 @@ try
 	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
 													   .ReadFrom.Configuration(context.Configuration));
 	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.ParameterProfile));
+	builder.Services.AddDbContext<BuddhabrotContext>(options =>
+	{
+		// Get the SQL credentials from user secrets. See:
+		// https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows
+		var connStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+		connStrBuilder.UserID = builder.Configuration["DbUser"];
+		connStrBuilder.Password = builder.Configuration["DbPassword"];
+		options.UseSqlServer(connStrBuilder.ConnectionString);
+	}).AddDatabaseDeveloperPageExceptionFilter();
 
 	var app = builder.Build();
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();
