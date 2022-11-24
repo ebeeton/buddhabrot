@@ -48,7 +48,6 @@ try
 		// https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets?view=aspnetcore-7.0&tabs=windows
 		var connStrBuilder = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"))
 		{
-			UserID = builder.Configuration["DbUser"],
 			Password = builder.Configuration["DbPassword"]
 		};
 		options.UseSqlServer(connStrBuilder.ConnectionString);
