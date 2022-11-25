@@ -1,6 +1,5 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
-using Buddhabrot.Models;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;

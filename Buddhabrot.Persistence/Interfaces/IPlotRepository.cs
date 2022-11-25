@@ -1,5 +1,4 @@
 ﻿using Buddhabrot.Core.Models;
-using Buddhabrot.Models;
 
 namespace Buddhabrot.Persistence.Interfaces
 {
@@ -21,7 +20,7 @@ namespace Buddhabrot.Persistence.Interfaces
 		public void Add(MandelbrotPlot plot);
 
 		/// <summary>
-		/// Saves all changes made in this context to the database.
+		/// Saves all changes made in this context.
 		/// </summary>
 		/// <returns>A task that represents the asynchronous save operation.
 		/// The task result contains the number of state entries written to the database.

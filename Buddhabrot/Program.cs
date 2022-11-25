@@ -58,9 +58,11 @@ try
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();
 	mapper?.ConfigurationProvider.AssertConfigurationIsValid();
 
+	// TODO:: Replace this with migrations.
 	using var scope = app.Services.CreateScope();
 	{
 		var context = scope.ServiceProvider.GetRequiredService<BuddhabrotContext>();
+		context.Database.EnsureDeleted();
 		context.Database.EnsureCreated();
 	}	
 

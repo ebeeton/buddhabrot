@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Buddhabrot.Core.Models
+﻿namespace Buddhabrot.Core.Models
 {
 	/// <summary>
 	/// A Mandelbrot plot.
@@ -10,7 +8,6 @@ namespace Buddhabrot.Core.Models
 		/// <summary>
 		/// Primary key.
 		/// </summary>
-		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public int Id { get; set; }
 
 		/// <summary>

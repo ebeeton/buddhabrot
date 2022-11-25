@@ -1,5 +1,4 @@
 ﻿using Buddhabrot.Core.Models;
-using Buddhabrot.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Buddhabrot.Persistence.Contexts
@@ -47,6 +46,18 @@ namespace Buddhabrot.Persistence.Contexts
 
 			modelBuilder.Entity<MandelbrotPlot>().OwnsOne(
 	            plot => plot.Parameters, builder => builder.ToJson());
+
+            modelBuilder.Entity<BuddhabrotRequest>().OwnsOne(
+                plot => plot.Parameters, builder => builder.ToJson())
+                .ToTable("BuddhabrotQueue")
+                .HasKey(q => q.Id)
+                .IsClustered();
+
+			modelBuilder.Entity<MandelbrotRequest>().OwnsOne(
+                plot => plot.Parameters, builder => builder.ToJson())
+				.ToTable("MandelbrotQueue")
+				.HasKey(q => q.Id)
+				.IsClustered();
 
 			base.OnModelCreating(modelBuilder);
 		}
