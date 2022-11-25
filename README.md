@@ -25,10 +25,10 @@ MSSQL_SA_PWD=MySecretPassword
 ### Buddhabrot API
 
 The API project's connection string is configured to connect to the SQL Server
-container, but doesn't include a password. You can add your password to the
+container, but doesn't include the password. You can add your password to the
 `DefaultConnection` string in appsettings.json, or set a user secret called
 `DbPassword` that will be read at startup.
 
 ```shell
-dotnet user-secrets set "DbPassword" "pass123"
+dotnet user-secrets set "DbPassword" "MySecretPassword"
 ```
