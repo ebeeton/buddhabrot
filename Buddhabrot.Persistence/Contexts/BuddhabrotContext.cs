@@ -1,5 +1,6 @@
 ﻿using Buddhabrot.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Buddhabrot.Persistence.Contexts
 {
@@ -47,6 +48,10 @@ namespace Buddhabrot.Persistence.Contexts
 				.ToTable("MandelbrotQueue")
 				.HasKey(q => q.Id)
 				.IsClustered();
+
+            modelBuilder.Entity<Plot>()
+                .Property(p => p.Type)
+                .HasConversion(new EnumToStringConverter<Plot.PlotType>());
 
 			base.OnModelCreating(modelBuilder);
 		}
