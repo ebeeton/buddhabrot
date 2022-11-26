@@ -18,14 +18,9 @@ namespace Buddhabrot.Persistence.Contexts
         }
 
         /// <summary>
-        /// Buddhabrot plots.
+        /// Buddhabrot and Mandelbrot plots.
         /// </summary>
-        public DbSet<BuddhabrotPlot> BuddhabrotPlots { get; set; }
-
-        /// <summary>
-        /// Mandelbrot plots.
-        /// </summary>
-        public DbSet<MandelbrotPlot> MandelbrotPlots { get; set; }
+        public DbSet<Plot> Plots { get; set; }
 
 		/// <summary>
 		/// Saves all changes made in this context to the database.
@@ -41,12 +36,6 @@ namespace Buddhabrot.Persistence.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<BuddhabrotPlot>().OwnsOne(
-				plot => plot.Parameters, builder => builder.ToJson());
-
-			modelBuilder.Entity<MandelbrotPlot>().OwnsOne(
-	            plot => plot.Parameters, builder => builder.ToJson());
-
             modelBuilder.Entity<BuddhabrotRequest>().OwnsOne(
                 plot => plot.Parameters, builder => builder.ToJson())
                 .ToTable("BuddhabrotQueue")

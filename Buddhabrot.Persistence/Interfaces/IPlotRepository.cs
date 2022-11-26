@@ -8,16 +8,10 @@ namespace Buddhabrot.Persistence.Interfaces
 	public interface IPlotRepository
 	{
 		/// <summary>
-		/// Add a <see cref="BuddhabrotPlot"/> to the repository.
+		/// Add a <see cref="Plot"/> to the repository.
 		/// </summary>
-		/// <param name="plot"><see cref="BuddhabrotPlot"/></param>
-		public void Add(BuddhabrotPlot plot);
-
-		/// <summary>
-		/// Add a <see cref="MandelbrotPlot"/> to the repository.
-		/// </summary>
-		/// <param name="plot"><see cref="MandelbrotPlot"/></param>
-		public void Add(MandelbrotPlot plot);
+		/// <param name="plot"><see cref="Plot"/></param>
+		public void Add(Plot plot);
 
 		/// <summary>
 		/// Saves all changes made in this context.

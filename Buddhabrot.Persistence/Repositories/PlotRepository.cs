@@ -21,21 +21,12 @@ namespace Buddhabrot.Persistence.Repositories
 		public PlotRepository(BuddhabrotContext context) => _context = context;
 
 		/// <summary>
-		/// Add a <see cref="BuddhabrotPlot"/> to the repository.
+		/// Add a <see cref="Plot"/> to the repository.
 		/// </summary>
-		/// <param name="plot"><see cref="BuddhabrotPlot"/></param>
-		public void Add(BuddhabrotPlot plot)
+		/// <param name="plot"><see cref="Plot"/></param>
+		public void Add(Plot plot)
 		{
-			_context.BuddhabrotPlots.Add(plot);
-		}
-
-		/// <summary>
-		/// Add a <see cref="MandelbrotPlot"/> to the repository.
-		/// </summary>
-		/// <param name="plot"><see cref="MandelbrotPlot"/></param>
-		public void Add(MandelbrotPlot plot)
-		{
-			_context.MandelbrotPlots.Add(plot);
+			_context.Plots.Add(plot);
 		}
 
 		/// <summary>

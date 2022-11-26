@@ -1,19 +1,39 @@
 ﻿namespace Buddhabrot.Core.Models
 {
 	/// <summary>
-	/// A Mandelbrot plot.
+	/// A Buddhabrot or Mandelbrot plot.
 	/// </summary>
-	public class MandelbrotPlot
+	public class Plot
 	{
+		/// <summary>
+		/// Supported plot types.
+		/// </summary>
+		public enum PlotType
+		{
+			/// <summary>
+			/// Mandelbrot plot.
+			/// </summary>
+			Mandelbrot,
+			/// <summary>
+			/// Buddhabrot plot.
+			/// </summary>
+			Buddhabrot
+		}
+
 		/// <summary>
 		/// Primary key.
 		/// </summary>
 		public int Id { get; set; }
 
 		/// <summary>
-		/// The parameters used to generate the plot.
+		/// Type of plot.
 		/// </summary>
-		public MandelbrotParameters? Parameters { get; set; }
+		public PlotType Type { get; set; }
+
+		/// <summary>
+		/// The parameters used to generate the plot, in JSON.
+		/// </summary>
+		public string? ParametersJson { get; set; }
 
 		/// <summary>
 		/// Image width.

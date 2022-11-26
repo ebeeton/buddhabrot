@@ -1,4 +1,5 @@
-﻿using Buddhabrot.Core.Plotting;
+﻿using Buddhabrot.Core.Models;
+using Buddhabrot.Core.Plotting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace Buddhabrot.Test.Core.Plotting
 
             }
 
-            public override Task Plot()
+            public override Task<Plot> Plot()
             {
                 throw new System.NotImplementedException();
             }

@@ -1,6 +1,5 @@
-﻿using Serilog;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+﻿using Buddhabrot.Core.Models;
+using Serilog;
 using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
@@ -72,7 +71,7 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot the image.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public abstract Task Plot();
+		public abstract Task<Plot> Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

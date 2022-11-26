@@ -1,5 +1,6 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
+using Newtonsoft.Json;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;
@@ -65,15 +66,15 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot the image.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public override async Task<BuddhabrotPlot> Plot()
+		public override async Task<Plot> Plot()
 		{
-			var plot = new BuddhabrotPlot
+			var plot = new Plot
 			{
 				PlotBeginUTC = DateTime.UtcNow,
 				ImageData = _imageBuffer,
 				Width = _width,
 				Height = _height,
-				Parameters = _parameters,
+				ParametersJson = JsonConvert.SerializeObject(_parameters),
 			};
 
 			// Plot each channel.
