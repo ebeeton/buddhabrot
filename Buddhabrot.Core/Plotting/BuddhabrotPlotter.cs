@@ -74,8 +74,8 @@ namespace Buddhabrot.Core.Plotting
 				ImageData = _imageBuffer,
 				Width = _width,
 				Height = _height,
-				ParametersJson = JsonConvert.SerializeObject(_parameters),
-				Type = Models.Plot.PlotType.Buddhabrot
+				PlotParams = JsonConvert.SerializeObject(_parameters),
+				Type = PlotType.Buddhabrot
 			};
 
 			// Plot each channel.

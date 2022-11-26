@@ -6,21 +6,6 @@
 	public class Plot
 	{
 		/// <summary>
-		/// Supported plot types.
-		/// </summary>
-		public enum PlotType
-		{
-			/// <summary>
-			/// Mandelbrot plot.
-			/// </summary>
-			Mandelbrot,
-			/// <summary>
-			/// Buddhabrot plot.
-			/// </summary>
-			Buddhabrot
-		}
-
-		/// <summary>
 		/// Primary key.
 		/// </summary>
 		public int Id { get; set; }
@@ -33,7 +18,7 @@
 		/// <summary>
 		/// The parameters used to generate the plot, in JSON.
 		/// </summary>
-		public string? ParametersJson { get; set; }
+		public string? PlotParams { get; set; }
 
 		/// <summary>
 		/// Image width.

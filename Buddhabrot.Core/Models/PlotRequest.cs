@@ -1,9 +1,9 @@
 ﻿namespace Buddhabrot.Core.Models
 {
 	/// <summary>
-	/// A request to plot a Buddhabrot image.
+	/// A request to plot an image.
 	/// </summary>
-	public class BuddhabrotRequest
+	public class PlotRequest
 	{
 		/// <summary>
 		/// Primary key.
@@ -11,13 +11,18 @@
 		public int Id { get; set; }
 
 		/// <summary>
-		/// When the 
+		/// Type of plot.
+		/// </summary>
+		public PlotType Type { get; set; }
+
+		/// <summary>
+		/// When the plot was queued.
 		/// </summary>
 		public DateTime QueuedUTC { get; set; } = DateTime.UtcNow;
 
 		/// <summary>
-		/// Parameters to generate the plot.
+		/// The parameters used to generate the plot, in JSON.
 		/// </summary>
-		public BuddhabrotParameters? Parameters { get; set; }
+		public string? PlotParams { get; set; }
 	}
 }

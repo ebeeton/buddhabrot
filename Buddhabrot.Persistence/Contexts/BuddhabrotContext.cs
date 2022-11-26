@@ -37,21 +37,18 @@ namespace Buddhabrot.Persistence.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-            modelBuilder.Entity<BuddhabrotRequest>().OwnsOne(
-                plot => plot.Parameters, builder => builder.ToJson())
-                .ToTable("BuddhabrotQueue")
+            modelBuilder.Entity<PlotRequest>()
+                .ToTable("PlotQueue")
                 .HasKey(q => q.Id)
                 .IsClustered();
 
-			modelBuilder.Entity<MandelbrotRequest>().OwnsOne(
-                plot => plot.Parameters, builder => builder.ToJson())
-				.ToTable("MandelbrotQueue")
-				.HasKey(q => q.Id)
-				.IsClustered();
-
             modelBuilder.Entity<Plot>()
                 .Property(p => p.Type)
-                .HasConversion(new EnumToStringConverter<Plot.PlotType>());
+                .HasConversion(new EnumToStringConverter<PlotType>());
+
+            modelBuilder.Entity<PlotRequest>()
+                .Property(p => p.Type)
+				.HasConversion(new EnumToStringConverter<PlotType>());
 
 			base.OnModelCreating(modelBuilder);
 		}
