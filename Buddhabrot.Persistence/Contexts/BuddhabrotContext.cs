@@ -37,18 +37,20 @@ namespace Buddhabrot.Persistence.Contexts
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-            modelBuilder.Entity<PlotRequest>()
-                .ToTable("PlotQueue")
-                .HasKey(q => q.Id)
-                .IsClustered();
+			modelBuilder.Entity<PlotRequest>()
+				.ToTable("PlotQueue")
+				.HasKey(q => q.Id)
+				.IsClustered();
 
-            modelBuilder.Entity<Plot>()
+			modelBuilder.Entity<Plot>()
                 .Property(p => p.Type)
-                .HasConversion(new EnumToStringConverter<PlotType>());
+                .HasConversion(new EnumToStringConverter<PlotType>())
+                .HasMaxLength(10);
 
             modelBuilder.Entity<PlotRequest>()
                 .Property(p => p.Type)
-				.HasConversion(new EnumToStringConverter<PlotType>());
+                .HasConversion(new EnumToStringConverter<PlotType>())
+                .HasMaxLength(10);
 
 			base.OnModelCreating(modelBuilder);
 		}
