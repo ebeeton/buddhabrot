@@ -20,5 +20,12 @@ namespace Buddhabrot.Persistence.Interfaces
 		/// The task result contains the number of state entries written to the database.
 		/// </returns>
 		public Task<int> SaveChangesAsync();
+
+		/// <summary>
+		/// Enqueue a <see cref="PlotRequest"/>.
+		/// </summary>
+		/// <param name="plotRequest"><see cref="PlotRequest"/>.</param>
+		/// <returns>A task representing the work to enqueue the <see cref="PlotRequest"/>.</returns>
+		public Task EnqueuePlotRequest(PlotRequest plotRequest);
 	}
 }

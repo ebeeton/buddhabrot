@@ -39,5 +39,15 @@ namespace Buddhabrot.Persistence.Repositories
 		{
 			return await _context.SaveChangesAsync();
 		}
+
+		/// <summary>
+		/// Enqueue a <see cref="PlotRequest"/>.
+		/// </summary>
+		/// <param name="plotRequest"><see cref="PlotRequest"/>.</param>
+		/// <returns>A task representing the work to enqueue the <see cref="PlotRequest"/>.</returns>
+		public async Task EnqueuePlotRequest(PlotRequest plotRequest)
+		{
+			await _context.EnqueuePlotRequest(plotRequest);
+		}
 	}
 }

@@ -3,6 +3,7 @@ using Buddhabrot.API.DTO;
 using Buddhabrot.Core.Plotting;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -49,6 +50,12 @@ namespace Buddhabrot.API.Controllers
 		{
 			try
 			{
+				await _repository.EnqueuePlotRequest(new Core.Models.PlotRequest
+				{
+					PlotParams = JsonConvert.SerializeObject(parameters),
+					Type = Core.Models.PlotType.Mandelbrot
+				});
+
 				var plotter = new MandelbrotPlotter(_mapper.Map<Core.Models.MandelbrotParameters>(parameters));
 				var plot = await plotter.Plot();
 				_repository.Add(plot);

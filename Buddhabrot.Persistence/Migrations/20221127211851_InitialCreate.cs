@@ -64,12 +64,12 @@ namespace Buddhabrot.Persistence.Migrations
 	                                SET NOCOUNT ON;
 	                                WITH cte AS
 	                                (
-		                                SELECT TOP 1 [Type], PlotParams
+		                                SELECT TOP 1 Id, [Type], QueuedUTC, PlotParams
 		                                FROM PlotQueue WITH (ROWLOCK, READPAST)
 		                                ORDER BY Id
 	                                )
 	                                DELETE FROM cte
-	                                OUTPUT deleted.[Type], deleted.PlotParams
+	                                OUTPUT deleted.Id, deleted.[Type], deleted.QueuedUTC, deleted.PlotParams
                                 GO
 
                                 ALTER TABLE [PlotQueue]
