@@ -17,7 +17,6 @@ namespace Buddhabrot.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     QueuedUTC = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PlotParams = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -51,12 +50,11 @@ namespace Buddhabrot.Persistence.Migrations
 			// Hat tip to http://rusanu.com/2010/03/26/using-tables-as-queues/ for the
 			// queue idea.
 			migrationBuilder.Sql(@"CREATE PROCEDURE uspEnqueuePlot
-	                                @Type nvarchar(10),
 	                                @PlotParams nvarchar(max)
                                 AS
 	                                SET NOCOUNT ON;
-	                                INSERT INTO PlotQueue ([Type], QueuedUTC, PlotParams)
-	                                VALUES (@Type, GETUTCDATE(), @PlotParams);
+	                                INSERT INTO PlotQueue (QueuedUTC, PlotParams)
+	                                VALUES (GETUTCDATE(), @PlotParams);
                                 GO
 
                                 CREATE PROCEDURE uspDequeuePlot
@@ -64,17 +62,12 @@ namespace Buddhabrot.Persistence.Migrations
 	                                SET NOCOUNT ON;
 	                                WITH cte AS
 	                                (
-		                                SELECT TOP 1 Id, [Type], QueuedUTC, PlotParams
+		                                SELECT TOP 1 PlotParams
 		                                FROM PlotQueue WITH (ROWLOCK, READPAST)
 		                                ORDER BY Id
 	                                )
 	                                DELETE FROM cte
-	                                OUTPUT deleted.Id, deleted.[Type], deleted.QueuedUTC, deleted.PlotParams
-                                GO
-
-                                ALTER TABLE [PlotQueue]
-                                    ADD CONSTRAINT [CHK_PlotQueue_Type]
-                                    CHECK ([TYPE] IN ('Mandelbrot', 'Buddhabrot'));
+	                                OUTPUT deleted.PlotParams
                                 GO
 
                                 ALTER TABLE [Plots]

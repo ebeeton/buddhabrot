@@ -1,3 +1,4 @@
+using Buddhabrot.API.Services;
 using Buddhabrot.Persistence.Contexts;
 using Buddhabrot.Persistence.Interfaces;
 using Buddhabrot.Persistence.Repositories;
@@ -53,6 +54,7 @@ try
 		options.UseSqlServer(connStrBuilder.ConnectionString);
 	}).AddDatabaseDeveloperPageExceptionFilter()
 	.AddScoped<IPlotRepository, PlotRepository>();
+	builder.Services.AddHostedService<PlotterService>();
 
 	var app = builder.Build();
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();

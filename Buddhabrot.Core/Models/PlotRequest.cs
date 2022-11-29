@@ -11,11 +11,6 @@
 		public int Id { get; set; }
 
 		/// <summary>
-		/// Type of plot.
-		/// </summary>
-		public PlotType Type { get; set; }
-
-		/// <summary>
 		/// When the plot was queued.
 		/// </summary>
 		public DateTime QueuedUTC { get; set; } = DateTime.UtcNow;

@@ -1,4 +1,5 @@
-﻿using Buddhabrot.Core.Models;
+﻿using Buddhabrot.Core.Interfaces;
+using Buddhabrot.Core.Models;
 
 namespace Buddhabrot.Persistence.Interfaces
 {
@@ -22,10 +23,16 @@ namespace Buddhabrot.Persistence.Interfaces
 		public Task<int> SaveChangesAsync();
 
 		/// <summary>
-		/// Enqueue a <see cref="PlotRequest"/>.
+		/// Enqueue a <see cref="IPlotParameters"/>.
 		/// </summary>
-		/// <param name="plotRequest"><see cref="PlotRequest"/>.</param>
-		/// <returns>A task representing the work to enqueue the <see cref="PlotRequest"/>.</returns>
-		public Task EnqueuePlotRequest(PlotRequest plotRequest);
+		/// <param name="plotParameters"><see cref="IPlotParameters"/>.</param>
+		/// <returns>A task representing the work to enqueue the <see cref="IPlotParameters"/>.</returns>
+		public Task EnqueuePlotRequest(IPlotParameters plotParameters);
+
+		/// <summary>
+		/// Dequeues the next pending <see cref="IPlotParameters"/>.
+		/// </summary>
+		/// <returns>A task representing the work to dequeue the <see cref="IPlotParameters"/>.</returns>
+		public IPlotParameters? DequeuePlotRequest();
 	}
 }

@@ -1,9 +1,11 @@
-﻿namespace Buddhabrot.Core.Models
+﻿using Buddhabrot.Core.Interfaces;
+
+namespace Buddhabrot.Core.Models
 {
 	/// <summary>
 	/// Parameters with which to plot a Mandelbrot image.
 	/// </summary>
-	public class MandelbrotParameters
+	public class MandelbrotParameters : IPlotParameters
 	{
 		/// <summary>
 		/// Image width.
@@ -14,6 +16,11 @@
 		/// Image height.
 		/// </summary>
 		public int Height { get; set; }
+
+		/// <summary>
+		/// Type of plot.
+		/// </summary>
+		public PlotType Type { get => PlotType.Mandelbrot; set { } }
 
 		/// <summary>
 		/// Maximum number of iterations for each pixel.

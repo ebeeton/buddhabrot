@@ -50,13 +50,10 @@ namespace Buddhabrot.API.Controllers
 		{
 			try
 			{
-				await _repository.EnqueuePlotRequest(new Core.Models.PlotRequest
-				{
-					PlotParams = JsonConvert.SerializeObject(parameters),
-					Type = Core.Models.PlotType.Mandelbrot
-				});
+				var plotParameters = _mapper.Map<Core.Models.MandelbrotParameters>(parameters);
+				await _repository.EnqueuePlotRequest(plotParameters);
 
-				var plotter = new MandelbrotPlotter(_mapper.Map<Core.Models.MandelbrotParameters>(parameters));
+				var plotter = new MandelbrotPlotter(plotParameters);
 				var plot = await plotter.Plot();
 				_repository.Add(plot);
 				await _repository.SaveChangesAsync();
