@@ -1,4 +1,6 @@
 ﻿using Buddhabrot.Core.Interfaces;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Buddhabrot.Core.Models
 {
@@ -20,6 +22,7 @@ namespace Buddhabrot.Core.Models
 		/// <summary>
 		/// Type of plot.
 		/// </summary>
+		[JsonConverter(typeof(StringEnumConverter))]
 		public PlotType Type { get => PlotType.Mandelbrot; set { } }
 
 		/// <summary>
