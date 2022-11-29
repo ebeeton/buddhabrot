@@ -32,7 +32,6 @@ namespace Buddhabrot.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     PlotParams = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Width = table.Column<int>(type: "int", nullable: false),
                     Height = table.Column<int>(type: "int", nullable: false),
@@ -46,9 +45,9 @@ namespace Buddhabrot.Persistence.Migrations
                     table.PrimaryKey("PK_Plots", x => x.Id);
                 });
 
-			// Create enqueue and dequeue procs, and add check constraints for PlotType.
-			// Hat tip to http://rusanu.com/2010/03/26/using-tables-as-queues/ for the
-			// queue idea.
+			// Create enqueue and dequeue procs. Hat tip to
+            // http://rusanu.com/2010/03/26/using-tables-as-queues/
+            // for the // queue idea.
 			migrationBuilder.Sql(@"CREATE PROCEDURE uspEnqueuePlot
 	                                @PlotParams nvarchar(max)
                                 AS
@@ -68,11 +67,7 @@ namespace Buddhabrot.Persistence.Migrations
 	                                )
 	                                DELETE FROM cte
 	                                OUTPUT deleted.PlotParams
-                                GO
-
-                                ALTER TABLE [Plots]
-                                    ADD CONSTRAINT [CHK_Plots_Type]
-                                    CHECK ([TYPE] IN ('Mandelbrot', 'Buddhabrot'));");
+                                GO");
 		}
 
         /// <inheritdoc />

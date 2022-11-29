@@ -39,7 +39,6 @@ namespace Buddhabrot.Core.Plotting
 				Width = _width,
 				Height = _height,
 				PlotParams = JsonConvert.SerializeObject(_parameters),
-				Type = PlotType.Mandelbrot
 			};
 
 			// Scale the vertical range so that the image doesn't squash or strech when

@@ -65,11 +65,6 @@ namespace Buddhabrot.Persistence.Contexts
 				.HasKey(q => q.Id)
 				.IsClustered();
 
-			modelBuilder.Entity<Plot>()
-                .Property(p => p.Type)
-                .HasConversion(new EnumToStringConverter<PlotType>())
-                .HasMaxLength(10);
-
 			base.OnModelCreating(modelBuilder);
 		}
 	}
