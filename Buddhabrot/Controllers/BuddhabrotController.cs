@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Buddhabrot.API.DTO;
+using Buddhabrot.API.Services;
 using Buddhabrot.Core.Plotting;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -57,13 +58,7 @@ namespace Buddhabrot.API.Controllers
 				_repository.Add(plot);
 				await _repository.SaveChangesAsync();
 
-				// TODO:: Move this into an image conversion service.
-				using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
-				var output = new MemoryStream();
-				await image.SaveAsPngAsync(output);
-				output.Seek(0, SeekOrigin.Begin);
-
-				return File(output, Constants.PngContentType);
+				return File(await ImageService.ToPng(plot), ImageService.PngContentType);
 			}
 			catch (Exception ex)
 			{

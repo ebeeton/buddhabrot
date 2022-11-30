@@ -1,5 +1,4 @@
 ﻿using Buddhabrot.Persistence.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 
 namespace Buddhabrot.API.Services
