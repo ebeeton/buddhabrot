@@ -2,7 +2,6 @@
 using Buddhabrot.Core.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 
 namespace Buddhabrot.Persistence.Contexts
