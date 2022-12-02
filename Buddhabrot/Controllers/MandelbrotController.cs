@@ -5,8 +5,6 @@ using Buddhabrot.Core.Plotting;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Buddhabrot.API.Controllers
 {
