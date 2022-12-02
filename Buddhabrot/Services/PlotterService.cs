@@ -26,17 +26,24 @@ namespace Buddhabrot.API.Services
 		{
 			while (!stoppingToken.IsCancellationRequested)
 			{
-				using var scope = _serviceScopeFactory.CreateScope();
-				var repository = scope.ServiceProvider.GetService<IPlotRepository>() ?? throw new NullReferenceException($"Failed to obtain {nameof(IPlotRepository)}");
-				var task = Task.Run(() => repository.DequeuePlot());
-				var plot = await task.WaitAsync(stoppingToken);
-				if (plot == null)
+				try
 				{
-					Thread.Sleep(IdleMS);
-					continue;
-				}
+					using var scope = _serviceScopeFactory.CreateScope();
+					var repository = scope.ServiceProvider.GetService<IPlotRepository>() ?? throw new NullReferenceException($"Failed to obtain {nameof(IPlotRepository)}");
+					var task = Task.Run(() => repository.DequeuePlot());
+					var plot = await task.WaitAsync(stoppingToken);
+					if (plot == null)
+					{
+						Thread.Sleep(IdleMS);
+						continue;
+					}
 
-				Log.Information("Dequeued plot: {@request}", plot);
+					Log.Information("Dequeued plot: {@request}", plot);
+				}
+				catch (Exception ex)
+				{
+					Log.Error(ex, $"{nameof(PlotterService)} failed.");
+				}
 			}
 		}
 	}

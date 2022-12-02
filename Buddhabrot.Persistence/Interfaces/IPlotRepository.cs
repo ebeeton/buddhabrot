@@ -1,5 +1,4 @@
-﻿using Buddhabrot.Core.Interfaces;
-using Buddhabrot.Core.Models;
+﻿using Buddhabrot.Core.Models;
 
 namespace Buddhabrot.Persistence.Interfaces
 {
