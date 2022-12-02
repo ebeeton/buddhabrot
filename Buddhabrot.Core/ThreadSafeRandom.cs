@@ -1,6 +1,4 @@
-﻿using Serilog;
-
-namespace Buddhabrot.Core
+﻿namespace Buddhabrot.Core
 {
 	/// <summary>
 	/// Thread-safe pseudo-random number generator.
