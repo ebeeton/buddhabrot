@@ -1,6 +1,4 @@
 ﻿using Buddhabrot.Core.Interfaces;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Buddhabrot.Core.Models
 {
@@ -18,12 +16,6 @@ namespace Buddhabrot.Core.Models
 		/// Image height.
 		/// </summary>
 		public int Height { get; set; }
-
-		/// <summary>
-		/// Type of plot.
-		/// </summary>
-		[JsonConverter(typeof(StringEnumConverter))]
-		public PlotType Type { get => PlotType.Buddhabrot; set { } }
 
 		/// <summary>
 		/// Maximum number of iterations for each pixel.
