@@ -85,8 +85,7 @@ try
 												ORDER BY PlotId
 											)
 											DELETE FROM cte
-											OUTPUT deleted.PlotId
-										GO");
+											OUTPUT deleted.PlotId");
 	}
 
 	// Configure the HTTP request pipeline.

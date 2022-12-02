@@ -63,7 +63,7 @@ namespace Buddhabrot.Persistence.Repositories
 			var id = _context.DequeuePlotId();
 			if (id == null)
 			{
-				Log.Debug("Queue is empty.");
+				// The queue is empty. This is not an error condition.
 				return null;
 			}
 
