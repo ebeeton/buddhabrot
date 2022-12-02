@@ -4,6 +4,7 @@ using Buddhabrot.Persistence.Contexts;
 using Buddhabrot.Persistence.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace Buddhabrot.Persistence.Repositories
 {
@@ -44,42 +45,30 @@ namespace Buddhabrot.Persistence.Repositories
 		}
 
 		/// <summary>
-		/// Enqueue a <see cref="IPlotParameters"/>.
+		/// Enqueue a <see cref="Plot"/> ID for future processing.
 		/// </summary>
-		/// <param name="plotParameters"><see cref="IPlotParameters"/>.</param>
-		/// <returns>A task representing the work to enqueue the <see cref="IPlotParameters"/>.</returns>
-		public async Task EnqueuePlotRequest(IPlotParameters plotParameters)
+		/// <param name="plotId"><see cref="Plot"/> ID</param>
+		/// <returns>A task representing the work to enqueue the <see cref="Plot"/> ID.</returns>
+		public async Task EnqueuePlot(int plotId)
 		{
-			await _context.EnqueuePlotRequest(plotParameters);
+			await _context.EnqueuePlot(plotId);
 		}
 
 		/// <summary>
-		/// Dequeues the next pending plot parameters.
+		/// Dequeues the next pending plot <see cref="Plot"/>.
 		/// </summary>
-		/// <returns>A task representing the work to dequeue the plot parameters.</returns>
-		public IPlotParameters? DequeuePlotRequest()
+		/// <returns>A task representing the work to dequeue the next pending <see cref="Plot"/>.</returns>
+		public Plot? DequeuePlot()
 		{
-
-			var json = _context.DequeuePlotRequest();
-			if (json == null)
+			var id = _context.DequeuePlotId();
+			if (id == null)
 			{
-				// Not an error case, there's just nothing to do.
+				Log.Debug("Queue is empty.");
 				return null;
 			}
 
-			var jObject = JObject.Parse(json);
-			if (jObject is null)
-			{
-				throw new InvalidOperationException("Failed to parse plot parameters.");
-			}
-
-			var type = (string?)jObject["Type"] ?? throw new InvalidOperationException("Type property not found.");
-			return Enum.Parse<PlotType>(type) switch
-			{
-				PlotType.Mandelbrot => JsonConvert.DeserializeObject<MandelbrotParameters>(json),
-				PlotType.Buddhabrot => JsonConvert.DeserializeObject<BuddhabrotParameters>(json),
-				_ => throw new InvalidOperationException($"Unsupported plot type \"{type}\"."),
-			};
+			var plot = _context.Plots.Find(id) ?? throw new InvalidOperationException($"Plot ID {id} not found.");
+			return plot;
 		}
 	}
 }

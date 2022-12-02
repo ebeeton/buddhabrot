@@ -6,18 +6,13 @@
 	public class PlotRequest
 	{
 		/// <summary>
-		/// Primary key.
+		/// <see cref="Plot"/> ID.
 		/// </summary>
-		public int Id { get; set; }
+		public int PlotId { get; set; }
 
 		/// <summary>
 		/// When the plot was queued.
 		/// </summary>
 		public DateTime QueuedUTC { get; set; } = DateTime.UtcNow;
-
-		/// <summary>
-		/// The parameters used to generate the plot, in JSON.
-		/// </summary>
-		public string? PlotParams { get; set; }
 	}
 }

@@ -4,6 +4,7 @@ using Buddhabrot.API.Services;
 using Buddhabrot.Core.Plotting;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace Buddhabrot.API.Controllers
@@ -48,15 +49,23 @@ namespace Buddhabrot.API.Controllers
 		{
 			try
 			{
-				var plotParameters = _mapper.Map<Core.Models.BuddhabrotParameters>(parameters);
-				await _repository.EnqueuePlotRequest(plotParameters);
+				var plot = new Core.Models.Plot
+				{
+					Height = parameters.Height,
+					Width = parameters.Width,
+					PlotParams = JsonConvert.SerializeObject(parameters),
+					PlotType = Core.Models.PlotType.Buddhabrot,
+				};
 
-				var plotter = new BuddhabrotPlotter(plotParameters);
-				var plot = await plotter.Plot();
 				_repository.Add(plot);
 				await _repository.SaveChangesAsync();
+				await _repository.EnqueuePlot(plot.Id);
 
-				return File(await ImageService.ToPng(plot), ImageService.PngContentType);
+				var plotParameters = _mapper.Map<Core.Models.BuddhabrotParameters>(parameters);
+				var plotter = new BuddhabrotPlotter(plotParameters);
+				var temp = await plotter.Plot();
+
+				return File(await ImageService.ToPng(temp), ImageService.PngContentType);
 			}
 			catch (Exception ex)
 			{

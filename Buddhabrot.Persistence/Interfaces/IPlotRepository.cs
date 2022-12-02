@@ -23,16 +23,16 @@ namespace Buddhabrot.Persistence.Interfaces
 		public Task<int> SaveChangesAsync();
 
 		/// <summary>
-		/// Enqueue a <see cref="IPlotParameters"/>.
+		/// Enqueue a <see cref="Plot"/> ID for future processing.
 		/// </summary>
-		/// <param name="plotParameters"><see cref="IPlotParameters"/>.</param>
-		/// <returns>A task representing the work to enqueue the <see cref="IPlotParameters"/>.</returns>
-		public Task EnqueuePlotRequest(IPlotParameters plotParameters);
+		/// <param name="plotId"><see cref="Plot"/> ID</param>
+		/// <returns>A task representing the work to enqueue the <see cref="Plot"/> ID.</returns>
+		public Task EnqueuePlot(int plotId);
 
 		/// <summary>
-		/// Dequeues the next pending <see cref="IPlotParameters"/>.
+		/// Dequeues the next pending plot <see cref="Plot"/>.
 		/// </summary>
-		/// <returns>A task representing the work to dequeue the <see cref="IPlotParameters"/>.</returns>
-		public IPlotParameters? DequeuePlotRequest();
+		/// <returns>A task representing the work to dequeue the next pending <see cref="Plot"/>.</returns>
+		public Plot? DequeuePlot();
 	}
 }

@@ -60,15 +60,34 @@ try
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();
 	mapper?.ConfigurationProvider.AssertConfigurationIsValid();
 
-	// TODO:: Find a better way to apply migrations within containers.
+	// TODO:: Replace this with a one-time Docker command.
 	using var scope = app.Services.CreateScope();
 	{
 		var context = scope.ServiceProvider.GetRequiredService<BuddhabrotContext>();
-		if (context.Database.GetPendingMigrations().Any())
-		{
-			context.Database.Migrate();
-		}
-	}	
+		context.Database.EnsureDeleted();
+		context.Database.EnsureCreated();
+		// Create enqueue and dequeue procs. Hat tip to
+		// http://rusanu.com/2010/03/26/using-tables-as-queues/
+		// for the // queue idea.
+		context.Database.ExecuteSqlRaw(@"CREATE PROCEDURE uspEnqueuePlot
+											@PlotId int
+										AS
+											SET NOCOUNT ON;
+											INSERT INTO PlotQueue (QueuedUTC, PlotId)
+											VALUES (GETUTCDATE(), @PlotId);");
+		context.Database.ExecuteSqlRaw(@"CREATE PROCEDURE uspDequeuePlot
+										AS
+											SET NOCOUNT ON;
+											WITH cte AS
+											(
+												SELECT TOP 1 PlotId
+												FROM PlotQueue WITH (ROWLOCK, READPAST)
+												ORDER BY PlotId
+											)
+											DELETE FROM cte
+											OUTPUT deleted.PlotId
+										GO");
+	}
 
 	// Configure the HTTP request pipeline.
 	if (app.Environment.IsDevelopment())

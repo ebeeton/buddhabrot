@@ -11,6 +11,11 @@
 		public int Id { get; set; }
 
 		/// <summary>
+		/// Type of plot.
+		/// </summary>
+		public PlotType PlotType { get; set; }
+
+		/// <summary>
 		/// The parameters used to generate the plot, in JSON.
 		/// </summary>
 		public string? PlotParams { get; set; }

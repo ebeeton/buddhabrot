@@ -2,6 +2,7 @@
 using Buddhabrot.Core.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 
 namespace Buddhabrot.Persistence.Contexts
@@ -38,31 +39,40 @@ namespace Buddhabrot.Persistence.Contexts
         }
 
 		/// <summary>
-		/// Enqueue a <see cref="IPlotParameters plotParameters"/>.
+		/// Enqueue a <see cref="Plot"/> ID for future processing.
 		/// </summary>
-		/// <param name="plotRequest"><see cref="IPlotParameters"/>.</param>
-		/// <returns>A task representing the work to enqueue the <see cref="IPlotParameters"/>.</returns>
-		public async Task EnqueuePlotRequest(IPlotParameters plotParameters)
-        {
-            await Database.ExecuteSqlRawAsync("EXEC uspEnqueuePlot @PlotParams",
-                new SqlParameter("@PlotParams", JsonConvert.SerializeObject(plotParameters)));
+		/// <param name="plotId"><see cref="Plot"/> ID</param>
+		/// <returns>A task representing the work to enqueue the <see cref="Plot"/> ID.</returns>
+		public async Task EnqueuePlot(int plotId)
+		{
+            await Database.ExecuteSqlRawAsync("EXEC uspEnqueuePlot @PlotID",
+                new SqlParameter("@PlotID", plotId));
 		}
 
 		/// <summary>
-		/// Dequeues the next pending plot parameters.
+		/// Dequeues the next <see cref="Plot"/> ID.
 		/// </summary>
-		/// <returns>Plot parameters in JSON, or null if there's nothing in the queue.</returns>
-		public string? DequeuePlotRequest()
+		/// <returns>Plot ID, or null if the queue is empty.</returns>
+		public int? DequeuePlotId()
         {
-            return Database.SqlQuery<string>($"EXEC uspDequeuePlot").AsEnumerable().FirstOrDefault();
+            return Database.SqlQuery<int?>($"EXEC uspDequeuePlot").AsEnumerable().FirstOrDefault();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			modelBuilder.Entity<PlotRequest>()
-				.ToTable("PlotQueue")
-				.HasKey(q => q.Id)
-				.IsClustered();
+            modelBuilder.Entity<PlotRequest>()
+                .ToTable("PlotQueue")
+                .HasKey(q => q.PlotId)
+                .IsClustered();
+
+            modelBuilder.Entity<PlotRequest>()
+                .HasOne<Plot>()
+                .WithOne()
+                .HasForeignKey<PlotRequest>(p => p.PlotId);
+
+            modelBuilder.Entity<Plot>()
+                .Property(p => p.PlotType)
+                .HasConversion(new EnumToStringConverter<PlotType>());
 
 			base.OnModelCreating(modelBuilder);
 		}
