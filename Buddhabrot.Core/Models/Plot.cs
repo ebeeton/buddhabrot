@@ -1,10 +1,31 @@
-﻿namespace Buddhabrot.Core.Models
+﻿using Buddhabrot.Core.Interfaces;
+using Newtonsoft.Json;
+
+namespace Buddhabrot.Core.Models
 {
 	/// <summary>
 	/// A Buddhabrot or Mandelbrot plot.
 	/// </summary>
 	public class Plot
 	{
+		/// <summary>
+		/// Instantiates a <see cref="Plot"/>.
+		/// </summary>
+		public Plot() { }
+
+		/// <summary>
+		/// Instantiates a <see cref="Plot"/>.
+		/// </summary>
+		/// <param name="parameters"><see cref="IPlotParameters"/> used to generate the plot.</param>
+		/// <param name="plotType"><see cref="PlotType"/>.</param>
+		public Plot(IPlotParameters parameters, PlotType plotType)
+		{
+			Width = parameters.Width;
+			Height = parameters.Height;
+			PlotParams = JsonConvert.SerializeObject(parameters);
+			PlotType = plotType;
+		}
+
 		/// <summary>
 		/// Primary key.
 		/// </summary>

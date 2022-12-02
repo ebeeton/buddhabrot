@@ -50,13 +50,7 @@ namespace Buddhabrot.API.Controllers
 			try
 			{
 				var plotParameters = _mapper.Map<Core.Models.MandelbrotParameters>(parameters);
-				var plot = new Core.Models.Plot
-				{
-					Height = plotParameters.Height,
-					Width = plotParameters.Width,
-					PlotParams = JsonConvert.SerializeObject(plotParameters),
-					PlotType = Core.Models.PlotType.Mandelbrot,
-				};
+				var plot = new Core.Models.Plot(plotParameters, Core.Models.PlotType.Mandelbrot);
 
 				_repository.Add(plot);
 				await _repository.SaveChangesAsync();
