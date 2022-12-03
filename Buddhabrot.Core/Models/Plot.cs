@@ -27,6 +27,43 @@ namespace Buddhabrot.Core.Models
 		}
 
 		/// <summary>
+		/// Gets <see cref="IPlotParameters"/> from the parameters JSON.
+		/// </summary>
+		/// <returns><see cref="IPlotParameters"/>.</returns>
+		public IPlotParameters GetPlotParameters()
+		{
+			if (string.IsNullOrWhiteSpace(PlotParams))
+			{
+				throw new InvalidOperationException($"{nameof(PlotParams)} cannot be null or white space.");
+			}
+
+			switch (PlotType)
+			{
+				case PlotType.Mandelbrot:
+					{
+						var parameters = JsonConvert.DeserializeObject<MandelbrotParameters>(PlotParams);
+						if (parameters == null)
+						{
+							throw new InvalidOperationException($"Could not deserialize type {nameof(MandelbrotParameters)}.");
+						}
+						return parameters;
+					}
+				case PlotType.Buddhabrot:
+					{
+
+						var parameters = JsonConvert.DeserializeObject<BuddhabrotParameters>(PlotParams);
+						if (parameters == null)
+						{
+							throw new InvalidOperationException($"Could not deserialize type {nameof(BuddhabrotParameters)}.");
+						}
+						return parameters;
+					}
+				default:
+					throw new InvalidOperationException("Unsupported plot type.");
+			}
+		}
+
+		/// <summary>
 		/// Primary key.
 		/// </summary>
 		public int Id { get; set; }

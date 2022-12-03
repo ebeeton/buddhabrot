@@ -1,5 +1,4 @@
-﻿using Buddhabrot.Core.Models;
-using Serilog;
+﻿using Serilog;
 using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
@@ -71,7 +70,7 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot the image.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public abstract Task<Plot> Plot();
+		public abstract Task Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

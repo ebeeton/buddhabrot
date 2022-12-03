@@ -43,7 +43,7 @@ namespace Buddhabrot.API.Controllers
 		/// <param name="parameters">Image generation parameters.</param>
 		/// <returns>A Buddhabrot image.</returns>
 		[HttpPost("Plot")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> Plot(BuddhabrotParameters parameters)
 		{
@@ -55,10 +55,8 @@ namespace Buddhabrot.API.Controllers
 				_repository.Add(plot);
 				await _repository.SaveChangesAsync();
 				await _repository.EnqueuePlot(plot.Id);
-				var plotter = new BuddhabrotPlotter(plotParameters);
-				var temp = await plotter.Plot();
 
-				return File(await ImageService.ToPng(temp), ImageService.PngContentType);
+				return Created("api/image/{id}", new { id = plot.Id });
 			}
 			catch (Exception ex)
 			{

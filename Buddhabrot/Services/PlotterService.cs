@@ -1,4 +1,5 @@
-﻿using Buddhabrot.Persistence.Interfaces;
+﻿using Buddhabrot.Core.Plotting;
+using Buddhabrot.Persistence.Interfaces;
 using Serilog;
 
 namespace Buddhabrot.API.Services
@@ -38,7 +39,11 @@ namespace Buddhabrot.API.Services
 						continue;
 					}
 
-					Log.Information("Dequeued plot: {@request}", plot);
+					Log.Information($"Dequeued plot ID {plot.Id}.");
+					var plotter = PlotterFactory.GetPlotter(plot);
+					await plotter.Plot();
+					var records = await repository.SaveChangesAsync();
+					Log.Information($"Plot ID {plot.Id} complete.");
 				}
 				catch (Exception ex)
 				{

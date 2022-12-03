@@ -23,8 +23,9 @@ namespace Buddhabrot.API.Controllers
 		/// Gets an image.
 		/// </summary>
 		/// <returns>A task representing the work to get the image.</returns>
-		[HttpGet("{id}")]
+		[HttpGet("{id}", Name = "GetImage")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status202Accepted)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> Get(int id)
 		{
@@ -32,6 +33,11 @@ namespace Buddhabrot.API.Controllers
 			if (plot == null)
 			{
 				return new NotFoundResult();
+			}
+			else if (plot.ImageData == null)
+			{
+				// Still proccessing.
+				return new AcceptedResult();
 			}
 
 			return File(await ImageService.ToPng(plot), ImageService.PngContentType);

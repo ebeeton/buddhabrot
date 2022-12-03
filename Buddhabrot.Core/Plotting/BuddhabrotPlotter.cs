@@ -1,6 +1,5 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
-using Newtonsoft.Json;
 using Serilog;
 using System.Collections.Concurrent;
 using System.Numerics;
@@ -12,6 +11,11 @@ namespace Buddhabrot.Core.Plotting
 	/// </summary>
 	public class BuddhabrotPlotter : Plotter
 	{
+		/// <summary>
+		/// <see cref="Plot"/>.
+		/// </summary>
+		protected Plot _plot;
+
 		/// <summary>
 		/// Symbolic constants for RGB channel colors.
 		/// </summary>
@@ -50,32 +54,28 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
-		/// <param name="parameters">Parameters used to plot the image.</param>
-		public BuddhabrotPlotter(BuddhabrotParameters parameters) : base(parameters.Width, parameters.Height)
+		/// <param name="plot"><see cref="Plot"/>.</param>
+		public BuddhabrotPlotter(Plot plot) : base(plot.Width, plot.Height)
 		{
-			_parameters = parameters;
-			_pixelsPerChannel = parameters.Width * parameters.Height;
-			_sampleSize = (int)(parameters.SampleSize * _pixelsPerChannel);
+			_plot = plot;
+			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
+				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
+			_pixelsPerChannel = _parameters.Width * _parameters.Height;
+			_sampleSize = (int)(_parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
-			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", parameters);
+			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", _parameters);
 		}
 
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public override async Task<Plot> Plot()
+		public override async Task Plot()
 		{
-			var plot = new Plot
-			{
-				PlotBeginUTC = DateTime.UtcNow,
-				ImageData = _imageBuffer,
-				Width = _width,
-				Height = _height,
-				PlotParams = JsonConvert.SerializeObject(_parameters),
-			};
+			_plot.PlotBeginUTC = DateTime.UtcNow;
+			_plot.ImageData = _imageBuffer;
 
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_sampleSize} sample points.");
@@ -94,8 +94,7 @@ namespace Buddhabrot.Core.Plotting
 				MergeFinalImage();
 			}
 
-			plot.PlotEndUTC = DateTime.UtcNow;
-			return plot;
+			_plot.PlotEndUTC = DateTime.UtcNow;
 		}
 
 		/// <summary>

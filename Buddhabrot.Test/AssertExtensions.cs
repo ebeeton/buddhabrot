@@ -13,7 +13,7 @@ namespace Buddhabrot.Test
 		/// <param name="assert"><see cref="Assert"/>.</param>
 		/// <param name="expected">Expected byte array.</param>
 		/// <param name="actual">Actual byte array.</param>
-		public static void AreEqual(this Assert assert, byte[] expected, byte[] actual)
+		public static void AreEqual(this Assert _, byte[] expected, byte[] actual)
 		{
 			Assert.AreEqual(expected.Length, actual.Length);
 			for (int i = 0; i < expected.Length; ++i)

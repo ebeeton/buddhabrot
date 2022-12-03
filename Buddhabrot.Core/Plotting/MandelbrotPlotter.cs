@@ -1,6 +1,5 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
-using Newtonsoft.Json;
 using Serilog;
 using System.Numerics;
 
@@ -12,6 +11,11 @@ namespace Buddhabrot.Core.Plotting
 	public class MandelbrotPlotter : Plotter
 	{
 		/// <summary>
+		/// <see cref="Plot"/>.
+		/// </summary>
+		protected Plot _plot;
+
+		/// <summary>
 		/// <see cref="MandelbrotParameters"/>.
 		/// </summary>
 		protected readonly MandelbrotParameters _parameters;
@@ -19,27 +23,23 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Instantiates a Mandelbrot image plotter.
 		/// </summary>
-		/// <param name="parameters">Parameters used to plot the image.</param>
-		public MandelbrotPlotter(MandelbrotParameters parameters) : base(parameters.Width, parameters.Height)
+		/// <param name="plot">Parameters used to plot the image.</param>
+		public MandelbrotPlotter(Plot plot) : base(plot.Width, plot.Height)
 		{
-			_parameters = parameters;
-			Log.Information("Mandelbrot plotter instantiated: {@Parameters}", parameters);
+			_plot = plot;
+			_parameters = plot.GetPlotParameters() as MandelbrotParameters ??
+				throw new ArgumentException($"Failed to get {nameof(MandelbrotParameters)}.");
+			Log.Information("Mandelbrot plotter instantiated: {@Parameters}", _parameters);
 		}
 
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
 		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public override async Task<Plot> Plot()
+		public override async Task Plot()
 		{
-			var plot = new Plot
-			{
-				PlotBeginUTC = DateTime.UtcNow,
-				ImageData = _imageBuffer,
-				Width = _width,
-				Height = _height,
-				PlotParams = JsonConvert.SerializeObject(_parameters),
-			};
+			_plot.PlotBeginUTC = DateTime.UtcNow;
+			_plot.ImageData = _imageBuffer;
 
 			// Scale the vertical range so that the image doesn't squash or strech when
 			// the image aspect ratio isn't 1:1.
@@ -76,8 +76,7 @@ namespace Buddhabrot.Core.Plotting
 			});
 
 			await task.WaitAsync(_plotTimeOut);
-			plot.PlotEndUTC = DateTime.UtcNow;
-			return plot;
+			_plot.PlotEndUTC = DateTime.UtcNow;
 		}
 	}
 }

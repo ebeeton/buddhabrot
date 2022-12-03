@@ -1,5 +1,4 @@
 ﻿using Buddhabrot.Core.Models;
-using Newtonsoft.Json;
 
 namespace Buddhabrot.Core.Plotting
 {
@@ -14,32 +13,17 @@ namespace Buddhabrot.Core.Plotting
 		/// <param name="plotType"><see cref="PlotType"/>.</param>
 		/// <param name="paramsJson">Plotter-specific parameters in JSON.</param>
 		/// <returns>Instance of a class derived from <see cref="Plotter"/>.</returns>
-		public static Plotter GetPlotter(PlotType plotType, string paramsJson)
+		public static Plotter GetPlotter(Plot plot)
 		{
-			if (string.IsNullOrWhiteSpace(paramsJson))
-			{
-				throw new ArgumentNullException(nameof(paramsJson));
-			}
-
-			switch (plotType)
+			switch (plot.PlotType)
 			{
 				case PlotType.Mandelbrot:
 					{
-						var parameters = JsonConvert.DeserializeObject<MandelbrotParameters>(paramsJson);
-						if (parameters == null)
-						{
-							throw new ArgumentException($"Could not deserialize type {nameof(MandelbrotParameters)}.", nameof(paramsJson));
-						}
-						return new MandelbrotPlotter(parameters);
+						return new MandelbrotPlotter(plot);
 					}
 				case PlotType.Buddhabrot:
 					{
-						var parameters = JsonConvert.DeserializeObject<BuddhabrotParameters>(paramsJson);
-						if (parameters == null)
-						{
-							throw new ArgumentException($"Could not deserialize type {nameof(BuddhabrotParameters)}.", nameof(paramsJson));
-						}
-						return new BuddhabrotPlotter(parameters);
+						return new BuddhabrotPlotter(plot);
 					}
 				default:
 					throw new ArgumentException("Unsupported plot type.");
