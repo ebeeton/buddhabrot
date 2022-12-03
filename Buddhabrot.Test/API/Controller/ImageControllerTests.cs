@@ -14,19 +14,36 @@ namespace Buddhabrot.Test.API.Controller
 		[TestMethod]
 		public async Task Get_WithValidId_ReturnsFileStreamResult()
 		{
+			var id = 1;
 			var repository = new Mock<IPlotRepository>();
-			repository.Setup(r => r.Find(1))
+			repository.Setup(r => r.Find(id))
 				.Returns(new Plot
 				{
 					Height = 1,
+					Id = 1,
 					Width = 1,
 					ImageData = new byte[3] { 1, 1, 1 },
 				})
 				.Verifiable();
-			var id = 1;
 			var controller = new ImageController(repository.Object);
 
 			var result = await controller.Get(id) as FileStreamResult;
+
+			Assert.IsNotNull(result);
+			repository.Verify();
+		}
+
+		[TestMethod]
+		public async Task Get_WithInvalidId_ReturnsNotFound()
+		{
+			var id = 1;
+			var repository = new Mock<IPlotRepository>();
+			repository.Setup(r => r.Find(id))
+				.Returns(() => null)
+				.Verifiable();
+			var controller = new ImageController(repository.Object);
+
+			var result = await controller.Get(id) as NotFoundResult;
 
 			Assert.IsNotNull(result);
 			repository.Verify();
