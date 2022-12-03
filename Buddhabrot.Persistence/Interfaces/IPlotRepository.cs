@@ -33,5 +33,12 @@ namespace Buddhabrot.Persistence.Interfaces
 		/// </summary>
 		/// <returns>A task representing the work to dequeue the next pending <see cref="Plot"/>.</returns>
 		public Plot? DequeuePlot();
+
+		/// <summary>
+		/// Find a <see cref="Plot"/> by its ID.
+		/// </summary>
+		/// <param name="id"><see cref="Plot"/> ID.</param>
+		/// <returns>The <see cref="Plot"/>, or null if it was not found.</returns>
+		public Plot? Find(int id);
 	}
 }

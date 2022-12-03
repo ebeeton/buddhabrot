@@ -67,8 +67,18 @@ namespace Buddhabrot.Persistence.Repositories
 				return null;
 			}
 
-			var plot = _context.Plots.Find(id) ?? throw new InvalidOperationException($"Plot ID {id} not found.");
+			var plot = Find(id.Value) ?? throw new InvalidOperationException($"Plot ID {id} not found.");
 			return plot;
+		}
+
+		/// <summary>
+		/// Find a <see cref="Plot"/> by its ID.
+		/// </summary>
+		/// <param name="id"><see cref="Plot"/> ID.</param>
+		/// <returns>The <see cref="Plot"/>, or null if it was not found.</returns>
+		public Plot? Find(int id)
+		{
+			return _context.Plots.Find(id);
 		}
 	}
 }

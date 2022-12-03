@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.Core", "Buddhabr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.Test", "Buddhabrot.Test\Buddhabrot.Test.csproj", "{194A4CD3-5752-4B56-984E-7E9F1B4A0A8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Buddhabrot.Persistence", "Buddhabrot.Persistence\Buddhabrot.Persistence.csproj", "{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Buddhabrot.Persistence", "Buddhabrot.Persistence\Buddhabrot.Persistence.csproj", "{A691E1C9-D23D-404A-9A8B-1CCB12A5C89C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
