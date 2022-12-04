@@ -122,12 +122,10 @@ namespace Buddhabrot.Core.Plotting
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>
 			{
-				int iterations = 0;
-				var orbits = new Complex[_parameters.MaxIterations];
+				var orbits = new List<Complex>();
+				PlotOrbits(p, orbits);
 
-				PlotOrbits(p, ref iterations, ref orbits);
-
-				for (int i = 0; i < iterations; ++i)
+				for (int i = 0; i < orbits.Count; ++i)
 				{
 					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
@@ -170,23 +168,21 @@ namespace Buddhabrot.Core.Plotting
 		/// Plots the orbits of a point on the complex plane not in the Mandelbrot set.
 		/// </summary>
 		/// <param name="c">A point on the complex plane not in the Mandelbrot set.</param>
-		/// <param name="iterations">The number of iterations to escape to infinity.</param>
-		/// <param name="orbits">An array of size MaxIterations.</param>
-		protected void PlotOrbits(Complex c, ref int iterations, ref Complex[] orbits)
+		/// <param name="orbits">The plottable orbits.</param>
+		protected void PlotOrbits(Complex c, List<Complex> orbits)
 		{
 			var z = new Complex(0, 0);
 			for (int i = 0; i < _parameters.MaxIterations; ++i)
 			{
 				if (z.Magnitude > Bailout)
 				{
-					// Not in the set.
-					iterations = i;
+					// Orbit is outside the set.
 					return;
 				}
 				else if (_mandelbrotSetRegion.PointInRegion(z))
 				{
 					// Only save orbits if we know they're in the renderable region.
-					orbits[i] = z;
+					orbits.Add(z);
 				}
 				z = z * z + c;
 			}
