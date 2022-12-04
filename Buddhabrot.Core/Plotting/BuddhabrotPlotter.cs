@@ -79,16 +79,11 @@ namespace Buddhabrot.Core.Plotting
 
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_sampleSize} sample points.");
-			for (int i = 0; i < _parameters.Passes; i++)
+			for (int i = 0; i < RGBBytesPerPixel; ++i)
 			{
-				Log.Debug($"Pass {i + 1} started.");
-				for (int j = 0; j < RGBBytesPerPixel; ++j)
-				{
-					await PlotChannel(j);
-				}
-				Log.Debug($"Pass {i + 1} complete.");
+				await PlotChannel(i);
 			}
-
+			
 			if (!_parameters.Grayscale)
 			{
 				MergeFinalImage();

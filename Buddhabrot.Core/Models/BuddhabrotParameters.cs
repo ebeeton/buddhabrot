@@ -19,14 +19,9 @@ namespace Buddhabrot.Core.Models
 
 		/// <summary>
 		/// Size of the random sample set as a percentage of the total
-		/// number of pixels in the image to be generated.
+		/// number of pixels in the image.
 		/// </summary>
 		public double SampleSize { get; set; }
-
-		/// <summary>
-		/// Number of passes to build the image.
-		/// </summary>
-		public int Passes { get; set; }
 
 		/// <summary>
 		/// Whether to render the same pixel value to each channel.
