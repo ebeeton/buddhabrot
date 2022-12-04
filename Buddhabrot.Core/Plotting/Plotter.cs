@@ -92,7 +92,7 @@ namespace Buddhabrot.Core.Plotting
 			var z = new Complex(0, 0);
 			for (int i = 0; i < maxIterations; ++i)
 			{
-				if (z.Magnitude > Bailout)
+				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)
 				{
 					// Not in the set.
 					iterations = i;

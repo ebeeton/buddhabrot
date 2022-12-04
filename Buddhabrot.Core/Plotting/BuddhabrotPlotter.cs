@@ -174,7 +174,7 @@ namespace Buddhabrot.Core.Plotting
 			var z = new Complex(0, 0);
 			for (int i = 0; i < _parameters.MaxIterations; ++i)
 			{
-				if (z.Magnitude > Bailout)
+				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)
 				{
 					// Orbit is outside the set.
 					return;
