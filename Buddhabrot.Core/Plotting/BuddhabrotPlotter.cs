@@ -131,11 +131,12 @@ namespace Buddhabrot.Core.Plotting
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
 					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-					// Note that overflow is possible.
 					if (!_parameters.Grayscale)
 					{
 						var index = pixelY * _width + pixelX;
 						Interlocked.Increment(ref _channels[channel, index]);
+						// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
+						Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
 					}
 					else
 					{
