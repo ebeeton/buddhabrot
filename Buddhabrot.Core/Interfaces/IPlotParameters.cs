@@ -6,13 +6,8 @@
 	public interface IPlotParameters
 	{
 		/// <summary>
-		/// Plot width in pixels.
+		/// Maximum number of iterations for each pixel.
 		/// </summary>
-		public int Width { get; set; }
-
-		/// <summary>
-		/// Plot height in pixels.
-		/// </summary>
-		public int Height { get; set; }
+		public int MaxIterations { get; set; }
 	}
 }

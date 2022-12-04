@@ -60,7 +60,7 @@ namespace Buddhabrot.Core.Plotting
 			_plot = plot;
 			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
-			_pixelsPerChannel = _parameters.Width * _parameters.Height;
+			_pixelsPerChannel = _plot.Width * _plot.Height;
 			_sampleSize = (int)(_parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);

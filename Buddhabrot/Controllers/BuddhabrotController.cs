@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Buddhabrot.API.DTO;
+using Buddhabrot.Core.Models;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,14 +37,13 @@ namespace Buddhabrot.API.Controllers
 		/// <summary>
 		/// Plots a Buddhabrot image.
 		/// </summary>
-		/// <param name="parameters">Image generation parameters.</param>
-		/// <returns>A Buddhabrot image.</returns>
+		/// <param name="request">Buddhabrot plot request.</param>
+		/// <returns>The ID of the queued plot.</returns>
 		[HttpPost("Plot")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
-		public async Task<IActionResult> Plot(BuddhabrotParameters parameters)
+		public async Task<IActionResult> Plot(BuddhabrotRequest request)
 		{
-			var plotParameters = _mapper.Map<Core.Models.BuddhabrotParameters>(parameters);
-			var plot = new Core.Models.Plot(plotParameters, Core.Models.PlotType.Buddhabrot);
+			var plot = _mapper.Map<Plot>(request);
 
 			_repository.Add(plot);
 			await _repository.SaveChangesAsync();

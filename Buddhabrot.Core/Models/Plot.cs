@@ -16,12 +16,14 @@ namespace Buddhabrot.Core.Models
 		/// <summary>
 		/// Instantiates a <see cref="Plot"/>.
 		/// </summary>
+		/// <param name="width">Width of the image in pixels.</param>
+		/// <param name="height">Height of the image in pixels.</param>
 		/// <param name="parameters"><see cref="IPlotParameters"/> used to generate the plot.</param>
 		/// <param name="plotType"><see cref="PlotType"/>.</param>
-		public Plot(IPlotParameters parameters, PlotType plotType)
+		public Plot(int width, int height, IPlotParameters parameters, PlotType plotType)
 		{
-			Width = parameters.Width;
-			Height = parameters.Height;
+			Width = width;
+			Height = height;
 			PlotParams = JsonConvert.SerializeObject(parameters);
 			PlotType = plotType;
 		}

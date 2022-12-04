@@ -42,7 +42,7 @@ try
 	});
 	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
 													   .ReadFrom.Configuration(context.Configuration));
-	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.ParameterProfile));
+	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.AutoMapperProfile));
 	builder.Services.AddDbContext<BuddhabrotContext>(options =>
 	{
 		// Get the SQL credentials from user secrets. See:

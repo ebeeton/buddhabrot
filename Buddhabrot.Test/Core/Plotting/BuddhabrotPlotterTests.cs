@@ -21,8 +21,6 @@ namespace Buddhabrot.Test.Core.Plotting
 				Width = Width,
 				PlotParams = JsonConvert.SerializeObject(new BuddhabrotParameters
 				{
-					Height = Height,
-					Width = Width,
 					MaxIterations = MaxIterations,
 					SampleSize = 0.1,
 					MaxSampleIterations = MaxIterations,

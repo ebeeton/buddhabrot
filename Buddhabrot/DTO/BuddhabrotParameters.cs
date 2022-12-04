@@ -9,20 +9,6 @@ namespace Buddhabrot.API.DTO
 	public class BuddhabrotParameters
 	{
 		/// <summary>
-		/// Image width.
-		/// </summary>
-		[Range(128, 4096)]
-		[DefaultValue(1024)]
-		public int Width { get; set; }
-
-		/// <summary>
-		/// Image height.
-		/// </summary>
-		[Range(128, 4096)]
-		[DefaultValue(768)]
-		public int Height { get; set; }
-
-		/// <summary>
 		/// Maximum number of iterations for each pixel.
 		/// </summary>
 		[Range(16384, 131072)]

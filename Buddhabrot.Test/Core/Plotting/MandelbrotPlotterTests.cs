@@ -21,8 +21,6 @@ namespace Buddhabrot.Test.Core.Plotting
 				Width = Width,
 				PlotParams = JsonConvert.SerializeObject(new MandelbrotParameters
 				{
-					Height = Height,
-					Width = Width,
 					MaxIterations = MaxIterations
 				}),
 				PlotType = PlotType.Mandelbrot
