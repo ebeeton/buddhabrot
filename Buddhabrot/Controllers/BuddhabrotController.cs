@@ -2,7 +2,6 @@
 using Buddhabrot.API.DTO;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
 
 namespace Buddhabrot.API.Controllers
 {
