@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Buddhabrot.API.DTO;
-using Buddhabrot.API.Services;
-using Buddhabrot.Core.Plotting;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace Buddhabrot.API.Controllers
@@ -44,25 +41,16 @@ namespace Buddhabrot.API.Controllers
 		/// <returns>A Mandelbrot image.</returns>
 		[HttpPost("Plot")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
-		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public async Task<IActionResult> Plot(MandelbrotParameters parameters)
 		{
-			try
-			{
-				var plotParameters = _mapper.Map<Core.Models.MandelbrotParameters>(parameters);
-				var plot = new Core.Models.Plot(plotParameters, Core.Models.PlotType.Mandelbrot);
+			var plotParameters = _mapper.Map<Core.Models.MandelbrotParameters>(parameters);
+			var plot = new Core.Models.Plot(plotParameters, Core.Models.PlotType.Mandelbrot);
 
-				_repository.Add(plot);
-				await _repository.SaveChangesAsync();
-				await _repository.EnqueuePlot(plot.Id);
+			_repository.Add(plot);
+			await _repository.SaveChangesAsync();
+			await _repository.EnqueuePlot(plot.Id);
 
-				return Created("api/image/{id}", new { id = plot.Id });
-			}
-			catch (Exception ex)
-			{
-				Log.Error(ex, "Mandelbrot plot failed.");
-				return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-			}
+			return Created("api/image/{id}", new { id = plot.Id });
 		}
 	}
 }
