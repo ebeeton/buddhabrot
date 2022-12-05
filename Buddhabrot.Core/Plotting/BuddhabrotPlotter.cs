@@ -52,6 +52,12 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly BuddhabrotParameters _parameters;
 
 		/// <summary>
+		/// Real and imaginary components must be -2 to 2. This is a slight
+		/// optimization when picking random points.
+		/// </summary>
+		public const double BailoutTimesTwo = 4.0;
+
+		/// <summary>
 		/// Instantiates a Buddhabrot image plotter.
 		/// </summary>
 		/// <param name="plot"><see cref="Plot"/>.</param>
@@ -160,8 +166,9 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>A random point on the complex plane near the Mandelbrot set.</returns>
 		protected static Complex RandomPointOnComplexPlane()
 		{
-			var real = ThreadSafeRandom.NextDouble() * (InitialMaxReal - InitialMinReal) + InitialMinReal;
-			var imaginary = ThreadSafeRandom.NextDouble() * (InitialMaxImaginary - InitialMinImaginary) + InitialMinImaginary;
+			// [0,4] => [-2,2]
+			var real = ThreadSafeRandom.NextDouble() * BailoutTimesTwo - Bailout;
+			var imaginary = ThreadSafeRandom.NextDouble() * BailoutTimesTwo - Bailout;
 			return new Complex(real, imaginary);
 		}
 

@@ -34,12 +34,11 @@ namespace Buddhabrot.Core.Plotting
 		protected readonly int _bytesPerLine;
 
 		/// <summary>
-		/// <see cref="https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set">
 		/// "Because no complex number with a real or imaginary part greater
 		/// than 2 can be part of the set, a common bailout is to escape when
-		/// either coefficient exceeds 2."</see>
+		/// either coefficient exceeds 2."
 		/// </summary>
-		protected const double Bailout = 2.0;
+		public const double Bailout = 2.0;
 
 		// Initial dimensions of the Mandelbrot set, more or less nicely centered.
 		protected const double InitialMinReal = -2;
