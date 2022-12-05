@@ -16,7 +16,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// The number of bytes in a 24 bit RGB pixel.
 		/// </summary>
-		protected const int RGBBytesPerPixel = 3;
+		public const int RgbBytesPerPixel = 3;
 
 		/// <summary>
 		/// The width of the image in pixels.
@@ -60,7 +60,7 @@ namespace Buddhabrot.Core.Plotting
 		{
 			_width = width;
 			_height = height;
-			_bytesPerLine = width * RGBBytesPerPixel;
+			_bytesPerLine = width * RgbBytesPerPixel;
 			_imageBuffer = new byte[_height * _bytesPerLine];
 			Log.Information($"Plotter instantiated: {_width}x{_height} pixels.");
 		}

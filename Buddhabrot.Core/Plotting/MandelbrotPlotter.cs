@@ -54,7 +54,7 @@ namespace Buddhabrot.Core.Plotting
 				{
 					var imaginary = Linear.Scale(y, 0, _height, minImaginary, maxImaginary);
 
-					for (int x = 0; x < _bytesPerLine; x += RGBBytesPerPixel)
+					for (int x = 0; x < _bytesPerLine; x += RgbBytesPerPixel)
 					{
 						var real = Linear.Scale(x, 0, _bytesPerLine, InitialMinReal, InitialMaxReal);
 

@@ -68,7 +68,7 @@ namespace Buddhabrot.Core.Plotting
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
 			_pixelsPerChannel = _plot.Width * _plot.Height;
 			_sampleSize = (int)(_parameters.SampleSize * _pixelsPerChannel);
-			_channels = new int[RGBBytesPerPixel, _pixelsPerChannel];
+			_channels = new int[RgbBytesPerPixel, _pixelsPerChannel];
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", _parameters);
@@ -83,16 +83,22 @@ namespace Buddhabrot.Core.Plotting
 			_plot.PlotBeginUTC = DateTime.UtcNow;
 			_plot.ImageData = _imageBuffer;
 
-			// Plot each channel.
-			Log.Information($"Beginning plot with {_sampleSize} sample points.");
-			for (int i = 0; i < RGBBytesPerPixel; ++i)
-			{
-				await PlotChannel(i);
-			}
 			
 			if (!_parameters.Grayscale)
 			{
+
+				// Plot each channel.
+				Log.Information($"Beginning plot with {_sampleSize} sample points.");
+				for (int i = 0; i < RgbBytesPerPixel; ++i)
+				{
+					await PlotChannel(i);
+				}
+
 				MergeFinalImage();
+			}
+			else
+			{
+				await PlotChannel(0);
 			}
 
 			_plot.PlotEndUTC = DateTime.UtcNow;
@@ -146,12 +152,16 @@ namespace Buddhabrot.Core.Plotting
 					}
 					else
 					{
-						var index = pixelY * _bytesPerLine + pixelX * RGBBytesPerPixel;
+						var index = pixelY * _bytesPerLine + pixelX * RgbBytesPerPixel;
 						lock (_imageBuffer)
 						{
-							++_imageBuffer[index];
-							++_imageBuffer[index + 1];
-							++_imageBuffer[index + 2];
+							/// Clamp all three RGB bytes to byte.MaxValue.
+							if (_imageBuffer[index] < byte.MaxValue)
+							{
+								++_imageBuffer[index];
+								++_imageBuffer[index + 1];
+								++_imageBuffer[index + 2];
+							}
 						}
 					}
 				}
@@ -204,7 +214,7 @@ namespace Buddhabrot.Core.Plotting
 			Log.Debug("Final image merge started.");
 			for (int i = 0; i < _pixelsPerChannel; ++i)
 			{
-				var index = i * RGBBytesPerPixel;
+				var index = i * RgbBytesPerPixel;
 				_imageBuffer[index] = (byte)_channels[(int)Channels.Red, i];
 				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green, i];
 				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue, i];
