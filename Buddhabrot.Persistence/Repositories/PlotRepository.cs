@@ -1,10 +1,6 @@
-﻿using Buddhabrot.Core.Interfaces;
-using Buddhabrot.Core.Models;
+﻿using Buddhabrot.Core.Models;
 using Buddhabrot.Persistence.Contexts;
 using Buddhabrot.Persistence.Interfaces;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Serilog;
 
 namespace Buddhabrot.Persistence.Repositories
 {

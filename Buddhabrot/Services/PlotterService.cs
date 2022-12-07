@@ -42,7 +42,7 @@ namespace Buddhabrot.API.Services
 					Log.Information($"Dequeued plot ID {plot.Id}.");
 					var plotter = PlotterFactory.GetPlotter(plot);
 					await plotter.Plot();
-					var records = await repository.SaveChangesAsync();
+					await repository.SaveChangesAsync();
 					Log.Information($"Plot ID {plot.Id} complete.");
 				}
 				catch (Exception ex)
