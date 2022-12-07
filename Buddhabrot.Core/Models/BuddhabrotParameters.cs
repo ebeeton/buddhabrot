@@ -18,9 +18,8 @@ namespace Buddhabrot.Core.Models
 		public int MaxSampleIterations { get; set; }
 
 		/// <summary>
-		/// Size of the random sample set as a percentage of the total
-		/// number of pixels in the image.
+		/// Number of random points on the complex plane to plot with.
 		/// </summary>
-		public double SampleSize { get; set; }
+		public int SampleSize { get; set; }
 	}
 }

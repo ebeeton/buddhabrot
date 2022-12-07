@@ -14,7 +14,7 @@ namespace Buddhabrot.Test.Core.Plotting
 		[TestMethod]
 		public async Task PlotPng_WithParameters_ReturnsImageWithCorrectImageSize()
 		{
-			const int Height = 64, Width = 64, MaxIterations = 32;
+			const int Height = 64, Width = 64, MaxIterations = 32, SampleSize = 32;
 			var plot = new Plot
 			{
 				Height = Height,
@@ -22,7 +22,7 @@ namespace Buddhabrot.Test.Core.Plotting
 				PlotParams = JsonConvert.SerializeObject(new BuddhabrotParameters
 				{
 					MaxIterations = MaxIterations,
-					SampleSize = 0.1,
+					SampleSize = SampleSize,
 					MaxSampleIterations = MaxIterations,
 				}),
 				PlotType = PlotType.Buddhabrot

@@ -26,7 +26,7 @@ namespace Buddhabrot.Test.API.Models
 		{
 			var plot = new Plot
 			{
-				PlotParams = @"{""Width"":1024,""Height"":768,""MaxIterations"":16384,""MaxSampleIterations"":2048,""SampleSize"":0.01,""Passes"":32}",
+				PlotParams = @"{""Width"":1024,""Height"":768,""MaxIterations"":16384,""MaxSampleIterations"":2048,""SampleSize"":1024,""Passes"":32}",
 				PlotType = PlotType.Buddhabrot
 			};
 

@@ -12,14 +12,14 @@ namespace Buddhabrot.API.DTO
 		/// Image width.
 		/// </summary>
 		[Range(128, 4096)]
-		[DefaultValue(2048)]
+		[DefaultValue(1024)]
 		public int Width { get; set; }
 
 		/// <summary>
 		/// Image height.
 		/// </summary>
 		[Range(128, 4096)]
-		[DefaultValue(2048)]
+		[DefaultValue(768)]
 		public int Height { get; set; }
 
 		/// <summary>

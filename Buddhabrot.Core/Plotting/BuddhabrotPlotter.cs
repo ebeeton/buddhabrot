@@ -32,11 +32,6 @@ namespace Buddhabrot.Core.Plotting
 		protected int[,] _channels;
 
 		/// <summary>
-		/// How many random points on the complex plane are chosen to build the image.
-		/// </summary>
-		protected readonly int _sampleSize;
-
-		/// <summary>
 		/// The total number of pixels per channel.
 		/// </summary>
 		protected readonly int _pixelsPerChannel;
@@ -67,7 +62,6 @@ namespace Buddhabrot.Core.Plotting
 			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
 			_pixelsPerChannel = _plot.Width * _plot.Height;
-			_sampleSize = (int)(_parameters.SampleSize * _pixelsPerChannel);
 			_channels = new int[RgbBytesPerPixel, _pixelsPerChannel];
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
@@ -84,7 +78,7 @@ namespace Buddhabrot.Core.Plotting
 			_plot.ImageData = _imageBuffer;
 
 			// Plot each channel.
-			Log.Information($"Beginning plot with {_sampleSize} sample points.");
+			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
 			for (int i = 0; i < RgbBytesPerPixel; ++i)
 			{
 				await PlotChannel(i);
@@ -107,7 +101,7 @@ namespace Buddhabrot.Core.Plotting
 			var samplePoints = new ConcurrentBag<Complex>();
 			var task = Task.Run(() =>
 			{
-				Parallel.For(0, _sampleSize, _ =>
+				Parallel.For(0, _parameters.SampleSize, _ =>
 				{
 					var point = RandomPointOnComplexPlane();
 					if (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _))
@@ -120,7 +114,7 @@ namespace Buddhabrot.Core.Plotting
 			});
 			await task.WaitAsync(_plotTimeOut);
 
-			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _sampleSize * 100):0.#}%).");
+			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _parameters.SampleSize * 100):0.#}%).");
 
 			// Iterate the sample set and plot their orbits.
 			Parallel.ForEach(samplePoints, p =>

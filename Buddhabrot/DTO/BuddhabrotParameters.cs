@@ -23,10 +23,10 @@ namespace Buddhabrot.API.DTO
 		public int MaxSampleIterations { get; set; }
 
 		/// <summary>
-		/// Size of the random sample set where 1.0 equals the number of pixels in the image.
+		/// Number of random points on the complex plane to plot with.
 		/// </summary>
-		[Range(1.0, 100.0)]
-		[DefaultValue(10.0)]
-		public double SampleSize { get; set; }
+		[Range(1, int.MaxValue)]
+		[DefaultValue(25000000)]
+		public int SampleSize { get; set; }
 	}
 }
