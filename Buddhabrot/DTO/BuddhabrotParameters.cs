@@ -28,11 +28,5 @@ namespace Buddhabrot.API.DTO
 		[Range(1.0, 100.0)]
 		[DefaultValue(10.0)]
 		public double SampleSize { get; set; }
-
-		/// <summary>
-		/// Whether to render the same pixel value to each channel.
-		/// </summary>
-		[DefaultValue(false)]
-		public bool Grayscale { get; set; }
 	}
 }

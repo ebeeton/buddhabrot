@@ -22,10 +22,5 @@ namespace Buddhabrot.Core.Models
 		/// number of pixels in the image.
 		/// </summary>
 		public double SampleSize { get; set; }
-
-		/// <summary>
-		/// Whether to render the same pixel value to each channel.
-		/// </summary>
-		public bool Grayscale { get; set; }
 	}
 }

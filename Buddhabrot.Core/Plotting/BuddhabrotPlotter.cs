@@ -83,23 +83,14 @@ namespace Buddhabrot.Core.Plotting
 			_plot.PlotBeginUTC = DateTime.UtcNow;
 			_plot.ImageData = _imageBuffer;
 
-			
-			if (!_parameters.Grayscale)
+			// Plot each channel.
+			Log.Information($"Beginning plot with {_sampleSize} sample points.");
+			for (int i = 0; i < RgbBytesPerPixel; ++i)
 			{
-
-				// Plot each channel.
-				Log.Information($"Beginning plot with {_sampleSize} sample points.");
-				for (int i = 0; i < RgbBytesPerPixel; ++i)
-				{
-					await PlotChannel(i);
-				}
-
-				MergeFinalImage();
+				await PlotChannel(i);
 			}
-			else
-			{
-				await PlotChannel(0);
-			}
+
+			MergeFinalImage();
 
 			_plot.PlotEndUTC = DateTime.UtcNow;
 		}
@@ -143,27 +134,10 @@ namespace Buddhabrot.Core.Plotting
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
 					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-					if (!_parameters.Grayscale)
-					{
-						var index = pixelY * _width + pixelX;
-						Interlocked.Increment(ref _channels[channel, index]);
-						// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
-						Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
-					}
-					else
-					{
-						var index = pixelY * _bytesPerLine + pixelX * RgbBytesPerPixel;
-						lock (_imageBuffer)
-						{
-							/// Clamp all three RGB bytes to byte.MaxValue.
-							if (_imageBuffer[index] < byte.MaxValue)
-							{
-								++_imageBuffer[index];
-								++_imageBuffer[index + 1];
-								++_imageBuffer[index + 2];
-							}
-						}
-					}
+					var index = pixelY * _width + pixelX;
+					Interlocked.Increment(ref _channels[channel, index]);
+					// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
+					Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
 				}
 			});
 
