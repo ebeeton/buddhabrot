@@ -11,7 +11,7 @@ namespace Buddhabrot.API.Controllers
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PlotController : ControllerBase
+	public class PlotsController : ControllerBase
 	{
 		/// <summary>
 		/// AutoMapper.
@@ -24,11 +24,11 @@ namespace Buddhabrot.API.Controllers
 		protected IPlotRepository _repository;
 
 		/// <summary>
-		/// Instantiates a <see cref="PlotController"/>.
+		/// Instantiates a <see cref="PlotsController"/>.
 		/// </summary>
 		/// <param name="repository">Plot repository.</param>
 		/// <param name="mapper">AutoMapper.</param>
-		public PlotController(IPlotRepository repository, IMapper mapper)
+		public PlotsController(IPlotRepository repository, IMapper mapper)
 		{
 			_repository = repository;
 			_mapper = mapper;
