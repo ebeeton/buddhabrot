@@ -11,7 +11,7 @@ namespace Buddhabrot.API.Controllers
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
-	public class MandelbrotController : ControllerBase
+	public class PlotController : ControllerBase
 	{
 		/// <summary>
 		/// AutoMapper.
@@ -24,11 +24,11 @@ namespace Buddhabrot.API.Controllers
 		protected IPlotRepository _repository;
 
 		/// <summary>
-		/// Instantiates a <see cref="MandelbrotController"/>.
+		/// Instantiates a <see cref="PlotController"/>.
 		/// </summary>
 		/// <param name="repository">Plot repository.</param>
 		/// <param name="mapper">AutoMapper.</param>
-		public MandelbrotController(IPlotRepository repository, IMapper mapper)
+		public PlotController(IPlotRepository repository, IMapper mapper)
 		{
 			_repository = repository;
 			_mapper = mapper;
@@ -39,9 +39,27 @@ namespace Buddhabrot.API.Controllers
 		/// </summary>
 		/// <param name="request">Mandelbrot plot request.</param>
 		/// <returns>The ID of the queued plot.</returns>
-		[HttpPost("Plot")]
+		[HttpPost("Mandelbrot")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		public async Task<IActionResult> Plot(MandelbrotRequest request)
+		{
+			var plot = _mapper.Map<Plot>(request);
+
+			_repository.Add(plot);
+			await _repository.SaveChangesAsync();
+			await _repository.EnqueuePlot(plot.Id);
+
+			return Created("api/image/{id}", new { id = plot.Id });
+		}
+
+		/// <summary>
+		/// Plots a Buddhabrot image.
+		/// </summary>
+		/// <param name="request">Buddhabrot plot request.</param>
+		/// <returns>The ID of the queued plot.</returns>
+		[HttpPost("Buddhabrot")]
+		[ProducesResponseType(StatusCodes.Status201Created)]
+		public async Task<IActionResult> Plot(BuddhabrotRequest request)
 		{
 			var plot = _mapper.Map<Plot>(request);
 
