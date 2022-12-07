@@ -95,46 +95,36 @@ namespace Buddhabrot.Core.Plotting
 		/// <param name="channel">Index of channel to plot to.</param>
 		protected async Task PlotChannel(int channel)
 		{
-			// Generate a set of random points not in the Mandelbrot set.
-			// We don't care about orbits yet.
 			Log.Information($"Channel {channel} plot started.");
-			var samplePoints = new ConcurrentBag<Complex>();
+
+			// Iterate sample points not in the Mandelbrot set and plot their orbits.
 			var task = Task.Run(() =>
 			{
 				Parallel.For(0, _parameters.SampleSize, _ =>
 				{
-					var point = RandomPointOnComplexPlane();
-					if (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _))
+					Complex point;
+					do
 					{
-						return;
-					}
+						point = RandomPointOnComplexPlane();
+					} while (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _));
 
-					samplePoints.Add(point);
+					var orbits = new List<Complex>();
+					PlotOrbits(point, orbits);
+
+					for (int i = 0; i < orbits.Count; ++i)
+					{
+						var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
+						var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
+
+						// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+						var index = pixelY * _width + pixelX;
+						Interlocked.Increment(ref _channels[channel, index]);
+						// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
+						Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
+					}
 				});
 			});
 			await task.WaitAsync(_plotTimeOut);
-
-			Log.Information($"Channel {channel} sample points outside the Mandelbrot set: {samplePoints.Count} ({((double)samplePoints.Count / _parameters.SampleSize * 100):0.#}%).");
-
-			// Iterate the sample set and plot their orbits.
-			Parallel.ForEach(samplePoints, p =>
-			{
-				var orbits = new List<Complex>();
-				PlotOrbits(p, orbits);
-
-				for (int i = 0; i < orbits.Count; ++i)
-				{
-					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
-					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
-
-					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-					var index = pixelY * _width + pixelX;
-					Interlocked.Increment(ref _channels[channel, index]);
-					// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
-					Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
-				}
-			});
-
 			Log.Information($"Channel {channel} plot complete.");
 		}
 
