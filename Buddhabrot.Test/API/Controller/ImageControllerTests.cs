@@ -16,8 +16,8 @@ namespace Buddhabrot.Test.API.Controller
 		{
 			var id = 1;
 			var repository = new Mock<IPlotRepository>();
-			repository.Setup(r => r.Find(id))
-				.Returns(new Plot
+			repository.Setup(r => r.FindAsync(id))
+				.ReturnsAsync(new Plot
 				{
 					Height = 1,
 					Id = 1,
@@ -38,8 +38,8 @@ namespace Buddhabrot.Test.API.Controller
 		{
 			var id = 1;
 			var repository = new Mock<IPlotRepository>();
-			repository.Setup(r => r.Find(id))
-				.Returns(() => null)
+			repository.Setup(r => r.FindAsync(id))
+				.ReturnsAsync(() => null)
 				.Verifiable();
 			var controller = new ImageController(repository.Object);
 

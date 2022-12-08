@@ -29,7 +29,7 @@ namespace Buddhabrot.API.Controllers
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> Get(int id)
 		{
-			var plot = _repository.Find(id);
+			var plot = await _repository.FindAsync(id);
 			if (plot == null)
 			{
 				return new NotFoundResult();

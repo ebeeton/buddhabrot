@@ -31,6 +31,7 @@ namespace Buddhabrot.API.Services
 				{
 					using var scope = _serviceScopeFactory.CreateScope();
 					var repository = scope.ServiceProvider.GetService<IPlotRepository>() ?? throw new NullReferenceException($"Failed to obtain {nameof(IPlotRepository)}");
+					// TODO:: Find a way to execute the stored procedure asynchronously because this blocks when the queue is empty.
 					var task = Task.Run(() => repository.DequeuePlot());
 					var plot = await task.WaitAsync(stoppingToken);
 					if (plot == null)
