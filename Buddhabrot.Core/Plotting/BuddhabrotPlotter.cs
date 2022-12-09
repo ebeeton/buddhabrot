@@ -1,7 +1,6 @@
 ﻿using Buddhabrot.Core.Math;
 using Buddhabrot.Core.Models;
 using Serilog;
-using System.Collections.Concurrent;
 using System.Numerics;
 
 namespace Buddhabrot.Core.Plotting
@@ -14,7 +13,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// <see cref="Plot"/>.
 		/// </summary>
-		protected Plot _plot;
+		private readonly Plot _plot;
 
 		/// <summary>
 		/// Symbolic constants for RGB channel colors.
@@ -29,22 +28,22 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// RGB channels of width * height.
 		/// </summary>
-		protected int[,] _channels;
+		private readonly int[,] _channels;
 
 		/// <summary>
 		/// The total number of pixels per channel.
 		/// </summary>
-		protected readonly int _pixelsPerChannel;
+		private readonly int _pixelsPerChannel;
 
 		/// <summary>
 		/// Region on the complex plane containing the Mandelbrot set.
 		/// </summary>
-		protected readonly ComplexRegion _mandelbrotSetRegion;
+		private readonly ComplexRegion _mandelbrotSetRegion;
 
 		/// <summary>
 		/// <see cref="BuddhabrotParameters"/>.
 		/// </summary>
-		protected readonly BuddhabrotParameters _parameters;
+		private readonly BuddhabrotParameters _parameters;
 
 		/// <summary>
 		/// Real and imaginary components must be -2 to 2. This is a slight
