@@ -47,11 +47,6 @@ namespace Buddhabrot.Core.Plotting
 		protected const double InitialMaxImaginary = 1.12;
 
 		/// <summary>
-		/// The duration which, when exceeded, will cause the plot to time out.
-		/// </summary>
-		protected static readonly TimeSpan _plotTimeOut = new(hours: 1, minutes: 0, seconds: 0);
-
-		/// <summary>
 		/// Instantiates a plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
@@ -68,8 +63,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public abstract Task Plot();
+		public abstract void Plot();
 
 		/// <summary>
 		/// Clears (reallocates) the image buffer.

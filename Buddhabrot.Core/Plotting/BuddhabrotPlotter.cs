@@ -75,8 +75,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// Plot the image.
 		/// </summary>
-		/// <returns>A <see cref="Task"/> representing the work to plot the image.</returns>
-		public override async Task Plot()
+		public override void Plot()
 		{
 			_plot.PlotBeginUTC = DateTime.UtcNow;
 			_plot.ImageData = _imageBuffer;
@@ -85,7 +84,7 @@ namespace Buddhabrot.Core.Plotting
 			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
 			for (int i = 0; i < RgbBytesPerPixel; ++i)
 			{
-				await PlotChannel(i);
+				PlotChannel(i);
 			}
 
 			MergeFinalImage();
@@ -97,38 +96,34 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot a Buddhabrot image to one of the RGB image channels.
 		/// </summary>
 		/// <param name="channel">Index of channel to plot to.</param>
-		protected async Task PlotChannel(int channel)
+		protected void PlotChannel(int channel)
 		{
 			Log.Information($"Channel {channel} plot started.");
 
 			// Iterate sample points not in the Mandelbrot set and plot their orbits.
-			var task = Task.Run(() =>
+			Parallel.For(0, _parameters.SampleSize, _ =>
 			{
-				Parallel.For(0, _parameters.SampleSize, _ =>
+				Complex point;
+				do
 				{
-					Complex point;
-					do
-					{
-						point = RandomPointOnComplexPlane();
-					} while (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _));
+					point = RandomPointOnComplexPlane();
+				} while (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _));
 
-					var orbits = new List<Complex>();
-					PlotOrbits(point, orbits);
+				var orbits = new List<Complex>();
+				PlotOrbits(point, orbits);
 
-					for (int i = 0; i < orbits.Count; ++i)
-					{
-						var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
-						var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
+				for (int i = 0; i < orbits.Count; ++i)
+				{
+					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
+					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
-						// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
-						var index = pixelY * _width + pixelX;
-						Interlocked.Increment(ref _channels[channel][index]);
-						// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
-						Interlocked.CompareExchange(ref _channels[channel][index], byte.MaxValue, byte.MaxValue + 1);
-					}
-				});
+					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+					var index = pixelY * _width + pixelX;
+					Interlocked.Increment(ref _channels[channel][index]);
+					// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
+					Interlocked.CompareExchange(ref _channels[channel][index], byte.MaxValue, byte.MaxValue + 1);
+				}
 			});
-			await task.WaitAsync(_plotTimeOut);
 			Log.Information($"Channel {channel} plot complete.");
 		}
 

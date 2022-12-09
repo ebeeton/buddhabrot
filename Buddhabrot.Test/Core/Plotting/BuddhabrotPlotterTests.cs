@@ -12,7 +12,7 @@ namespace Buddhabrot.Test.Core.Plotting
 	public class BuddhabrotPlotterTests
 	{
 		[TestMethod]
-		public async Task PlotPng_WithParameters_ReturnsImageWithCorrectImageSize()
+		public void PlotPng_WithParameters_ReturnsImageWithCorrectImageSize()
 		{
 			const int Height = 64, Width = 64, MaxIterations = 32, SampleSize = 32;
 			var plot = new Plot
@@ -30,7 +30,7 @@ namespace Buddhabrot.Test.Core.Plotting
 
 			var plotter = new BuddhabrotPlotter(plot);
 
-			await plotter.Plot();
+			plotter.Plot();
 			using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
 
 			Assert.AreEqual(Height, image.Height);
