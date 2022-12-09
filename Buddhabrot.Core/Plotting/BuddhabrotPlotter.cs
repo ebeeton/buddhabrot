@@ -28,7 +28,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// RGB channels of width * height.
 		/// </summary>
-		private readonly int[,] _channels;
+		private readonly int[][] _channels;
 
 		/// <summary>
 		/// The total number of pixels per channel.
@@ -61,7 +61,12 @@ namespace Buddhabrot.Core.Plotting
 			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
 			_pixelsPerChannel = _plot.Width * _plot.Height;
-			_channels = new int[RgbBytesPerPixel, _pixelsPerChannel];
+			_channels = new int[RgbBytesPerPixel][]
+			{
+				new int [_pixelsPerChannel],
+				new int [_pixelsPerChannel],
+				new int [_pixelsPerChannel]
+			};
 			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", _parameters);
@@ -117,9 +122,9 @@ namespace Buddhabrot.Core.Plotting
 
 						// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
 						var index = pixelY * _width + pixelX;
-						Interlocked.Increment(ref _channels[channel, index]);
+						Interlocked.Increment(ref _channels[channel][index]);
 						// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
-						Interlocked.CompareExchange(ref _channels[channel, index], byte.MaxValue, byte.MaxValue + 1);
+						Interlocked.CompareExchange(ref _channels[channel][index], byte.MaxValue, byte.MaxValue + 1);
 					}
 				});
 			});
@@ -172,9 +177,9 @@ namespace Buddhabrot.Core.Plotting
 			for (int i = 0; i < _pixelsPerChannel; ++i)
 			{
 				var index = i * RgbBytesPerPixel;
-				_imageBuffer[index] = (byte)_channels[(int)Channels.Red, i];
-				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green, i];
-				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue, i];
+				_imageBuffer[index] = (byte)_channels[(int)Channels.Red][i];
+				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green][i];
+				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue][i];
 			}
 			Log.Debug("Final image merge complete.");
 		}
