@@ -174,13 +174,13 @@ namespace Buddhabrot.Core.Plotting
 		protected void MergeFinalImage()
 		{
 			Log.Debug("Final image merge started.");
-			for (int i = 0; i < _pixelsPerChannel; ++i)
+			Parallel.For(0, _pixelsPerChannel, (i) =>
 			{
 				var index = i * RgbBytesPerPixel;
 				_imageBuffer[index] = (byte)_channels[(int)Channels.Red][i];
 				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green][i];
 				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue][i];
-			}
+			});
 			Log.Debug("Final image merge complete.");
 		}
 	}
