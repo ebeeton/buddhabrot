@@ -1,11 +1,18 @@
 # Buddhabrot API
 
-An ASP.NET Core Web API for rendering [Buddhabrot](https://en.wikipedia.org/wiki/Buddhabrot)
-images in parallel. This is a personal programming project inspired by the work of Melinda Green.
-
-An example image with 25 million sample points and ten thousand maximum iterations:
-
 ![Buddhabrot example](/assets/images/sample.jpg)
+
+This is a hobby ASP.NET Core Web API project for rendering
+[Buddhabrot](https://en.wikipedia.org/wiki/Buddhabrot) images in parallel.
+
+## How It Works
+
+The API offers a controller for creating Mandelbrot and Buddhabrot plots and
+retrieving images. Because the plotting process is a potentially long-running
+operation, plot requests are placed in a database queue and serviced
+individually. The plot creation response includes the plot's database ID,
+and the image can be retrieved by that ID. If the image plot is complete, a PNG
+image will be returned, otherwise it will respond with HTTP 202 Accepted.
 
 ## Database Configuration
 
