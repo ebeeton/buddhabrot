@@ -23,6 +23,7 @@ namespace Buddhabrot.Core.Plotting
 			Red = 0,
 			Green,
 			Blue,
+			All
 		};
 
 		/// <summary>
@@ -146,7 +147,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <param name="orbits">The plottable orbits.</param>
 		protected void PlotOrbits(Complex c, List<Complex> orbits)
 		{
-			var z = new Complex(0, 0);
+			var z = c;
 			for (int i = 0; i < _parameters.MaxIterations; ++i)
 			{
 				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)
@@ -169,12 +170,18 @@ namespace Buddhabrot.Core.Plotting
 		protected void MergeFinalImage()
 		{
 			Log.Debug("Final image merge started.");
+
+			// Get the scale factor to go from hit counts to one byte per channel.
+			var scaleFactors = new double[(int)Channels.All];
+			Parallel.For(0, (int)Channels.All, (i) => scaleFactors[i] = _channels[i].Max());
+			Log.Debug("Scale factors: {@scaleFactors}", scaleFactors);
+
 			Parallel.For(0, _pixelsPerChannel, (i) =>
 			{
 				var index = i * RgbBytesPerPixel;
-				_imageBuffer[index] = (byte)_channels[(int)Channels.Red][i];
-				_imageBuffer[index + 1] = (byte)_channels[(int)Channels.Green][i];
-				_imageBuffer[index + 2] = (byte)_channels[(int)Channels.Blue][i];
+				_imageBuffer[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);
+				_imageBuffer[index + 1] = (byte)(_channels[(int)Channels.Green][i] / scaleFactors[(int)Channels.Blue] * byte.MaxValue);
+				_imageBuffer[index + 2] = (byte)(_channels[(int)Channels.Blue][i] / scaleFactors[(int)Channels.Green] * byte.MaxValue);
 			});
 			Log.Debug("Final image merge complete.");
 		}

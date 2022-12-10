@@ -40,11 +40,10 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public const double Bailout = 2.0;
 
-		// Initial dimensions of the Mandelbrot set, more or less nicely centered.
-		protected const double InitialMinReal = -2;
-		protected const double InitialMaxReal = 0.47;
-		protected const double InitialMinImaginary = -1.12;
-		protected const double InitialMaxImaginary = 1.12;
+		protected const double InitialMinReal = -2.0;
+		protected const double InitialMaxReal = 2.0;
+		protected const double InitialMinImaginary = -2.0;
+		protected const double InitialMaxImaginary = 2.0;
 
 		/// <summary>
 		/// Instantiates a plotter.
@@ -82,7 +81,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <returns>True if a point is in the Mandelbrot set.</returns>
 		public static bool IsInMandelbrotSet(Complex c, int maxIterations, ref int iterations)
 		{
-			var z = new Complex(0, 0);
+			var z = c;
 			for (int i = 0; i < maxIterations; ++i)
 			{
 				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)

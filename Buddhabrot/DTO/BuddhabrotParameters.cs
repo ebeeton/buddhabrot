@@ -12,7 +12,7 @@ namespace Buddhabrot.API.DTO
 		/// Maximum number of iterations for each pixel.
 		/// </summary>
 		[Range(1, int.MaxValue)]
-		[DefaultValue(10000)]
+		[DefaultValue(1000)]
 		public int MaxIterations { get; set; }
 
 		/// <summary>
@@ -26,7 +26,7 @@ namespace Buddhabrot.API.DTO
 		/// Number of random points on the complex plane to plot with.
 		/// </summary>
 		[Range(1, int.MaxValue)]
-		[DefaultValue(25000000)]
+		[DefaultValue(10000000)]
 		public int SampleSize { get; set; }
 	}
 }
