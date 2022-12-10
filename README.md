@@ -3,7 +3,12 @@
 ![Buddhabrot example](/assets/images/sample.jpg)
 
 This is a hobby ASP.NET Core Web API project for rendering
-[Buddhabrot](https://en.wikipedia.org/wiki/Buddhabrot) images in parallel.
+[Buddhabrot](https://en.wikipedia.org/wiki/Buddhabrot) images in parallel. It's
+written in C# and uses Docker to store images to SQL Server and log to Seq.
+
+The plotting is currently noisy and I'm still tinkering with how to achieve the
+really cool images that you see in other people's projects. This is a work in
+progress.
 
 ## How It Works
 
@@ -13,6 +18,10 @@ operation, plot requests are placed in a database queue and serviced
 individually. The plot creation response includes the plot's database ID,
 and the image can be retrieved by that ID. If the image plot is complete, a PNG
 image will be returned, otherwise it will respond with HTTP 202 Accepted.
+
+Please note that the database is dropped and created every time the app runs.
+I haven't yet worked out how to stand up the database and run creation scripts
+in a separate service. 
 
 ## Database Configuration
 

@@ -33,6 +33,7 @@ try
 			Contact = new OpenApiContact
 			{
 				Name = "Evan Beeton",
+				Email = "evanbeeton@outlook.com",
 				Url = new Uri("https://github.com/ebeeton")
 			}
 		});
