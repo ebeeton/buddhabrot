@@ -42,7 +42,7 @@ namespace Buddhabrot.API.Controllers
 		/// <returns>The ID of the queued plot.</returns>
 		[HttpPost("Mandelbrot")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
-		public async Task<IActionResult> Plot(MandelbrotRequest request)
+		public async Task<IActionResult> PlotAsync(MandelbrotRequest request)
 		{
 			var plot = _mapper.Map<Plot>(request);
 
@@ -50,7 +50,7 @@ namespace Buddhabrot.API.Controllers
 			await _repository.SaveChangesAsync();
 			await _repository.EnqueuePlot(plot.Id);
 
-			return Created("api/image/{id}", new { id = plot.Id });
+			return CreatedAtRoute("GetImage", new { id = plot.Id }, plot);
 		}
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Buddhabrot.API.Controllers
 		/// <returns>The ID of the queued plot.</returns>
 		[HttpPost("Buddhabrot")]
 		[ProducesResponseType(StatusCodes.Status201Created)]
-		public async Task<IActionResult> Plot(BuddhabrotRequest request)
+		public async Task<IActionResult> PlotAsync(BuddhabrotRequest request)
 		{
 			var plot = _mapper.Map<Plot>(request);
 
@@ -68,7 +68,7 @@ namespace Buddhabrot.API.Controllers
 			await _repository.SaveChangesAsync();
 			await _repository.EnqueuePlot(plot.Id);
 
-			return Created("api/image/{id}", new { id = plot.Id });
+			return CreatedAtRoute("GetImage", new { id = plot.Id }, plot);
 		}
 
 		/// <summary>
@@ -79,7 +79,7 @@ namespace Buddhabrot.API.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status202Accepted)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> Get(int id)
+		public async Task<IActionResult> GetAsync(int id)
 		{
 			var plot = await _repository.FindAsync(id);
 			if (plot == null)
