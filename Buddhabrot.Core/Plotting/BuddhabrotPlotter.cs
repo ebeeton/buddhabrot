@@ -68,7 +68,7 @@ namespace Buddhabrot.Core.Plotting
 				new int [_pixelsPerChannel],
 				new int [_pixelsPerChannel]
 			};
-			_mandelbrotSetRegion = new(InitialMinReal, InitialMaxReal, InitialMinImaginary, InitialMaxImaginary);
+			_mandelbrotSetRegion = new(MinReal, MaxReal, MinImaginary, MaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", _parameters);
 		}

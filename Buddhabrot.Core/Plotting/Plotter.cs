@@ -40,10 +40,25 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public const double Bailout = 2.0;
 
-		protected const double InitialMinReal = -2.0;
-		protected const double InitialMaxReal = 2.0;
-		protected const double InitialMinImaginary = -2.0;
-		protected const double InitialMaxImaginary = 2.0;
+		/// <summary>
+		/// Minimum real boundary of the Mandelbrot set.
+		/// </summary>
+		public const double MinReal = -2.0;
+
+		/// <summary>
+		/// Maximum real boundary of the Mandelbrot set.
+		/// </summary>
+		public const double MaxReal = 2.0;
+
+		/// <summary>
+		/// Minimum imaginary boundary of the Mandelbrot set.
+		/// </summary>
+		public const double MinImaginary = -2.0;
+
+		/// <summary>
+		/// Maximum imaginary boundary of the Mandelbrot set.
+		/// </summary>
+		public const double MaxImaginary = 2.0;
 
 		/// <summary>
 		/// Instantiates a plotter.
