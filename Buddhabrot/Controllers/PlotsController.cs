@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Buddhabrot.API.DTO;
+using Buddhabrot.API.Services;
 using Buddhabrot.Core.Models;
 using Buddhabrot.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -68,6 +69,30 @@ namespace Buddhabrot.API.Controllers
 			await _repository.EnqueuePlot(plot.Id);
 
 			return Created("api/image/{id}", new { id = plot.Id });
+		}
+
+		/// <summary>
+		/// Gets an image.
+		/// </summary>
+		/// <returns>A task representing the work to get the image.</returns>
+		[HttpGet("{id}", Name = "GetImage")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status202Accepted)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> Get(int id)
+		{
+			var plot = await _repository.FindAsync(id);
+			if (plot == null)
+			{
+				return new NotFoundResult();
+			}
+			else if (plot.ImageData == null)
+			{
+				// Still proccessing.
+				return new AcceptedResult();
+			}
+
+			return File(await ImageService.ToPng(plot), ImageService.PngContentType);
 		}
 	}
 }

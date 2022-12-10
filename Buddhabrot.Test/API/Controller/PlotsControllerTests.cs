@@ -68,5 +68,43 @@ namespace Buddhabrot.Test.API.Controller
 
 			Assert.IsNotNull(result);
 		}
+
+		[TestMethod]
+		public async Task Get_WithValidId_ReturnsFileStreamResult()
+		{
+			var id = 1;
+			var repository = new Mock<IPlotRepository>();
+			repository.Setup(r => r.FindAsync(id))
+				.ReturnsAsync(new Buddhabrot.Core.Models.Plot
+				{
+					Height = 1,
+					Id = 1,
+					Width = 1,
+					ImageData = new byte[3] { 1, 1, 1 },
+				})
+				.Verifiable();
+			var controller = new PlotsController(repository.Object, _mapper);
+
+			var result = await controller.Get(id) as FileStreamResult;
+
+			Assert.IsNotNull(result);
+			repository.Verify();
+		}
+
+		[TestMethod]
+		public async Task Get_WithInvalidId_ReturnsNotFound()
+		{
+			var id = 1;
+			var repository = new Mock<IPlotRepository>();
+			repository.Setup(r => r.FindAsync(id))
+				.ReturnsAsync(() => null)
+				.Verifiable();
+			var controller = new PlotsController(repository.Object, _mapper);
+
+			var result = await controller.Get(id) as NotFoundResult;
+
+			Assert.IsNotNull(result);
+			repository.Verify();
+		}
 	}
 }
