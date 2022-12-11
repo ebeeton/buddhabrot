@@ -33,7 +33,9 @@ namespace Buddhabrot.API.DTO
 				.ForMember(p => p.ImageData, opt => opt.Ignore());
 
 			CreateMap<Plot, BuddhabrotResponse>()
-				.ForMember(b => b.Parameters, opt => opt.MapFrom(p => JsonConvert.DeserializeObject<BuddhabrotParameters>(p.PlotParams)));
+				.ForMember(b => b.Parameters, opt => opt.MapFrom(p => JsonConvert.DeserializeObject<BuddhabrotParameters>(p.PlotParams ?? string.Empty)));
+			CreateMap<Plot, MandelbrotResponse>()
+				.ForMember(b => b.Parameters, opt => opt.MapFrom(p => JsonConvert.DeserializeObject<MandelbrotParameters>(p.PlotParams ?? string.Empty)));
 		}
 	}
 }

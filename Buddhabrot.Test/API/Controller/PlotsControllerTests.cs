@@ -40,7 +40,7 @@ namespace Buddhabrot.Test.API.Controller
 			};
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.Plot(request) as CreatedResult;
+			var result = await controller.PlotAsync(request) as CreatedAtRouteResult;
 
 			Assert.IsNotNull(result);
 		}
@@ -64,7 +64,7 @@ namespace Buddhabrot.Test.API.Controller
 			};
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.Plot(request) as CreatedResult;
+			var result = await controller.PlotAsync(request) as CreatedAtRouteResult;
 
 			Assert.IsNotNull(result);
 		}
@@ -85,7 +85,7 @@ namespace Buddhabrot.Test.API.Controller
 				.Verifiable();
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.Get(id) as FileStreamResult;
+			var result = await controller.GetAsync(id) as FileStreamResult;
 
 			Assert.IsNotNull(result);
 			repository.Verify();
@@ -101,7 +101,7 @@ namespace Buddhabrot.Test.API.Controller
 				.Verifiable();
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.Get(id) as NotFoundResult;
+			var result = await controller.GetAsync(id) as NotFoundResult;
 
 			Assert.IsNotNull(result);
 			repository.Verify();

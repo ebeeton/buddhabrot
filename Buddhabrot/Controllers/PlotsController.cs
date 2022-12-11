@@ -50,7 +50,8 @@ namespace Buddhabrot.API.Controllers
 			await _repository.SaveChangesAsync();
 			await _repository.EnqueuePlot(plot.Id);
 
-			return CreatedAtRoute("GetImage", new { id = plot.Id }, plot);
+			var response = _mapper.Map<MandelbrotResponse>(plot);
+			return CreatedAtRoute("GetImage", new { id = response.Id }, response);
 		}
 
 		/// <summary>
