@@ -24,7 +24,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task MandelbrotPlot_WithValidRequest_ReturnsCreated()
+		public async Task PlotAsync_WithMandelbrotRequest_ReturnsCreated()
 		{
 			var repository = new Mock<IPlotRepository>();
 			repository.Setup(r => r.SaveChangesAsync())
@@ -46,7 +46,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task BuddhabrotPlot_WithValidRequest_ReturnsCreated()
+		public async Task PlotAsync_WithBuddhabrotRequest_ReturnsCreated()
 		{
 			var repository = new Mock<IPlotRepository>();
 			repository.Setup(r => r.SaveChangesAsync())
@@ -70,7 +70,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task Get_WithValidId_ReturnsFileStreamResult()
+		public async Task GetAsync_WithValidId_ReturnsFileStreamResult()
 		{
 			var id = 1;
 			var repository = new Mock<IPlotRepository>();
@@ -92,7 +92,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task Get_WithInvalidId_ReturnsNotFound()
+		public async Task GetAsync_WithInvalidId_ReturnsNotFound()
 		{
 			var id = 1;
 			var repository = new Mock<IPlotRepository>();
