@@ -31,6 +31,9 @@ namespace Buddhabrot.API.DTO
 				.ForMember(p => p.PlotBeginUTC, opt => opt.Ignore())
 				.ForMember(p => p.PlotEndUTC, opt => opt.Ignore())
 				.ForMember(p => p.ImageData, opt => opt.Ignore());
+
+			CreateMap<Plot, BuddhabrotResponse>()
+				.ForMember(b => b.Parameters, opt => opt.MapFrom(p => JsonConvert.DeserializeObject<BuddhabrotParameters>(p.PlotParams)));
 		}
 	}
 }
