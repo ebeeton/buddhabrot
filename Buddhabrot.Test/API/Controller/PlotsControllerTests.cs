@@ -92,6 +92,28 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
+		public async Task GetAsync_WithNoImageData_ReturnsAccepted()
+		{
+			var id = 1;
+			var repository = new Mock<IPlotRepository>();
+			repository.Setup(r => r.FindAsync(id))
+				.ReturnsAsync(new Buddhabrot.Core.Models.Plot
+				{
+					Height = 1,
+					Id = 1,
+					Width = 1,
+					ImageData = null,
+				})
+				.Verifiable();
+			var controller = new PlotsController(repository.Object, _mapper);
+
+			var result = await controller.GetAsync(id) as AcceptedResult;
+
+			Assert.IsNotNull(result);
+			repository.Verify();
+		}
+
+		[TestMethod]
 		public async Task GetAsync_WithInvalidId_ReturnsNotFound()
 		{
 			var id = 1;
