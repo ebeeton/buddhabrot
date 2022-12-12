@@ -53,8 +53,8 @@ namespace Buddhabrot.Persistence.Repositories
 		/// <summary>
 		/// Dequeues the next pending plot <see cref="Plot"/>.
 		/// </summary>
-		/// <returns>A task representing the work to dequeue the next pending <see cref="Plot"/>.</returns>
-		public async Task<Plot?> DequeuePlot()
+		/// <returns>The next pending <see cref="Plot"/>, or null if the queue is empty.</returns>
+		public Plot? DequeuePlot()
 		{
 			var id = _context.DequeuePlotId();
 			if (id == null)
@@ -63,7 +63,7 @@ namespace Buddhabrot.Persistence.Repositories
 				return null;
 			}
 
-			var plot = await FindAsync(id.Value) ?? throw new InvalidOperationException($"Plot ID {id} not found.");
+			var plot = Find(id.Value) ?? throw new InvalidOperationException($"Plot ID {id} not found.");
 			return plot;
 		}
 
@@ -71,10 +71,10 @@ namespace Buddhabrot.Persistence.Repositories
 		/// Find a <see cref="Plot"/> by its ID.
 		/// </summary>
 		/// <param name="id"><see cref="Plot"/> ID.</param>
-		/// <returns>A task representing the work to retrieve the <see cref="Plot"/>, or null if it was not found.</returns>
-		public async Task<Plot?> FindAsync(int id)
+		/// <returns>The <see cref="Plot"/>, or null if it was not found.</returns>
+		public Plot? Find(int id)
 		{
-			return await _context.Plots.FindAsync(id);
+			return _context.Plots.Find(id);
 		}
 	}
 }
