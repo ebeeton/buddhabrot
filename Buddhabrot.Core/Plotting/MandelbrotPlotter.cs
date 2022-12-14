@@ -13,12 +13,12 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// <see cref="Plot"/>.
 		/// </summary>
-		protected Plot _plot;
+		private Plot _plot;
 
 		/// <summary>
 		/// <see cref="MandelbrotParameters"/>.
 		/// </summary>
-		protected readonly MandelbrotParameters _parameters;
+		private readonly MandelbrotParameters _parameters;
 
 		/// <summary>
 		/// Instantiates a Mandelbrot image plotter.
@@ -47,7 +47,7 @@ namespace Buddhabrot.Core.Plotting
 			var maxImaginary = aspectRatio * MaxImaginary;
 
 			// Plot each line in parallel.
-			Parallel.For(0, _height, (y) =>
+			Parallel.For(0, _height, _parallelOptions, (y) =>
 			{
 				var imaginary = Linear.Scale(y, 0, _height, minImaginary, maxImaginary);
 

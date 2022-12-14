@@ -102,7 +102,7 @@ namespace Buddhabrot.Core.Plotting
 			Log.Information($"Channel {channel} plot started.");
 
 			// Iterate sample points not in the Mandelbrot set and plot their orbits.
-			Parallel.For(0, _parameters.SampleSize, _ =>
+			Parallel.For(0, _parameters.SampleSize, _parallelOptions, _ =>
 			{
 				Complex point;
 				do
@@ -173,10 +173,10 @@ namespace Buddhabrot.Core.Plotting
 
 			// Get the scale factor to go from hit counts to one byte per channel.
 			var scaleFactors = new double[(int)Channels.All];
-			Parallel.For(0, (int)Channels.All, (i) => scaleFactors[i] = _channels[i].Max());
+			Parallel.For(0, (int)Channels.All, _parallelOptions, (i) => scaleFactors[i] = _channels[i].Max());
 			Log.Debug("Scale factors: {@scaleFactors}", scaleFactors);
 
-			Parallel.For(0, _pixelsPerChannel, (i) =>
+			Parallel.For(0, _pixelsPerChannel, _parallelOptions, (i) =>
 			{
 				var index = i * RgbBytesPerPixel;
 				_imageBuffer[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);

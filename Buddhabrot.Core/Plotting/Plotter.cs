@@ -61,6 +61,11 @@ namespace Buddhabrot.Core.Plotting
 		public const double MaxImaginary = 2.0;
 
 		/// <summary>
+		/// Options for parallel processing.
+		/// </summary>
+		protected ParallelOptions _parallelOptions;
+
+		/// <summary>
 		/// Instantiates a plotter.
 		/// </summary>
 		/// <param name="width">Width of the image in pixels.</param>
@@ -71,7 +76,14 @@ namespace Buddhabrot.Core.Plotting
 			_height = height;
 			_bytesPerLine = width * RgbBytesPerPixel;
 			_imageBuffer = new byte[_height * _bytesPerLine];
-			Log.Information($"Plotter instantiated: {_width}x{_height} pixels.");
+
+			// Plots can put all CPUs under full load. Leave one out so we don't starve everything else.
+			var processors = Environment.ProcessorCount > 1 ? Environment.ProcessorCount - 1 : 1;
+			_parallelOptions = new ParallelOptions
+			{
+				MaxDegreeOfParallelism = processors
+			};
+			Log.Information($"Plotter instantiated: {_width}x{_height} pixels. Using up to {processors} processors(s).");
 		}
 
 		/// <summary>
