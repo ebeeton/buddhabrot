@@ -18,19 +18,21 @@ namespace Buddhabrot.API.DTO
 				.ForMember(p => p.Id, opt => opt.Ignore())
 				.ForMember(p => p.PlotType, opt => opt.MapFrom(m => PlotType.Mandelbrot))
 				.ForMember(p => p.PlotParams, opt => opt.MapFrom(m => JsonConvert.SerializeObject(m.Parameters)))
-				.ForMember(p => p.CreatedUTC, opt => opt.Ignore())
-				.ForMember(p => p.PlotBeginUTC, opt => opt.Ignore())
-				.ForMember(p => p.PlotEndUTC, opt => opt.Ignore())
-				.ForMember(p => p.ImageData, opt => opt.Ignore());
+				.ForMember(p => p.CreatedUtc, opt => opt.Ignore())
+				.ForMember(p => p.StartedUtc, opt => opt.Ignore())
+				.ForMember(p => p.CompletedUtc, opt => opt.Ignore())
+				.ForMember(p => p.ImageData, opt => opt.Ignore())
+				.ForMember(p => p.State, opt => opt.Ignore());
 
 			CreateMap<BuddhabrotRequest, Plot>()
 				.ForMember(p => p.Id, opt => opt.Ignore())
 				.ForMember(p => p.PlotType, opt => opt.MapFrom(b => PlotType.Buddhabrot))
 				.ForMember(p => p.PlotParams, opt => opt.MapFrom(b => JsonConvert.SerializeObject(b.Parameters)))
-				.ForMember(p => p.CreatedUTC, opt => opt.Ignore())
-				.ForMember(p => p.PlotBeginUTC, opt => opt.Ignore())
-				.ForMember(p => p.PlotEndUTC, opt => opt.Ignore())
-				.ForMember(p => p.ImageData, opt => opt.Ignore());
+				.ForMember(p => p.CreatedUtc, opt => opt.Ignore())
+				.ForMember(p => p.StartedUtc, opt => opt.Ignore())
+				.ForMember(p => p.CompletedUtc, opt => opt.Ignore())
+				.ForMember(p => p.ImageData, opt => opt.Ignore())
+				.ForMember(p => p.State, opt => opt.Ignore());
 
 			CreateMap<Plot, BuddhabrotResponse>()
 				.ForMember(b => b.Parameters, opt => opt.MapFrom(p => JsonConvert.DeserializeObject<BuddhabrotParameters>(p.PlotParams ?? string.Empty)));

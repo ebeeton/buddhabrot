@@ -104,17 +104,17 @@ namespace Buddhabrot.Core.Models
 		/// <summary>
 		/// When the record was created.
 		/// </summary>
-		public DateTime CreatedUTC { get; set; } = DateTime.UtcNow;
+		public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
 
 		/// <summary>
-		/// When the plot began.
+		/// When the plot started.
 		/// </summary>
-		public DateTime? PlotBeginUTC { get; set; }
+		public DateTime? StartedUtc { get; set; }
 
 		/// <summary>
-		/// When the plot ended.
+		/// When the plot was completed.
 		/// </summary>
-		public DateTime? PlotEndUTC { get; set; }
+		public DateTime? CompletedUtc { get; set; }
 
 		/// <summary>
 		/// The raw 24-bit per pixel image data.
@@ -129,11 +129,11 @@ namespace Buddhabrot.Core.Models
 		{
 			get
 			{
-				if (PlotBeginUTC == null)
+				if (StartedUtc == null)
 				{
 					return PlotState.Pending;
 				}
-				else if (PlotEndUTC == null)
+				else if (CompletedUtc == null)
 				{
 					return PlotState.Started;
 				}

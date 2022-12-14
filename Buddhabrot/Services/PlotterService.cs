@@ -42,12 +42,12 @@ namespace Buddhabrot.API.Services
 
 					Log.Information("Dequeued plot {@plot}.", plot);
 					var plotter = PlotterFactory.GetPlotter(plot);
-					plot.PlotBeginUTC = DateTime.UtcNow;
+					plot.StartedUtc = DateTime.UtcNow;
 					await repository.SaveChangesAsync();
 
 					plotter.Plot();
 
-					plot.PlotEndUTC = DateTime.UtcNow;
+					plot.CompletedUtc = DateTime.UtcNow;
 					await repository.SaveChangesAsync();
 					Log.Information("Plot {@plot} complete.", plot);
 				}

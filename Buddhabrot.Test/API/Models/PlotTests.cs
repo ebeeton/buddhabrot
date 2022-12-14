@@ -37,7 +37,7 @@ namespace Buddhabrot.Test.API.Models
 		}
 
 		[TestMethod]
-		public void Status_WhenPlotBeginUTCIsNull_ReturnsPending()
+		public void Status_WhenStartedUtcIsNull_ReturnsPending()
 		{
 			var plot = new Plot();
 
@@ -47,11 +47,11 @@ namespace Buddhabrot.Test.API.Models
 		}
 
 		[TestMethod]
-		public void Status_WhenPlotBeginUTCIsNotNull_ReturnsStarted()
+		public void Status_WhenStartedUtcIsNotNull_ReturnsStarted()
 		{
 			var plot = new Plot
 			{
-				PlotBeginUTC = DateTime.UtcNow
+				StartedUtc = DateTime.UtcNow
 			};
 
 			var state = plot.State;
@@ -60,12 +60,12 @@ namespace Buddhabrot.Test.API.Models
 		}
 
 		[TestMethod]
-		public void Status_WhenPlotEndUTCIsNotNull_ReturnsStarted()
+		public void Status_WhenCompletedUtcIsNotNull_ReturnsComplete()
 		{
 			var plot = new Plot
 			{
-				PlotBeginUTC = DateTime.UtcNow,
-				PlotEndUTC = DateTime.UtcNow.AddMinutes(5),
+				StartedUtc = DateTime.UtcNow,
+				CompletedUtc = DateTime.UtcNow.AddMinutes(5),
 			};
 
 			var state = plot.State;
