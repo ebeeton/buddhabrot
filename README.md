@@ -4,7 +4,9 @@
 
 This is a hobby ASP.NET Core Web API project for rendering
 [Buddhabrot](https://en.wikipedia.org/wiki/Buddhabrot) images in parallel. It's
-written in C# and uses Docker to store images to SQL Server and log to Seq.
+written in C# and uses Docker to store images to SQL Server and log to Seq. The
+sample image was originally 4096x4096 with 200,000,000 sample points and 1,000 
+maximum iterations. It took about four minutes to plot on an eight core machine.
 
 The plotting is currently noisy and I'm still tinkering with how to achieve the
 really cool images that you see in other people's projects. This is a work in
