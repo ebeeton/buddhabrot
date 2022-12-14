@@ -10,6 +10,16 @@ namespace Buddhabrot.Core.Models
 	public class Plot
 	{
 		/// <summary>
+		/// Possible states of a <see cref="Plot"/>.
+		/// </summary>
+		public enum PlotState
+		{
+			Pending,
+			Started,
+			Complete
+		};
+
+		/// <summary>
 		/// Instantiates a <see cref="Plot"/>.
 		/// </summary>
 		public Plot() { }
@@ -111,5 +121,31 @@ namespace Buddhabrot.Core.Models
 		/// </summary>
 		[NotLogged]
 		public byte[]? ImageData { get; set; }
+
+		/// <summary>
+		/// Gets the <see cref="PlotState"/>.
+		/// </summary>
+		public PlotState State
+		{
+			get
+			{
+				if (PlotBeginUTC == null)
+				{
+					return PlotState.Pending;
+				}
+				else if (PlotEndUTC == null)
+				{
+					return PlotState.Started;
+				}
+				else
+				{
+					return PlotState.Complete;
+				}
+			}
+			set
+			{
+
+			}
+		}
 	}
 }

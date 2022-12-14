@@ -1,5 +1,6 @@
 ﻿using Buddhabrot.Core.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Buddhabrot.Test.API.Models
 {
@@ -33,6 +34,43 @@ namespace Buddhabrot.Test.API.Models
 			var parameters = plot.GetPlotParameters() as BuddhabrotParameters;
 
 			Assert.IsNotNull(parameters);
+		}
+
+		[TestMethod]
+		public void Status_WhenPlotBeginUTCIsNull_ReturnsPending()
+		{
+			var plot = new Plot();
+
+			var state = plot.State;
+
+			Assert.AreEqual(Plot.PlotState.Pending, state);
+		}
+
+		[TestMethod]
+		public void Status_WhenPlotBeginUTCIsNotNull_ReturnsStarted()
+		{
+			var plot = new Plot
+			{
+				PlotBeginUTC = DateTime.UtcNow
+			};
+
+			var state = plot.State;
+
+			Assert.AreEqual(Plot.PlotState.Started, state);
+		}
+
+		[TestMethod]
+		public void Status_WhenPlotEndUTCIsNotNull_ReturnsStarted()
+		{
+			var plot = new Plot
+			{
+				PlotBeginUTC = DateTime.UtcNow,
+				PlotEndUTC = DateTime.UtcNow.AddMinutes(5),
+			};
+
+			var state = plot.State;
+
+			Assert.AreEqual(Plot.PlotState.Complete, state);
 		}
 	}
 }
