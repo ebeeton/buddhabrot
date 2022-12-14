@@ -1,4 +1,5 @@
 ﻿using Buddhabrot.Core.Interfaces;
+using Destructurama.Attributed;
 using Newtonsoft.Json;
 
 namespace Buddhabrot.Core.Models
@@ -108,6 +109,7 @@ namespace Buddhabrot.Core.Models
 		/// <summary>
 		/// The raw 24-bit per pixel image data.
 		/// </summary>
+		[NotLogged]
 		public byte[]? ImageData { get; set; }
 	}
 }

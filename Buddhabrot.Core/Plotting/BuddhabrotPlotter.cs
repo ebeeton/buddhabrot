@@ -78,7 +78,6 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public override void Plot()
 		{
-			_plot.PlotBeginUTC = DateTime.UtcNow;
 			_plot.ImageData = _imageBuffer;
 
 			// Plot each channel.
@@ -89,8 +88,6 @@ namespace Buddhabrot.Core.Plotting
 			}
 
 			MergeFinalImage();
-
-			_plot.PlotEndUTC = DateTime.UtcNow;
 		}
 
 		/// <summary>

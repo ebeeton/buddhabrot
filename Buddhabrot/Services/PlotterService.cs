@@ -40,11 +40,16 @@ namespace Buddhabrot.API.Services
 						continue;
 					}
 
-					Log.Information($"Dequeued plot ID {plot.Id}.");
+					Log.Information("Dequeued plot {@plot}.", plot);
 					var plotter = PlotterFactory.GetPlotter(plot);
-					plotter.Plot();
+					plot.PlotBeginUTC = DateTime.UtcNow;
 					await repository.SaveChangesAsync();
-					Log.Information($"Plot ID {plot.Id} complete.");
+
+					plotter.Plot();
+
+					plot.PlotEndUTC = DateTime.UtcNow;
+					await repository.SaveChangesAsync();
+					Log.Information("Plot {@plot} complete.", plot);
 				}
 				catch (Exception ex)
 				{

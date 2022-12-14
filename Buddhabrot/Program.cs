@@ -2,6 +2,7 @@ using Buddhabrot.API.Services;
 using Buddhabrot.Persistence.Contexts;
 using Buddhabrot.Persistence.Interfaces;
 using Buddhabrot.Persistence.Repositories;
+using Destructurama;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,7 +43,7 @@ try
 		options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 	});
 	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
-													   .ReadFrom.Configuration(context.Configuration));
+													   .ReadFrom.Configuration(context.Configuration).Destructure.UsingAttributes());
 	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.AutoMapperProfile));
 	builder.Services.AddDbContext<BuddhabrotContext>(options =>
 	{

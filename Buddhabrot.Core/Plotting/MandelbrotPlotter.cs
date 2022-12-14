@@ -37,7 +37,6 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public override void Plot()
 		{
-			_plot.PlotBeginUTC = DateTime.UtcNow;
 			_plot.ImageData = _imageBuffer;
 
 			// Scale the vertical range so that the image doesn't squash or strech when
@@ -70,8 +69,6 @@ namespace Buddhabrot.Core.Plotting
 					_imageBuffer[line + x + 2] = color;
 				}
 			});
-
-			_plot.PlotEndUTC = DateTime.UtcNow;
 		}
 	}
 }
