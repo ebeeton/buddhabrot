@@ -41,7 +41,7 @@ namespace Buddhabrot.API.Controllers
 		/// <param name="request">Mandelbrot plot request.</param>
 		/// <returns>The ID of the queued plot.</returns>
 		[HttpPost("Mandelbrot")]
-		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status202Accepted)]
 		public async Task<IActionResult> PlotAsync(MandelbrotRequest request)
 		{
 			var plot = _mapper.Map<Plot>(request);
@@ -51,7 +51,7 @@ namespace Buddhabrot.API.Controllers
 			await _repository.EnqueuePlot(plot.Id);
 
 			var response = _mapper.Map<MandelbrotResponse>(plot);
-			return CreatedAtRoute("GetImage", new { id = response.Id }, response);
+			return AcceptedAtRoute("GetImage", new { id = response.Id }, response);
 		}
 
 		/// <summary>
@@ -60,7 +60,7 @@ namespace Buddhabrot.API.Controllers
 		/// <param name="request">Buddhabrot plot request.</param>
 		/// <returns>The ID of the queued plot.</returns>
 		[HttpPost("Buddhabrot")]
-		[ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status202Accepted)]
 		public async Task<IActionResult> PlotAsync(BuddhabrotRequest request)
 		{
 			var plot = _mapper.Map<Plot>(request);
@@ -70,7 +70,7 @@ namespace Buddhabrot.API.Controllers
 			await _repository.EnqueuePlot(plot.Id);
 
 			var response = _mapper.Map<BuddhabrotResponse>(plot);
-			return CreatedAtRoute("GetImage", new { id = plot.Id }, response);
+			return AcceptedAtRoute("GetImage", new { id = plot.Id }, response);
 		}
 
 		/// <summary>
@@ -79,21 +79,15 @@ namespace Buddhabrot.API.Controllers
 		/// <returns>A task representing the work to get the image.</returns>
 		[HttpGet("{id}", Name = "GetImage")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status202Accepted)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> GetAsync(int id)
 		{
 			// FindAsync seems to have performance problems when dealing with varbinary(max) - the image data.
 			// https://stackoverflow.com/a/28619983
 			var plot = _repository.Find(id);
-			if (plot == null)
+			if (plot?.ImageData == null)
 			{
 				return new NotFoundResult();
-			}
-			else if (plot.ImageData == null)
-			{
-				// Still proccessing.
-				return new AcceptedResult();
 			}
 
 			return File(await ImageService.ToPng(plot), ImageService.PngContentType);

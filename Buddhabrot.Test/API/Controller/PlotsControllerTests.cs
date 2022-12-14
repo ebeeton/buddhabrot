@@ -24,7 +24,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task PlotAsync_WithMandelbrotRequest_ReturnsCreated()
+		public async Task PlotAsync_WithMandelbrotRequest_ReturnsAccepted()
 		{
 			var repository = new Mock<IPlotRepository>();
 			repository.Setup(r => r.SaveChangesAsync())
@@ -40,13 +40,13 @@ namespace Buddhabrot.Test.API.Controller
 			};
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.PlotAsync(request) as CreatedAtRouteResult;
+			var result = await controller.PlotAsync(request) as AcceptedAtRouteResult;
 
 			Assert.IsNotNull(result);
 		}
 
 		[TestMethod]
-		public async Task PlotAsync_WithBuddhabrotRequest_ReturnsCreated()
+		public async Task PlotAsync_WithBuddhabrotRequest_ReturnsAccepted()
 		{
 			var repository = new Mock<IPlotRepository>();
 			repository.Setup(r => r.SaveChangesAsync())
@@ -64,7 +64,7 @@ namespace Buddhabrot.Test.API.Controller
 			};
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.PlotAsync(request) as CreatedAtRouteResult;
+			var result = await controller.PlotAsync(request) as AcceptedAtRouteResult;
 
 			Assert.IsNotNull(result);
 		}
@@ -92,7 +92,7 @@ namespace Buddhabrot.Test.API.Controller
 		}
 
 		[TestMethod]
-		public async Task GetAsync_WithNoImageData_ReturnsAccepted()
+		public async Task GetAsync_WithNoImageData_ReturnsNotFound()
 		{
 			var id = 1;
 			var repository = new Mock<IPlotRepository>();
@@ -107,7 +107,7 @@ namespace Buddhabrot.Test.API.Controller
 				.Verifiable();
 			var controller = new PlotsController(repository.Object, _mapper);
 
-			var result = await controller.GetAsync(id) as AcceptedResult;
+			var result = await controller.GetAsync(id) as NotFoundResult;
 
 			Assert.IsNotNull(result);
 			repository.Verify();
