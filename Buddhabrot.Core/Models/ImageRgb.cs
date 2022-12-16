@@ -15,7 +15,7 @@
 		/// </summary>
 		public ImageRgb()
 		{
-			Data = new byte[0];
+			Data = Array.Empty<byte>();
 		}
 
 		/// <summary>
