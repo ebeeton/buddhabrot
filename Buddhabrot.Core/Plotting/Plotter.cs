@@ -9,11 +9,6 @@ namespace Buddhabrot.Core.Plotting
 	public abstract class Plotter
 	{
 		/// <summary>
-		/// The number of bytes in a 24 bit RGB pixel.
-		/// </summary>
-		public const int RgbBytesPerPixel = 3;
-
-		/// <summary>
 		/// The width of the image in pixels.
 		/// </summary>
 		protected readonly int _width;

@@ -62,7 +62,7 @@ namespace Buddhabrot.Core.Plotting
 			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
 			_pixelsPerChannel = _plot.Width * _plot.Height;
-			_channels = new int[RgbBytesPerPixel][]
+			_channels = new int[ImageRgb.BytesPerPixel][]
 			{
 				new int [_pixelsPerChannel],
 				new int [_pixelsPerChannel],
@@ -82,7 +82,7 @@ namespace Buddhabrot.Core.Plotting
 
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
-			for (int i = 0; i < RgbBytesPerPixel; ++i)
+			for (int i = 0; i < ImageRgb.BytesPerPixel; ++i)
 			{
 				PlotChannel(i);
 			}
@@ -96,7 +96,7 @@ namespace Buddhabrot.Core.Plotting
 
 			Parallel.For(0, _pixelsPerChannel, _parallelOptions, (i) =>
 			{
-				var index = i * RgbBytesPerPixel;
+				var index = i * ImageRgb.BytesPerPixel;
 				_plot.Image.Data[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);
 				_plot.Image.Data[index + 1] = (byte)(_channels[(int)Channels.Green][i] / scaleFactors[(int)Channels.Blue] * byte.MaxValue);
 				_plot.Image.Data[index + 2] = (byte)(_channels[(int)Channels.Blue][i] / scaleFactors[(int)Channels.Green] * byte.MaxValue);
