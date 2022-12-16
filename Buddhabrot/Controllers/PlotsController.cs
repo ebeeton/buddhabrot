@@ -80,17 +80,17 @@ namespace Buddhabrot.API.Controllers
 		[HttpGet("{id}", Name = "GetImage")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> GetAsync(int id)
+		public async Task<IActionResult> GetAsync(int id, [FromServices]IImageRepository imageRepository)
 		{
 			// FindAsync seems to have performance problems when dealing with varbinary(max) - the image data.
 			// https://stackoverflow.com/a/28619983
-			var plot = _repository.Find(id);
-			if (plot?.ImageData == null)
+			var image = imageRepository.Find(id);
+			if (image == null)
 			{
 				return new NotFoundResult();
 			}
 
-			return File(await ImageService.ToPng(plot), ImageService.PngContentType);
+			return File(await ImageService.ToPng(image), ImageService.PngContentType);
 		}
 	}
 }

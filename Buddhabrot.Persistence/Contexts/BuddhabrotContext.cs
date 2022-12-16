@@ -27,6 +27,11 @@ namespace Buddhabrot.Persistence.Contexts
         public DbSet<Plot> Plots { get; set; }
 
         /// <summary>
+        /// Image data.
+        /// </summary>
+        public DbSet<ImageRgb> Images { get; set; }
+
+        /// <summary>
         /// Saves all changes made in this context to the database.
         /// </summary>
         /// <param name="cancellationToken"><see cref="CancellationToken"/>.</param>
@@ -70,9 +75,20 @@ namespace Buddhabrot.Persistence.Contexts
                 .WithOne()
                 .HasForeignKey<PlotRequest>(p => p.PlotId);
 
-            modelBuilder.Entity<Plot>()
+            modelBuilder.Entity<ImageRgb>()
+                .HasKey(i => i.PlotId);
+
+			modelBuilder.Entity<ImageRgb>()
+				.HasOne<Plot>()
+				.WithOne(p => p.Image)
+				.HasForeignKey<ImageRgb>(i => i.PlotId);
+
+			modelBuilder.Entity<Plot>()
                 .Property(p => p.PlotType)
                 .HasConversion(new EnumToStringConverter<PlotType>());
+
+            modelBuilder.Entity<ImageRgb>()
+                .Ignore(i => i.BytesPerLine);
 
 			base.OnModelCreating(modelBuilder);
 		}

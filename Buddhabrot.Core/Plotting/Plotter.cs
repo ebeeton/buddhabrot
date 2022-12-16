@@ -9,11 +9,6 @@ namespace Buddhabrot.Core.Plotting
 	public abstract class Plotter
 	{
 		/// <summary>
-		/// 24 bits per pixel image buffer.
-		/// </summary>
-		protected byte[] _imageBuffer;
-
-		/// <summary>
 		/// The number of bytes in a 24 bit RGB pixel.
 		/// </summary>
 		public const int RgbBytesPerPixel = 3;
@@ -27,11 +22,6 @@ namespace Buddhabrot.Core.Plotting
 		/// The height of the image in pixels.
 		/// </summary>
 		protected readonly int _height;
-
-		/// <summary>
-		/// The number of bytes in each line in the image.
-		/// </summary>
-		protected readonly int _bytesPerLine;
 
 		/// <summary>
 		/// "Because no complex number with a real or imaginary part greater
@@ -74,8 +64,6 @@ namespace Buddhabrot.Core.Plotting
 		{
 			_width = width;
 			_height = height;
-			_bytesPerLine = width * RgbBytesPerPixel;
-			_imageBuffer = new byte[_height * _bytesPerLine];
 
 			// Plots can put all CPUs under full load. Leave one out so we don't starve everything else.
 			var processors = Environment.ProcessorCount > 1 ? Environment.ProcessorCount - 1 : 1;
@@ -90,14 +78,6 @@ namespace Buddhabrot.Core.Plotting
 		/// Plot the image.
 		/// </summary>
 		public abstract void Plot();
-
-		/// <summary>
-		/// Clears (reallocates) the image buffer.
-		/// </summary>
-		public void ClearImageBuffer()
-		{
-			_imageBuffer = new byte[_height * _bytesPerLine];
-		}
 
 		/// <summary>
 		/// Determines if a point is in the Mandelbrot set.

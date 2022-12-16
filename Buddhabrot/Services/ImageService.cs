@@ -17,11 +17,11 @@ namespace Buddhabrot.API.Services
 		/// <summary>
 		/// Generate a plot PNG image from a <see cref="Plot"/>.
 		/// </summary>
-		/// <param name="plot"><see cref="Plot"/>.</param>
+		/// <param name="imageRgb"><see cref="ImageRgb"/>.</param>
 		/// <returns>A task representing the work to obtain a <see cref="MemoryStream"/> containing the PNG.</returns>
-		public static async Task<MemoryStream> ToPng(Plot plot)
+		public static async Task<MemoryStream> ToPng(ImageRgb imageRgb)
 		{
-			using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
+			using var image = Image.LoadPixelData<Rgb24>(imageRgb.Data, imageRgb.Width, imageRgb.Height);
 			var output = new MemoryStream();
 			await image.SaveAsPngAsync(output);
 			output.Seek(0, SeekOrigin.Begin);

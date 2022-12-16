@@ -115,12 +115,12 @@ namespace Buddhabrot.Core.Models
 		/// When the plot was completed.
 		/// </summary>
 		public DateTime? CompletedUtc { get; set; }
-
+				
 		/// <summary>
 		/// The raw 24-bit per pixel image data.
 		/// </summary>
 		[NotLogged]
-		public byte[]? ImageData { get; set; }
+		public ImageRgb? Image { get; set; }
 
 		/// <summary>
 		/// Gets the <see cref="PlotState"/>.

@@ -78,7 +78,7 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public override void Plot()
 		{
-			_plot.ImageData = _imageBuffer;
+			_plot.Image = new ImageRgb(_width, _height);
 
 			// Plot each channel.
 			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
@@ -87,7 +87,21 @@ namespace Buddhabrot.Core.Plotting
 				PlotChannel(i);
 			}
 
-			MergeFinalImage();
+			Log.Debug("Final image merge started.");
+
+			// Get the scale factor to go from hit counts to one byte per channel.
+			var scaleFactors = new double[(int)Channels.All];
+			Parallel.For(0, (int)Channels.All, _parallelOptions, (i) => scaleFactors[i] = _channels[i].Max());
+			Log.Debug("Scale factors: {@scaleFactors}", scaleFactors);
+
+			Parallel.For(0, _pixelsPerChannel, _parallelOptions, (i) =>
+			{
+				var index = i * RgbBytesPerPixel;
+				_plot.Image.Data[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);
+				_plot.Image.Data[index + 1] = (byte)(_channels[(int)Channels.Green][i] / scaleFactors[(int)Channels.Blue] * byte.MaxValue);
+				_plot.Image.Data[index + 2] = (byte)(_channels[(int)Channels.Blue][i] / scaleFactors[(int)Channels.Green] * byte.MaxValue);
+			});
+			Log.Debug("Final image merge complete.");
 		}
 
 		/// <summary>
@@ -159,28 +173,6 @@ namespace Buddhabrot.Core.Plotting
 				}
 				z = z * z + c;
 			}
-		}
-
-		/// <summary>
-		/// Combine the separate RGB channels into the final image output data.
-		/// </summary>
-		protected void MergeFinalImage()
-		{
-			Log.Debug("Final image merge started.");
-
-			// Get the scale factor to go from hit counts to one byte per channel.
-			var scaleFactors = new double[(int)Channels.All];
-			Parallel.For(0, (int)Channels.All, _parallelOptions, (i) => scaleFactors[i] = _channels[i].Max());
-			Log.Debug("Scale factors: {@scaleFactors}", scaleFactors);
-
-			Parallel.For(0, _pixelsPerChannel, _parallelOptions, (i) =>
-			{
-				var index = i * RgbBytesPerPixel;
-				_imageBuffer[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);
-				_imageBuffer[index + 1] = (byte)(_channels[(int)Channels.Green][i] / scaleFactors[(int)Channels.Blue] * byte.MaxValue);
-				_imageBuffer[index + 2] = (byte)(_channels[(int)Channels.Blue][i] / scaleFactors[(int)Channels.Green] * byte.MaxValue);
-			});
-			Log.Debug("Final image merge complete.");
 		}
 	}
 }

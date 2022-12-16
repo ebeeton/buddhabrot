@@ -12,7 +12,7 @@ namespace Buddhabrot.Persistence.Repositories
 		/// <summary>
 		/// Database context.
 		/// </summary>
-		protected readonly BuddhabrotContext _context;
+		private readonly BuddhabrotContext _context;
 
 		/// <summary>
 		/// Instantiates a <see cref="PlotRepository"/>.

@@ -3,7 +3,7 @@
 namespace Buddhabrot.Persistence.Interfaces
 {
 	/// <summary>
-	/// Buddhabrot repository.
+	/// A repository for <see cref="Plot"/> data.
 	/// </summary>
 	public interface IPlotRepository
 	{

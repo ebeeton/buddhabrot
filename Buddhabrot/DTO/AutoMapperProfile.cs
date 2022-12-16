@@ -21,7 +21,7 @@ namespace Buddhabrot.API.DTO
 				.ForMember(p => p.CreatedUtc, opt => opt.Ignore())
 				.ForMember(p => p.StartedUtc, opt => opt.Ignore())
 				.ForMember(p => p.CompletedUtc, opt => opt.Ignore())
-				.ForMember(p => p.ImageData, opt => opt.Ignore())
+				.ForMember(p => p.Image, opt => opt.Ignore())
 				.ForMember(p => p.State, opt => opt.Ignore());
 
 			CreateMap<BuddhabrotRequest, Plot>()
@@ -31,7 +31,7 @@ namespace Buddhabrot.API.DTO
 				.ForMember(p => p.CreatedUtc, opt => opt.Ignore())
 				.ForMember(p => p.StartedUtc, opt => opt.Ignore())
 				.ForMember(p => p.CompletedUtc, opt => opt.Ignore())
-				.ForMember(p => p.ImageData, opt => opt.Ignore())
+				.ForMember(p => p.Image, opt => opt.Ignore())
 				.ForMember(p => p.State, opt => opt.Ignore());
 
 			CreateMap<Plot, BuddhabrotResponse>()

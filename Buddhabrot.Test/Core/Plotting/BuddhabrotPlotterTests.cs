@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.Threading.Tasks;
 
 namespace Buddhabrot.Test.Core.Plotting
 {
@@ -31,7 +30,7 @@ namespace Buddhabrot.Test.Core.Plotting
 			var plotter = new BuddhabrotPlotter(plot);
 
 			plotter.Plot();
-			using var image = Image.LoadPixelData<Rgb24>(plot.ImageData, plot.Width, plot.Height);
+			using var image = Image.LoadPixelData<Rgb24>(plot.Image?.Data, plot.Width, plot.Height);
 
 			Assert.AreEqual(Height, image.Height);
 			Assert.AreEqual(Width, image.Width);

@@ -55,7 +55,8 @@ try
 		};
 		options.UseSqlServer(connStrBuilder.ConnectionString);
 	}).AddDatabaseDeveloperPageExceptionFilter()
-	.AddScoped<IPlotRepository, PlotRepository>();
+	.AddScoped<IPlotRepository, PlotRepository>()
+	.AddScoped<IImageRepository, ImageRepository>();
 	builder.Services.AddHostedService<PlotterService>();
 
 	var app = builder.Build();
