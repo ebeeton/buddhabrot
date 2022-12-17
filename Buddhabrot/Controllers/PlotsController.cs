@@ -3,6 +3,7 @@ using Buddhabrot.API.DTO;
 using Buddhabrot.API.Services;
 using Buddhabrot.Core.Models;
 using Buddhabrot.Persistence.Interfaces;
+using Buddhabrot.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Buddhabrot.API.Controllers
@@ -48,10 +49,10 @@ namespace Buddhabrot.API.Controllers
 
 			_repository.Add(plot);
 			await _repository.SaveChangesAsync();
-			await _repository.EnqueuePlot(plot.Id);
+			await _repository.EnqueuePlotAsync(plot.Id);
 
 			var response = _mapper.Map<MandelbrotResponse>(plot);
-			return AcceptedAtRoute("GetImage", new { id = response.Id }, response);
+			return AcceptedAtRoute("GetPlot", new { id = response.Id }, response);
 		}
 
 		/// <summary>
@@ -67,17 +68,42 @@ namespace Buddhabrot.API.Controllers
 
 			_repository.Add(plot);
 			await _repository.SaveChangesAsync();
-			await _repository.EnqueuePlot(plot.Id);
+			await _repository.EnqueuePlotAsync(plot.Id);
 
 			var response = _mapper.Map<BuddhabrotResponse>(plot);
-			return AcceptedAtRoute("GetImage", new { id = plot.Id }, response);
+			return AcceptedAtRoute("GetPlot", new { id = plot.Id }, response);
+		}
+
+		/// <summary>
+		/// Gets a plot.
+		/// </summary>
+		/// <returns>A task representing the work to get the plot.</returns>
+		[HttpGet("{id}", Name = "GetPlot")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> GetAsync(int id)
+		{
+			var plot = await _repository.FindAsync(id);
+			if (plot == null)
+			{
+				return new NotFoundResult();
+			}
+
+			if (plot.PlotType == PlotType.Buddhabrot)
+			{
+				return Ok(_mapper.Map<BuddhabrotResponse>(plot));
+			}
+			else
+			{
+				return Ok(_mapper.Map<MandelbrotResponse>(plot));
+			}
 		}
 
 		/// <summary>
 		/// Gets an image.
 		/// </summary>
 		/// <returns>A task representing the work to get the image.</returns>
-		[HttpGet("{id}", Name = "GetImage")]
+		[HttpGet("{id}/image", Name = "GetImage")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IActionResult> GetAsync(int id, [FromServices]IImageRepository imageRepository)

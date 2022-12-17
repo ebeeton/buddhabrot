@@ -31,7 +31,7 @@ namespace Buddhabrot.API.Services
 				{
 					using var scope = _serviceScopeFactory.CreateScope();
 					var repository = scope.ServiceProvider.GetService<IPlotRepository>() ?? throw new NullReferenceException($"Failed to obtain {nameof(IPlotRepository)}");
-					var plot = repository.DequeuePlot();
+					var plot = await repository.DequeuePlotAsync();
 					if (plot == null)
 					{
 						await Task.Delay(IdleMS, stoppingToken);

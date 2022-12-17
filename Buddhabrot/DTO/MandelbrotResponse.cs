@@ -24,5 +24,10 @@
 		/// Parameters with which to plot the image.
 		/// </summary>
 		public MandelbrotParameters? Parameters { get; set; }
+
+		/// <summary>
+		/// State of the plot request.
+		/// </summary>
+		public string? State { get; set; }
 	}
 }
