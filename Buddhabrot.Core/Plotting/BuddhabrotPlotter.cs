@@ -44,7 +44,7 @@ namespace Buddhabrot.Core.Plotting
 		/// <summary>
 		/// <see cref="BuddhabrotParameters"/>.
 		/// </summary>
-		private readonly BuddhabrotParameters[] _parameters;
+		private readonly BuddhabrotParameters _parameters;
 
 		/// <summary>
 		/// Real and imaginary components must be -2 to 2. This is a slight
@@ -59,15 +59,8 @@ namespace Buddhabrot.Core.Plotting
 		public BuddhabrotPlotter(Plot plot) : base(plot.Width, plot.Height)
 		{
 			_plot = plot;
-			var parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
-							 throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
-			// TODO:: Expose this in the controller model so these can be set independently.
-			_parameters = new BuddhabrotParameters[(int)Channels.All]
-			{
-				parameters,
-				parameters,
-				parameters,
-			};
+			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
+				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
 			_pixelsPerChannel = _plot.Width * _plot.Height;
 			_channels = new int[ImageRgb.BytesPerPixel][]
 			{
@@ -88,6 +81,7 @@ namespace Buddhabrot.Core.Plotting
 			_plot.Image = new ImageRgb(_width, _height);
 
 			// Plot each channel.
+			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
 			for (int i = 0; i < ImageRgb.BytesPerPixel; ++i)
 			{
 				PlotChannel(i);
@@ -119,16 +113,16 @@ namespace Buddhabrot.Core.Plotting
 			Log.Information($"Channel {channel} plot started.");
 
 			// Iterate sample points not in the Mandelbrot set and plot their orbits.
-			Parallel.For(0, _parameters[channel].SampleSize, _parallelOptions, _ =>
+			Parallel.For(0, _parameters.SampleSize, _parallelOptions, _ =>
 			{
 				Complex point;
 				do
 				{
 					point = RandomPointOnComplexPlane();
-				} while (IsInMandelbrotSet(point, _parameters[channel].MaxSampleIterations, ref _));
+				} while (IsInMandelbrotSet(point, _parameters.MaxSampleIterations, ref _));
 
 				var orbits = new List<Complex>();
-				PlotOrbits(point, orbits, _parameters[channel].MaxIterations);
+				PlotOrbits(point, orbits);
 
 				for (int i = 0; i < orbits.Count; ++i)
 				{
@@ -162,11 +156,10 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		/// <param name="c">A point on the complex plane not in the Mandelbrot set.</param>
 		/// <param name="orbits">The plottable orbits.</param>
-		/// <param name="maxIterations">Maximum number of iterations for each pixel.</param>
-		protected void PlotOrbits(Complex c, List<Complex> orbits, int maxIterations)
+		protected void PlotOrbits(Complex c, List<Complex> orbits)
 		{
 			var z = c;
-			for (int i = 0; i < maxIterations; ++i)
+			for (int i = 0; i < _parameters.MaxIterations; ++i)
 			{
 				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)
 				{
