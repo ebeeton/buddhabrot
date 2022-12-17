@@ -3,7 +3,6 @@ using Buddhabrot.API.DTO;
 using Buddhabrot.API.Services;
 using Buddhabrot.Core.Models;
 using Buddhabrot.Persistence.Interfaces;
-using Buddhabrot.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Buddhabrot.API.Controllers
