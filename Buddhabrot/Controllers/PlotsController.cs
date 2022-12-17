@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Buddhabrot.API.Controllers
 {
 	/// <summary>
-	/// Mandelbrot API controller.
+	/// Plots controller.
 	/// </summary>
 	[Route("api/[controller]")]
 	[ApiController]
@@ -96,26 +96,6 @@ namespace Buddhabrot.API.Controllers
 			{
 				return Ok(_mapper.Map<MandelbrotResponse>(plot));
 			}
-		}
-
-		/// <summary>
-		/// Gets an image.
-		/// </summary>
-		/// <returns>A task representing the work to get the image.</returns>
-		[HttpGet("{id}/image", Name = "GetImage")]
-		[ProducesResponseType(StatusCodes.Status200OK)]
-		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IActionResult> GetAsync(int id, [FromServices]IImageRepository imageRepository)
-		{
-			// FindAsync seems to have performance problems when dealing with varbinary(max) - the image data.
-			// https://stackoverflow.com/a/28619983
-			var image = imageRepository.Find(id);
-			if (image == null)
-			{
-				return new NotFoundResult();
-			}
-
-			return File(await ImageService.ToPng(image), ImageService.PngContentType);
 		}
 	}
 }
