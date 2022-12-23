@@ -1,5 +1,7 @@
 # Buddhabrot API
 
+[![.NET](https://github.com/ebeeton/buddhabrot/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ebeeton/buddhabrot/actions/workflows/dotnet.yml)
+
 ![Buddhabrot example](/assets/images/sample.jpg)
 
 This is a hobby ASP.NET Core Web API project for rendering
