@@ -78,8 +78,8 @@ namespace Buddhabrot.Core.Plotting
 		/// Determines if a point is in the Mandelbrot set.
 		/// </summary>
 		/// <param name="c">A point on the complex plane.</param>
-		/// <param name="maxIterations">The number of iterations for points not in the set to escape to infinity.</param>
-		/// <param name="iterations">The number of iterations for points not in the set to escape to infinity.</param>
+		/// <param name="maxIterations">The maximum number of iterations to determine if the point is in the set or escapes to infinity.</param>
+		/// <param name="iterations">The number of iterations for a point not in the set to escape to infinity.</param>
 		/// <returns>True if a point is in the Mandelbrot set.</returns>
 		public static bool IsInMandelbrotSet(Complex c, int maxIterations, ref int iterations)
 		{
