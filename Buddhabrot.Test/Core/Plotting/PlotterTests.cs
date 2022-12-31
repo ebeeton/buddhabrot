@@ -1,13 +1,14 @@
-﻿using Buddhabrot.Core.Models;
-using Buddhabrot.Core.Plotting;
+﻿using Buddhabrot.Core.Plotting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+using System.Numerics;
 
 namespace Buddhabrot.Test.Core.Plotting
 {
     [TestClass]
     public class PlotterTests
     {
+        const int MaxIterations = 1000;
+
         class TestPlotter : Plotter
         {
             public TestPlotter(int width, int height) : base(width, height)
@@ -62,5 +63,29 @@ namespace Buddhabrot.Test.Core.Plotting
 
             Assert.IsTrue(result);
         }
-    }
+
+        [TestMethod]
+        public void IsInMandelbrotSet_WithPointInSet_ReturnsTrue()
+        {
+            int iterations = 0;
+            var c = new Complex(0, 0);
+
+            var isInSet = Plotter.IsInMandelbrotSet(c, MaxIterations, ref iterations);
+
+            Assert.IsTrue(isInSet);
+            Assert.AreEqual(0, iterations);
+		}
+
+		[TestMethod]
+		public void IsInMandelbrotSet_WithPointNotInSet_ReturnsFalse()
+		{
+			int iterations = 0;
+			var c = new Complex(1, 1);
+
+			var isInSet = Plotter.IsInMandelbrotSet(c, MaxIterations, ref iterations);
+
+			Assert.IsFalse(isInSet);
+			Assert.AreEqual(1, iterations);
+		}
+	}
 }
