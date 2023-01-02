@@ -42,8 +42,9 @@ try
 		var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
 		options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 	});
-	builder.Host.UseSerilog((context, config) => config.WriteTo.Console()
-													   .ReadFrom.Configuration(context.Configuration).Destructure.UsingAttributes());
+	builder.Host.UseSerilog((context, config) => config.WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {CorrelationId} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+													   .ReadFrom.Configuration(context.Configuration).Destructure.UsingAttributes()
+													   .Enrich.WithCorrelationId());
 	builder.Services.AddAutoMapper(typeof(Buddhabrot.API.DTO.AutoMapperProfile));
 	builder.Services.AddDbContext<BuddhabrotContext>(options =>
 	{
@@ -57,7 +58,8 @@ try
 	}).AddDatabaseDeveloperPageExceptionFilter()
 	.AddScoped<IPlotRepository, PlotRepository>()
 	.AddScoped<IImageRepository, ImageRepository>();
-	builder.Services.AddHostedService<PlotterService>();
+	builder.Services.AddHostedService<PlotterService>()
+					.AddHttpContextAccessor();
 
 	var app = builder.Build();
 	var mapper = app.Services.GetService<AutoMapper.IMapper>();
