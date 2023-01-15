@@ -129,11 +129,9 @@ namespace Buddhabrot.Core.Plotting
 					var pixelX = (int)Linear.Scale(orbits[i].Real, _mandelbrotSetRegion.MinReal, _mandelbrotSetRegion.MaxReal, 0, _width);
 					var pixelY = (int)Linear.Scale(orbits[i].Imaginary, _mandelbrotSetRegion.MinImaginary, _mandelbrotSetRegion.MaxImaginary, 0, _height);
 
-					// Two or more threads could be incrementing the same pixel, so a synchronization method is necessary here.
+					// Two or more threads could be incrementing the same point, so a synchronization method is necessary here.
 					var index = pixelY * _width + pixelX;
 					Interlocked.Increment(ref _channels[channel][index]);
-					// Clamp pixel value to byte.MaxValue because this is going to be treated as a byte when the final image is merged.
-					Interlocked.CompareExchange(ref _channels[channel][index], byte.MaxValue, byte.MaxValue + 1);
 				}
 			});
 			Log.Information($"Channel {channel} plot complete.");
@@ -163,7 +161,7 @@ namespace Buddhabrot.Core.Plotting
 			{
 				if (double.Abs(z.Real) > Bailout || double.Abs(z.Imaginary) > Bailout)
 				{
-					// Orbit is outside the set.
+					// Point has escaped to infinity.
 					return;
 				}
 				else if (_mandelbrotSetRegion.PointInRegion(z))
