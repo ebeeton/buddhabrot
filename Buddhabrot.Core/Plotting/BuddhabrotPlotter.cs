@@ -16,25 +16,14 @@ namespace Buddhabrot.Core.Plotting
 		private readonly Plot _plot;
 
 		/// <summary>
-		/// Symbolic constants for RGB channel colors.
+		/// Per-pixel orbit counts.
 		/// </summary>
-		protected enum Channels
-		{
-			Red = 0,
-			Green,
-			Blue,
-			All
-		};
+		private readonly int[] _orbitCounts;
 
 		/// <summary>
-		/// RGB channels of width * height.
+		/// The total number of pixels in the resulting image.
 		/// </summary>
-		private readonly int[][] _channels;
-
-		/// <summary>
-		/// The total number of pixels per channel.
-		/// </summary>
-		private readonly int _pixelsPerChannel;
+		private readonly int _pixelCount;
 
 		/// <summary>
 		/// Region on the complex plane containing the Mandelbrot set.
@@ -61,13 +50,8 @@ namespace Buddhabrot.Core.Plotting
 			_plot = plot;
 			_parameters = plot.GetPlotParameters() as BuddhabrotParameters ??
 				throw new ArgumentException($"Failed to get {nameof(BuddhabrotParameters)}.");
-			_pixelsPerChannel = _plot.Width * _plot.Height;
-			_channels = new int[ImageRgb.BytesPerPixel][]
-			{
-				new int [_pixelsPerChannel],
-				new int [_pixelsPerChannel],
-				new int [_pixelsPerChannel]
-			};
+			_pixelCount = _plot.Width * _plot.Height;
+			_orbitCounts = new int [_pixelCount];
 			_mandelbrotSetRegion = new(MinReal, MaxReal, MinImaginary, MaxImaginary);
 			_mandelbrotSetRegion.MatchAspectRatio(_width, _height);
 			Log.Information("Buddhabrot plotter instantiated: {@Parameters}", _parameters);
@@ -78,39 +62,8 @@ namespace Buddhabrot.Core.Plotting
 		/// </summary>
 		public override void Plot()
 		{
+			Log.Information("Plot starting.");
 			_plot.Image = new ImageRgb(_width, _height);
-
-			// Plot each channel.
-			Log.Information($"Beginning plot with {_parameters.SampleSize} sample points.");
-			for (int i = 0; i < ImageRgb.BytesPerPixel; ++i)
-			{
-				PlotChannel(i);
-			}
-
-			Log.Debug("Final image merge started.");
-
-			// Get the scale factor to go from hit counts to one byte per channel.
-			var scaleFactors = new double[(int)Channels.All];
-			Parallel.For(0, (int)Channels.All, _parallelOptions, (i) => scaleFactors[i] = _channels[i].Max());
-			Log.Debug("Scale factors: {@scaleFactors}", scaleFactors);
-
-			Parallel.For(0, _pixelsPerChannel, _parallelOptions, (i) =>
-			{
-				var index = i * ImageRgb.BytesPerPixel;
-				_plot.Image.Data[index] = (byte)(_channels[(int)Channels.Red][i] / scaleFactors[(int)Channels.Red] * byte.MaxValue);
-				_plot.Image.Data[index + 1] = (byte)(_channels[(int)Channels.Green][i] / scaleFactors[(int)Channels.Blue] * byte.MaxValue);
-				_plot.Image.Data[index + 2] = (byte)(_channels[(int)Channels.Blue][i] / scaleFactors[(int)Channels.Green] * byte.MaxValue);
-			});
-			Log.Debug("Final image merge complete.");
-		}
-
-		/// <summary>
-		/// Plot a Buddhabrot image to one of the RGB image channels.
-		/// </summary>
-		/// <param name="channel">Index of channel to plot to.</param>
-		protected void PlotChannel(int channel)
-		{
-			Log.Information($"Channel {channel} plot started.");
 
 			// Iterate sample points not in the Mandelbrot set and plot their orbits.
 			Parallel.For(0, _parameters.SampleSize, _parallelOptions, _ =>
@@ -131,10 +84,22 @@ namespace Buddhabrot.Core.Plotting
 
 					// Two or more threads could be incrementing the same point, so a synchronization method is necessary here.
 					var index = pixelY * _width + pixelX;
-					Interlocked.Increment(ref _channels[channel][index]);
+					Interlocked.Increment(ref _orbitCounts[index]);
 				}
 			});
-			Log.Information($"Channel {channel} plot complete.");
+
+			var max = _orbitCounts.Max();
+			Log.Information($"Plot complete, max orbit count: {max}.");
+
+			// Use greyscale for now until a gradient palette is available.
+			Parallel.For(0, _pixelCount, _parallelOptions, (i) =>
+			{
+				var index = i * ImageRgb.BytesPerPixel;
+				_plot.Image.Data[index] = 
+				_plot.Image.Data[index + 1] = 
+				_plot.Image.Data[index + 2] = (byte)((double)_orbitCounts[i] / max * byte.MaxValue);
+			});
+			Log.Information("Image data written.");
 		}
 
 		/// <summary>
